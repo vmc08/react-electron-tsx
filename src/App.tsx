@@ -1,28 +1,24 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import routes from './config/routes';
+import FourOhFour from './pages/FourOhFour';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
+const App = () => {
+  return (
+    <React.Fragment>
+      <Switch>
+        {routes.map(({ component: Component, exact, path, ...rest }) => (
+          <Route
+            key={path}
+            path={path}
+            exact={exact}
+            render={(props) => <Component {...props} {...rest} />}
+          />
+        ))}
+        <Route component={FourOhFour} />
+      </Switch>
+    </React.Fragment>
+  );
+};
 
 export default App;

@@ -1,22 +1,41 @@
 {
   "name": "react-electron-tsx",
   "version": "0.1.0",
+  "author": {
+    "name": "vmc08",
+    "email": "hecatemilo@gmail.com"
+  },
   "private": true,
+  "main": "public/main.ts",
   "dependencies": {
     "@types/jest": "24.0.11",
     "@types/node": "11.13.4",
     "@types/react": "16.8.13",
     "@types/react-dom": "16.8.4",
+    "@types/react-router-dom": "^4.3.2",
+    "@types/styled-components": "^4.1.14",
+    "antd": "^3.16.3",
+    "apollo-boost": "^0.3.1",
+    "concurrently": "^4.1.0",
+    "electron": "^4.1.4",
+    "electron-builder": "^20.39.0",
+    "electron-is-dev": "^1.1.0",
+    "graphql": "^14.2.1",
     "react": "^16.8.6",
+    "react-apollo": "^2.5.5",
     "react-dom": "^16.8.6",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
-    "typescript": "3.4.3"
+    "styled-components": "^4.2.0",
+    "typescript": "3.4.3",
+    "wait-on": "^3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "tsc react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-dev": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -26,5 +45,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "tslint": "^5.15.0"
+  }
 }
