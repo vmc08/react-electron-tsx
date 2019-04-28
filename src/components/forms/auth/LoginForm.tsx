@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { Mutation } from 'react-apollo';
 import { Form, Icon, Input, Checkbox, Button } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
+import { hasValidObjectValues } from '../../../utils/objectUtils';
 
 interface ILoginFormState {
   isLoading: boolean,
@@ -18,17 +20,32 @@ class LoginForm extends React.Component<FormComponentProps, ILoginFormState> {
     this.state = {
       isLoading: false,
     };
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const { validateFields } = this.props.form;
+    validateFields();
+  }
+
+  onSubmit(e: React.FormEvent<HTMLButtonElement>): void {
+    e.preventDefault();
+    const {getFieldsValue } = this.props.form;
+    this.setState({ isLoading: true });
+    console.log(getFieldsValue());
   }
 
   render() {
     const { isLoading } = this.state;
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-
+    const { getFieldDecorator, getFieldsError, isFieldTouched, getFieldError } = this.props.form;
+    const emailError = isFieldTouched('email') && getFieldError('email');
+    const passwordError = isFieldTouched('password') && getFieldError('password');
     return (
-      <Form>
-        <Form.Item>
+      <Form onSubmit={this.onSubmit}>
+        <Form.Item
+          validateStatus={emailError ? 'error' : ''}
+          help={emailError || ''}
+        >
           {getFieldDecorator('email', {
             rules: [{ required: true, message: 'Email is required!' }],
           })(
@@ -36,16 +53,21 @@ class LoginForm extends React.Component<FormComponentProps, ILoginFormState> {
               prefix={<StyledIcon type="mail" />}
               placeholder="Email"
               type="email"
+              disabled={isLoading}
             />,
           )}
         </Form.Item>
-        <Form.Item>
+        <Form.Item
+          validateStatus={passwordError ? 'error' : ''}
+          help={passwordError || ''}
+        >
           {getFieldDecorator('password', {
             rules: [{ required: true, message: 'Password can\'t be empty!' }],
           })(
             <Input.Password
               prefix={<StyledIcon type="lock" />}
               placeholder="Password"
+              disabled={isLoading}
             />,
           )}
         </Form.Item>
@@ -62,10 +84,7 @@ class LoginForm extends React.Component<FormComponentProps, ILoginFormState> {
             type="primary"
             htmlType="submit"
             loading={isLoading}
-            onClick={(e: React.FormEvent<HTMLButtonElement>) => {
-              e.preventDefault();
-              this.setState({ isLoading: true });
-            }}
+            disabled={isLoading || hasValidObjectValues(getFieldsError())}
           >
             Log in
           </Button>
