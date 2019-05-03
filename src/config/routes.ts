@@ -4,13 +4,13 @@ import RequireAuth from '../HOC/RequireAuth';
 
 const routes = [
   {
+    component: RequireAuth(Login, false),
+    path: '/login',
+  },
+  {
     component: RequireAuth(Dashboard),
     exact: true,
     path: '/',
-  },
-  {
-    component: RequireAuth(Login, false),
-    path: '/login',
   },
 ];
 

@@ -1,14 +1,9 @@
 import React from 'react';
 import { Query } from 'react-apollo';
+import { RouteComponentProps } from 'react-router-dom';
 import { isLoggedIn, getAuthToken } from '../utils/authUtils';
 import { ACCOUNT } from '../apollo/queries/user';
 import { IAccount } from '../apollo/types/graphql-types';
-
-interface IRequireAuthProps {
-  history: {
-    replace: (location: string) => void,
-  },
-}
 
 interface IQueryVariables {
   token: string
@@ -22,38 +17,34 @@ export default <P extends object>(
   ComposedComponent: React.ComponentType<P>,
   requireAuth = true,
 ) => {
-  class RequireAuth extends React.Component<P & IRequireAuthProps> {
-    constructor(props: P & IRequireAuthProps) {
+  class RequireAuth extends React.Component<P & RouteComponentProps> {
+    constructor(props: P & RouteComponentProps) {
       super(props);
-      // this.redirectToHome = this.redirectToHome.bind(this);
-      // this.redirectToLogin = this.redirectToLogin.bind(this);
+      this.redirectToHome = this.redirectToHome.bind(this);
+      this.redirectToLogin = this.redirectToLogin.bind(this);
     }
 
-    // componentWillMount() {
-    //   requireAuth ? this.redirectToLogin() : this.redirectToHome();
-    // }
+    componentDidMount() {
+      requireAuth ? this.redirectToLogin() : this.redirectToHome();
+    }
 
-    // componentWillUpdate() {
-    //   requireAuth ? this.redirectToLogin() : this.redirectToHome();
-    // }
+    redirectToHome() {
+      if (isLoggedIn()) {
+        const { history } = this.props;
+        history.replace('/');
+      }
+    }
 
-    // redirectToHome() {
-    //   if (isLoggedIn()) {
-    //     const { history } = this.props;
-    //     history.replace('/');
-    //   }
-    // }
-
-    // redirectToLogin() {
-    //   if (!isLoggedIn()) {
-    //     const { history } = this.props;
-    //     history.replace('/login');
-    //   }
-    // }
+    redirectToLogin() {
+      if (!isLoggedIn()) {
+        const { history } = this.props;
+        history.replace('/login');
+      }
+    }
 
     render() {
       const token = getAuthToken();
-      const skipAuth = !isLoggedIn() || !requireAuth;
+      const skipAuth = !isLoggedIn();
       return (
         <Query<IQueryData, IQueryVariables>
           query={ACCOUNT}
@@ -61,20 +52,26 @@ export default <P extends object>(
           skip={skipAuth}
         >
           {({ loading, data, error }) => {
-            if (!skipAuth) {
-              if (data) {
-                const { account } = data;
-                console.log(account);
-              }
+            if (loading) {
+              return <p>Loading component here</p>;
             }
-            return (
-              <ComposedComponent {...this.props as P} />
-            );
+            if (error) {
+              return <>
+                <p>Error component here</p>
+                <pre>{error.graphQLErrors[0].message}</pre>
+              </>;
+            }
+            if (data) {
+              const { account } = data;
+              const newProps = {...this.props, account, token};
+              return (
+                <ComposedComponent {...newProps as P} />
+              );
+            }
           }}
         </Query>
       );
     }
   }
-
   return RequireAuth;
 };
