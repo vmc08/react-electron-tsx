@@ -43,6 +43,7 @@ export default <P extends object>(
     }
 
     render() {
+      let newProps = {...this.props};
       const token = getAuthToken();
       const skipAuth = !isLoggedIn();
       return (
@@ -63,12 +64,12 @@ export default <P extends object>(
             }
             if (data) {
               const { account } = data;
-              const newProps = {...this.props, account, token};
-              return (
-                <ComposedComponent {...newProps as P} />
-              );
+              newProps = {...this.props, account, token};
             }
-          }}
+            return (
+              <ComposedComponent {...newProps as P} />
+            );
+        }}
         </Query>
       );
     }
