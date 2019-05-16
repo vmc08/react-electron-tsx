@@ -17,6 +17,7 @@
     "no-irregular-whitespace": true,
     "indent": [true, "spaces", 2],
     "semicolon": [true, "always", "ignore-interfaces"],
+    "object-literal-sort-keys": false,
     "no-console": {
       "severity": "warning"
     },

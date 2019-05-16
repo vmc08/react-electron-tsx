@@ -14,12 +14,14 @@
     "@types/react-dom": "16.8.4",
     "@types/react-router-dom": "^4.3.2",
     "@types/styled-components": "^4.1.14",
+    "@types/yup": "^0.26.13",
     "antd": "^3.16.3",
     "apollo-boost": "^0.3.1",
     "concurrently": "^4.1.0",
     "electron": "^4.1.4",
     "electron-builder": "^20.39.0",
     "electron-is-dev": "^1.1.0",
+    "formik": "^1.5.4",
     "graphql": "^14.2.1",
     "react": "^16.8.6",
     "react-apollo": "^2.5.5",
@@ -28,7 +30,8 @@
     "react-scripts": "2.1.8",
     "styled-components": "^4.2.0",
     "typescript": "3.4.3",
-    "wait-on": "^3.2.0"
+    "wait-on": "^3.2.0",
+    "yup": "^0.27.0"
   },
   "scripts": {
     "start": "react-scripts start",

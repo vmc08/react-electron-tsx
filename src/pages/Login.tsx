@@ -38,7 +38,7 @@ class Login extends React.Component {
             <Col sm={12} md={10} className="root-col">
               <Typography.Title level={4}>Log In</Typography.Title>
               <Typography.Paragraph>
-                Create, update and delete {process.env.REACT_APP_MAIN} data.
+                This is a short description for the app.
               </Typography.Paragraph>
             </Col>
             <Col sm={12} md={14} className="root-col with-divider">
