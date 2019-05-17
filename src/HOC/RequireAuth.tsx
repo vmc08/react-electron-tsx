@@ -1,6 +1,7 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router-dom';
+import { Spin, Icon } from 'antd';
 import { isLoggedIn, getAuthToken } from '../utils/authUtils';
 import { ACCOUNT } from '../apollo/queries/user';
 import { IAccount } from '../apollo/types/graphql-types';
@@ -12,6 +13,8 @@ interface IQueryVariables {
 interface IQueryData {
   account: IAccount
 }
+
+const LoadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 export default <P extends object>(
   ComposedComponent: React.ComponentType<P>,
@@ -53,9 +56,6 @@ export default <P extends object>(
           skip={skipAuth}
         >
           {({ loading, data, error }) => {
-            if (loading) {
-              return <p>Loading component here</p>;
-            }
             if (error) {
               return <>
                 <p>Error component here</p>
@@ -67,7 +67,14 @@ export default <P extends object>(
               newProps = {...this.props, account, token};
             }
             return (
-              <ComposedComponent {...newProps as P} />
+              <Spin
+                size="large"
+                tip="Loading..."
+                indicator={LoadingIcon}
+                spinning={loading}
+              >
+                <ComposedComponent {...newProps as P} />
+              </Spin>
             );
         }}
         </Query>

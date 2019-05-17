@@ -1,10 +1,10 @@
 import React from 'react';
+import { FieldProps } from 'formik';
 import { Form, Input, Select, DatePicker, TimePicker } from 'antd';
-import { InputProps } from 'antd/lib/input';
+// import { InputProps } from 'antd/lib/input';
 // import { SelectProps } from 'antd/lib/select';
 // import { DatePickerProps } from 'antd/lib/date-picker/interface';
 // import { TimePickerProps } from 'antd/lib/time-picker';
-import { FieldProps } from 'formik';
 
 interface IFormikFieldsProps extends FieldProps {
   hasFeedback: boolean,
