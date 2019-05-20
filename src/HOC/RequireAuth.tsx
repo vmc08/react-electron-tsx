@@ -6,6 +6,8 @@ import { isLoggedIn, getAuthToken } from '../utils/authUtils';
 import { ACCOUNT } from '../apollo/queries/user';
 import { IAccount } from '../apollo/types/graphql-types';
 
+import { UserProvider } from '../contexts/UserContext';
+
 interface IQueryVariables {
   token: string
 }
@@ -73,7 +75,9 @@ export default <P extends object>(
                 indicator={LoadingIcon}
                 spinning={loading}
               >
-                <ComposedComponent {...newProps as P} />
+                <UserProvider value={{...newProps}}>
+                  <ComposedComponent {...newProps as P} />
+                </UserProvider>
               </Spin>
             );
         }}
