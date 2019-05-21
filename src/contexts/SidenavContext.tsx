@@ -20,7 +20,7 @@ class SidenavProvider extends React.Component<{}, ISidenavProviderState> {
       selectedKeys: {
         itemKey: 'dashboard',
         subMenuKey: null,
-      }
+      },
     };
     this.toggleCollapse = this.toggleCollapse.bind(this);
     this.setSelectedKeys = this.setSelectedKeys.bind(this);

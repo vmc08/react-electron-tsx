@@ -56,7 +56,7 @@ class AppSidenav extends React.Component<RouteComponentProps> {
           defaultOpenKeys={[subMenuKeyContext]}
           defaultSelectedKeys={[itemKeyContext]}
           mode="inline"
-          style={{ width: '99%', borderRight: 0 }}
+          style={{ width: 'calc(100% - 1px)', borderRight: 0 }}
         >
           {navRoutes.map((navRoute: INavRoute) => {
             const { label, path, groups, iconType } = navRoute;

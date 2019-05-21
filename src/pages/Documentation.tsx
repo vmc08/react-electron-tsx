@@ -9,7 +9,7 @@ class Documentation extends React.Component {
         <UserConsumer>
           {(value) => {
             return (
-              <div>Dashboard Page</div>
+              <div>Documentation Page</div>
             );
           }}
         </UserConsumer>
