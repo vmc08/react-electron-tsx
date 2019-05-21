@@ -2,7 +2,7 @@ import React from 'react';
 import { UserConsumer } from '../contexts/UserContext';
 import AppLayout from '../components/layout/AppLayout';
 
-class Dashboard extends React.Component {
+class Documentation extends React.Component {
   render() {
     return (
       <AppLayout>
@@ -18,4 +18,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+export default Documentation;

@@ -17,6 +17,7 @@
     "@types/yup": "^0.26.13",
     "antd": "^3.16.3",
     "apollo-boost": "^0.3.1",
+    "classnames": "^2.2.6",
     "concurrently": "^4.1.0",
     "electron": "^4.1.4",
     "electron-builder": "^20.39.0",

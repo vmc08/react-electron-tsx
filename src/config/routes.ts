@@ -1,6 +1,8 @@
-import Dashboard from '../pages/Dashboard';
-import Login from '../pages/Login';
 import RequireAuth from '../HOC/RequireAuth';
+
+import Dashboard from '../pages/Dashboard';
+import Documentation from '../pages/Documentation';
+import Login from '../pages/Login';
 
 const routes = [
   {
@@ -11,6 +13,10 @@ const routes = [
     component: RequireAuth(Dashboard),
     exact: true,
     path: '/',
+  },
+  {
+    component: RequireAuth(Documentation),
+    path: '/documentation/user/account',
   },
 ];
 

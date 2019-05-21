@@ -1,0 +1,117 @@
+import React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import styled from 'styled-components';
+import { Layout, Menu, Icon } from 'antd';
+import { navRoutes, INavRoute, INavGroup } from '../../utils/navUtils';
+import { slugify } from '../../utils/stringUtils';
+import SidenavContext, { ISelectedKeys } from '../../contexts/SidenavContext';
+
+const { Sider } = Layout;
+const { SubMenu, ItemGroup } = Menu;
+
+const StyledSider = styled(Sider)`
+  overflow: hidden;
+  height: 100vh;
+  border-right: 1px solid #e8e8e8;
+  &:hover {
+    overflow: auto;
+  }
+`;
+
+const StyledLogo = styled.div`
+  height: 32px;
+  background: rgba(0, 0, 0, 0.2);
+  margin: 16px;
+`;
+
+class AppSidenav extends React.Component<RouteComponentProps> {
+  constructor(props: RouteComponentProps) {
+    super(props);
+    this.changeRoute = this.changeRoute.bind(this);
+  }
+
+  changeRoute(
+    path: string | null | undefined,
+    selectedKeys: ISelectedKeys,
+  ) {
+    const { history } = this.props;
+    const { setSelectedKeys } = this.context;
+    setSelectedKeys(selectedKeys);
+    history.push(path || '/');
+  }
+
+  render() {
+    const { collapsed, selectedKeys } = this.context;
+    const { itemKey: itemKeyContext, subMenuKey: subMenuKeyContext } = selectedKeys;
+    return (
+      <StyledSider
+        trigger={null}
+        theme="light"
+        collapsible
+        collapsed={collapsed}
+        width={256}
+      >
+        <StyledLogo />
+        <Menu
+          defaultOpenKeys={[subMenuKeyContext]}
+          defaultSelectedKeys={[itemKeyContext]}
+          mode="inline"
+          style={{ width: '99%', borderRight: 0 }}
+        >
+          {navRoutes.map((navRoute: INavRoute) => {
+            const { label, path, groups, iconType } = navRoute;
+            if (groups && groups.length > 0) {
+              const subMenuKey = `sub-${slugify(label)}`;
+              return (
+                <SubMenu
+                  key={subMenuKey}
+                  title={
+                    <span>
+                      <Icon type={iconType} />
+                      <span>{label}</span>
+                    </span>
+                  }
+                >
+                  {groups.map((group: INavGroup) => {
+                    const { title, items } = group;
+                    return (
+                      <ItemGroup title={title} key={`group-${slugify(title)}`}>
+                        {items.map((item: INavRoute) => {
+                          const { label: itemLabel, path: itemPath } = item;
+                          const itemKey = slugify(itemLabel);
+                          return (
+                            <Menu.Item
+                              key={itemKey}
+                              onClick={() => {
+                                this.changeRoute(itemPath, { itemKey, subMenuKey });
+                              }}
+                            >
+                              <span>{itemLabel}</span>
+                            </Menu.Item>
+                          );
+                        })}
+                      </ItemGroup>
+                    );
+                  })}
+                </SubMenu>
+              );
+            }
+            return (
+              <Menu.Item
+                key={slugify(label)}
+                onClick={() => this.changeRoute(path, { itemKey: slugify(label) })}
+              >
+                <Icon type={iconType} />
+                <span>{label}</span>
+              </Menu.Item>
+            );
+          })}
+        </Menu>
+      </StyledSider>
+    );
+  }
+}
+
+AppSidenav.contextType = SidenavContext;
+
+export default withRouter(AppSidenav);

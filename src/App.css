@@ -9,3 +9,7 @@ body {
 .float-left {
   float: left;
 }
+
+.ant-menu-submenu-popup {
+  left: 85px !important;
+}

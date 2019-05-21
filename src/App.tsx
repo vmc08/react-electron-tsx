@@ -3,9 +3,11 @@ import { Switch, Route } from 'react-router-dom';
 import routes from './config/routes';
 import FourOhFour from './pages/FourOhFour';
 
+import { SidenavProvider } from './contexts/SidenavContext';
+
 const App = () => {
   return (
-    <React.Fragment>
+    <SidenavProvider>
       <Switch>
         {routes.map(({ component: Component, exact, path, ...rest }) => (
           <Route
@@ -17,7 +19,7 @@ const App = () => {
         ))}
         <Route component={FourOhFour} />
       </Switch>
-    </React.Fragment>
+    </SidenavProvider>
   );
 };
 
