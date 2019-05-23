@@ -58,8 +58,7 @@ class AppSidenav extends React.Component<RouteComponentProps> {
           mode="inline"
           style={{ width: 'calc(100% - 1px)', borderRight: 0 }}
         >
-          {navRoutes.map((navRoute: INavRoute) => {
-            const { label, path, groups, iconType } = navRoute;
+          {navRoutes.map(({ label, path, groups, iconType }: INavRoute) => {
             if (groups && groups.length > 0) {
               const subMenuKey = `sub-${slugify(label)}`;
               return (
@@ -72,8 +71,7 @@ class AppSidenav extends React.Component<RouteComponentProps> {
                     </span>
                   }
                 >
-                  {groups.map((group: INavGroup) => {
-                    const { title, items } = group;
+                  {groups.map(({ title, items }: INavGroup) => {
                     return (
                       <ItemGroup title={title} key={`group-${slugify(title)}`}>
                         {items.map((item: INavRoute) => {

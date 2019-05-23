@@ -6,7 +6,7 @@ import { isLoggedIn, getAuthToken } from '../utils/authUtils';
 import { ACCOUNT } from '../apollo/queries/user';
 import { IAccount } from '../apollo/types/graphql-types';
 
-import { UserProvider } from '../contexts/UserContext';
+import UserContext from '../contexts/UserContext';
 
 interface IQueryVariables {
   token: string
@@ -25,6 +25,7 @@ export default <P extends object>(
   class RequireAuth extends React.Component<P & RouteComponentProps> {
     constructor(props: P & RouteComponentProps) {
       super(props);
+      this.setUserContext = this.setUserContext.bind(this);
       this.redirectToHome = this.redirectToHome.bind(this);
       this.redirectToLogin = this.redirectToLogin.bind(this);
     }
@@ -47,6 +48,12 @@ export default <P extends object>(
       }
     }
 
+    setUserContext({ account }: any) {
+      const { setUserValues } = this.context;
+      const token = getAuthToken();
+      setUserValues({ account, token });
+    }
+
     render() {
       let newProps = {...this.props};
       const token = getAuthToken();
@@ -56,6 +63,7 @@ export default <P extends object>(
           query={ACCOUNT}
           variables={{ token }}
           skip={skipAuth}
+          onCompleted={this.setUserContext}
         >
           {({ loading, data, error }) => {
             if (error) {
@@ -75,9 +83,7 @@ export default <P extends object>(
                 indicator={LoadingIcon}
                 spinning={loading}
               >
-                <UserProvider value={{...newProps}}>
-                  <ComposedComponent {...newProps as P} />
-                </UserProvider>
+                <ComposedComponent {...newProps as P} />
               </Spin>
             );
         }}
@@ -85,5 +91,8 @@ export default <P extends object>(
       );
     }
   }
+
+  RequireAuth.contextType = UserContext;
+
   return RequireAuth;
 };

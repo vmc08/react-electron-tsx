@@ -1,5 +1,7 @@
 import React, { createContext } from 'react';
 
+import { getDefaultSelectedKeys, getSidenavState, setSidenavState } from '../utils/navUtils';
+
 export interface ISelectedKeys {
   itemKey: string,
   subMenuKey?: string | null
@@ -16,11 +18,8 @@ class SidenavProvider extends React.Component<{}, ISidenavProviderState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      collapsed: false,
-      selectedKeys: {
-        itemKey: 'dashboard',
-        subMenuKey: null,
-      },
+      collapsed: getSidenavState(),
+      selectedKeys: getDefaultSelectedKeys(),
     };
     this.toggleCollapse = this.toggleCollapse.bind(this);
     this.setSelectedKeys = this.setSelectedKeys.bind(this);
@@ -29,7 +28,9 @@ class SidenavProvider extends React.Component<{}, ISidenavProviderState> {
   toggleCollapse() {
     this.setState((prevState: ISidenavProviderState) => ({
       collapsed: !prevState.collapsed,
-    }));
+    }), () => {
+      setSidenavState(this.state.collapsed);
+    });
   }
 
   setSelectedKeys(selectedKeys: ISelectedKeys) {

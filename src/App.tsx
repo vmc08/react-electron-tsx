@@ -3,11 +3,20 @@ import { Switch, Route } from 'react-router-dom';
 import routes from './config/routes';
 import FourOhFour from './pages/FourOhFour';
 
+import { UserProvider } from './contexts/UserContext';
 import { SidenavProvider } from './contexts/SidenavContext';
+
+const AppContextProviders = ({ children }: any) => (
+  <UserProvider>
+    <SidenavProvider>
+      {children}
+    </SidenavProvider>
+  </UserProvider>
+);
 
 const App = () => {
   return (
-    <SidenavProvider>
+    <AppContextProviders>
       <Switch>
         {routes.map(({ component: Component, exact, path, ...rest }) => (
           <Route
@@ -19,7 +28,7 @@ const App = () => {
         ))}
         <Route component={FourOhFour} />
       </Switch>
-    </SidenavProvider>
+    </AppContextProviders>
   );
 };
 
