@@ -5,6 +5,7 @@ import { Layout, Menu, Icon } from 'antd';
 import { navRoutes, INavRoute, INavGroup } from '../../utils/navUtils';
 import { slugify } from '../../utils/stringUtils';
 import SidenavContext, { ISelectedKeys } from '../../contexts/SidenavContext';
+import logo from '../../assets/images/logo.png';
 
 const { Sider } = Layout;
 const { SubMenu, ItemGroup } = Menu;
@@ -20,8 +21,10 @@ const StyledSider = styled(Sider)`
 
 const StyledLogo = styled.div`
   height: 32px;
-  background: rgba(0, 0, 0, 0.2);
   margin: 16px;
+  background-image: ${(props: { src: string }) => `url${props.src}`};
+  background-size: contain;
+  background-repeat: no-repeat;
 `;
 
 class AppSidenav extends React.Component<RouteComponentProps> {
@@ -51,7 +54,7 @@ class AppSidenav extends React.Component<RouteComponentProps> {
         collapsed={collapsed}
         width={256}
       >
-        <StyledLogo />
+        <StyledLogo src={logo} />
         <Menu
           defaultOpenKeys={[subMenuKeyContext]}
           defaultSelectedKeys={[itemKeyContext]}

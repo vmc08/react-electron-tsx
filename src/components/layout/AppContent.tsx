@@ -6,7 +6,7 @@ const { Content, Footer } = Layout;
 export default ({ children }: { children: React.ComponentClass }) => {
   return (
     <>
-      <Content style={{ margin: '0 16px' }}>
+      <Content style={{ margin: '0 24px' }}>
         <Breadcrumb style={{ margin: '16px 0' }}>
           <Breadcrumb.Item>User</Breadcrumb.Item>
           <Breadcrumb.Item>Bill</Breadcrumb.Item>

@@ -12,7 +12,7 @@ const AppLayout = (props: any) => {
     <Layout style={{ minHeight: '100vh' }}>
       <AppSideNav />
       <Layout>
-        <Header style={{ background: '#fff', padding: '0 16px' }}>
+        <Header style={{ background: '#fff', padding: '0 24px' }}>
           <SidenavConsumer>
             {({ toggleCollapse, collapsed }: any) => (
               <Icon
