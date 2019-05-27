@@ -2,8 +2,10 @@ import React from 'react';
 import { Layout, Icon } from 'antd';
 import { SidenavConsumer } from '../../contexts/SidenavContext';
 
+const { Content, Footer } = Layout;
+
 import AppSideNav from './AppSidenav';
-import AppContent from './AppContent';
+import AppBreadcrumb from './AppBreadcrumb';
 
 const { Header } = Layout;
 
@@ -23,9 +25,11 @@ const AppLayout = (props: any) => {
             )}
           </SidenavConsumer>
         </Header>
-        <AppContent>
+        <Content style={{ margin: '0 24px' }}>
+          <AppBreadcrumb />
           {props.children}
-        </AppContent>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>Reitscreener Admin ©2019</Footer>
       </Layout>
     </Layout>
   );

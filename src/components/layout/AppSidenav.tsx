@@ -5,7 +5,9 @@ import { Layout, Menu, Icon } from 'antd';
 import { navRoutes, INavRoute, INavGroup } from '../../utils/navUtils';
 import { slugify } from '../../utils/stringUtils';
 import SidenavContext, { ISelectedKeys } from '../../contexts/SidenavContext';
-import logo from '../../assets/images/logo.png';
+
+import logoLight from '../../assets/images/logo.png';
+import logoCollapsed from '../../assets/images/logo-collapsed.png';
 
 const { Sider } = Layout;
 const { SubMenu, ItemGroup } = Menu;
@@ -19,12 +21,22 @@ const StyledSider = styled(Sider)`
   }
 `;
 
+interface IStyledLogoProp {
+  src: string,
+  collapsed: boolean
+}
+
 const StyledLogo = styled.div`
+  cursor: pointer;
   height: 32px;
   margin: 16px;
-  background-image: ${(props: { src: string }) => `url${props.src}`};
+  background-image: ${(props: IStyledLogoProp) => `url(${props.src})`};
   background-size: contain;
   background-repeat: no-repeat;
+  background-position: center;
+  background-position: ${(props: IStyledLogoProp) => {
+    return props.collapsed ? 'center' : 'inherit';
+  }};
 `;
 
 class AppSidenav extends React.Component<RouteComponentProps> {
@@ -46,6 +58,7 @@ class AppSidenav extends React.Component<RouteComponentProps> {
   render() {
     const { collapsed, selectedKeys } = this.context;
     const { itemKey: itemKeyContext, subMenuKey: subMenuKeyContext } = selectedKeys;
+    const brandLogo = collapsed ? logoCollapsed : logoLight;
     return (
       <StyledSider
         trigger={null}
@@ -54,7 +67,13 @@ class AppSidenav extends React.Component<RouteComponentProps> {
         collapsed={collapsed}
         width={256}
       >
-        <StyledLogo src={logo} />
+        <StyledLogo
+          src={brandLogo}
+          collapsed={collapsed}
+          onClick={() => {
+            this.changeRoute('/', { itemKey: 'dashboard' });
+          }}
+        />
         <Menu
           defaultOpenKeys={[subMenuKeyContext]}
           defaultSelectedKeys={[itemKeyContext]}
