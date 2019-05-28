@@ -29,7 +29,7 @@ const AppLayout = (props: any) => {
           <AppBreadcrumb />
           {props.children}
         </Content>
-        <Footer style={{ textAlign: 'center' }}>Reitscreener Admin ©2019</Footer>
+        <Footer style={{ textAlign: 'center' }}>Reitscreener ©2019</Footer>
       </Layout>
     </Layout>
   );

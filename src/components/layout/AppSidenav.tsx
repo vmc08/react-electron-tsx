@@ -6,7 +6,7 @@ import { navRoutes, INavRoute, INavGroup } from '../../utils/navUtils';
 import { slugify } from '../../utils/stringUtils';
 import SidenavContext, { ISelectedKeys } from '../../contexts/SidenavContext';
 
-import logoLight from '../../assets/images/logo.png';
+import logoLight from '../../assets/images/logo-light.png';
 import logoCollapsed from '../../assets/images/logo-collapsed.png';
 
 const { Sider } = Layout;
@@ -26,14 +26,13 @@ interface IStyledLogoProp {
   collapsed: boolean
 }
 
-const StyledLogo = styled.div`
+const StyledBrandLogo = styled.div`
   cursor: pointer;
   height: 32px;
   margin: 16px;
   background-image: ${(props: IStyledLogoProp) => `url(${props.src})`};
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: center;
   background-position: ${(props: IStyledLogoProp) => {
     return props.collapsed ? 'center' : 'inherit';
   }};
@@ -67,7 +66,7 @@ class AppSidenav extends React.Component<RouteComponentProps> {
         collapsed={collapsed}
         width={256}
       >
-        <StyledLogo
+        <StyledBrandLogo
           src={brandLogo}
           collapsed={collapsed}
           onClick={() => {

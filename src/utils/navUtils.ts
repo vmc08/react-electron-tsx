@@ -18,6 +18,38 @@ export const navRoutes = [{
   iconType: 'appstore',
   label: 'Dashboard',
 }, {
+  path: '/chart',
+  iconType: 'line-chart',
+  label: 'Chart',
+}, {
+  path: '/reits',
+  iconType: 'bank',
+  label: 'REITs',
+}, {
+  path: '/portfolio',
+  iconType: 'dollar',
+  label: 'Portfolio',
+}, {
+  path: '/watchlist',
+  iconType: 'eye',
+  label: 'Watchlist',
+}, {
+  path: '/insights',
+  iconType: 'bulb',
+  label: 'Insights',
+}, {
+  path: '/transactions',
+  iconType: 'transaction',
+  label: 'Transactions',
+}, {
+  path: '/market-briefs',
+  iconType: 'solution',
+  label: 'Market Briefs',
+}, {
+  path: '/training',
+  iconType: 'team',
+  label: 'Training',
+}, {
   iconType: 'book',
   label: 'API Documentation',
   groups: [{
@@ -25,6 +57,15 @@ export const navRoutes = [{
     items: [{
       path: '/documentation/user/account',
       label: 'Account',
+    }, {
+      path: '/documentation/user/account',
+      label: 'Account1',
+    }, {
+      path: '/documentation/user/account',
+      label: 'Account2',
+    }, {
+      path: '/documentation/user/account',
+      label: 'Account3',
     }],
   }],
 }];

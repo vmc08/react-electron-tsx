@@ -15,6 +15,7 @@ const AppContextProviders = ({ children }: any) => (
 );
 
 const App = () => {
+  console.log(process.env);
   return (
     <AppContextProviders>
       <Switch>
