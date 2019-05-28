@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 import routes from './config/routes';
 import FourOhFour from './pages/FourOhFour';
 
@@ -15,7 +15,6 @@ const AppContextProviders = ({ children }: any) => (
 );
 
 const App = () => {
-  console.log(process.env);
   return (
     <AppContextProviders>
       <Switch>
@@ -24,7 +23,7 @@ const App = () => {
             key={path}
             path={path}
             exact={exact}
-            render={(props) => <Component {...props} {...rest} />}
+            render={(props: RouteComponentProps) => <Component {...props} {...rest} />}
           />
         ))}
         <Route component={FourOhFour} />

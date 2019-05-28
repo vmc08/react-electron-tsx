@@ -12,7 +12,6 @@
     "@types/node": "11.13.4",
     "@types/react": "16.8.13",
     "@types/react-dom": "16.8.4",
-    "@types/react-router-dom": "^4.3.2",
     "@types/styled-components": "^4.1.14",
     "@types/yup": "^0.26.13",
     "antd": "^3.16.3",
@@ -36,7 +35,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "tsc react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3000 && electron .\""
@@ -51,6 +50,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/react-router-dom": "^4.3.3",
     "cross-env": "^5.2.0",
     "tslint": "^5.15.0"
   }
