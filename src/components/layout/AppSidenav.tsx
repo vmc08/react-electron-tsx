@@ -5,6 +5,7 @@ import { Layout, Menu, Icon } from 'antd';
 import { navRoutes, INavRoute, INavGroup } from '../../utils/navUtils';
 import { slugify } from '../../utils/stringUtils';
 import SidenavContext, { ISelectedKeys } from '../../contexts/SidenavContext';
+import AppUserMenu from './AppUserMenu';
 
 import logoLight from '../../assets/images/logo-light.png';
 import logoCollapsed from '../../assets/images/logo-collapsed.png';
@@ -126,6 +127,7 @@ class AppSidenav extends React.Component<RouteComponentProps> {
             );
           })}
         </Menu>
+        <AppUserMenu {...selectedKeys} />
       </StyledSider>
     );
   }
