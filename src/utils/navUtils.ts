@@ -8,7 +8,7 @@ export interface INavGroup {
 
 export interface INavRoute {
   label: string,
-  path?: string | null | undefined,
+  path?: string,
   iconType?: string,
   groups?: INavGroup[]
 }
@@ -58,13 +58,13 @@ export const navRoutes = [{
       path: '/documentation/user/account',
       label: 'Account',
     }, {
-      path: '/documentation/user/account',
+      path: '/documentation/user/account1',
       label: 'Account1',
     }, {
-      path: '/documentation/user/account',
+      path: '/documentation/user/account2',
       label: 'Account2',
     }, {
-      path: '/documentation/user/account',
+      path: '/documentation/user/account3',
       label: 'Account3',
     }],
   }],
@@ -73,7 +73,7 @@ export const navRoutes = [{
 export const getDefaultSelectedKeys = (): ISelectedKeys => {
   let defaultKeys: ISelectedKeys = {
     itemKey: 'dashboard',
-    subMenuKey: null,
+    subMenuKey: undefined,
   };
   const { pathname } = window.location;
   navRoutes.map(({ path, label, groups }) => {
@@ -83,7 +83,7 @@ export const getDefaultSelectedKeys = (): ISelectedKeys => {
         items.map(({ label: itemLabel, path: itemPath }) => {
           const itemKey = slugify(itemLabel);
           if (itemPath === pathname) {
-            defaultKeys = { itemKey, subMenuKey };
+            defaultKeys = { itemKey, subMenuKey: subMenuKey || undefined };
           }
         });
       });

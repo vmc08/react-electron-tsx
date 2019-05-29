@@ -11,5 +11,7 @@ body {
 }
 
 .ant-menu-submenu-popup {
-  left: 85px !important;
+  background: transparent;
+  padding-bottom: 8px;
+  padding-left: 3px;
 }

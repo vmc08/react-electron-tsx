@@ -13,19 +13,20 @@ import logoCollapsed from '../../assets/images/logo-collapsed.png';
 const { Sider } = Layout;
 const { SubMenu, ItemGroup } = Menu;
 
-const StyledSider = styled(Sider)`
-  overflow: hidden;
-  height: 100vh;
-  border-right: 1px solid #e8e8e8;
-  &:hover {
-    overflow: auto;
-  }
-`;
-
 interface IStyledLogoProp {
   src: string,
   collapsed: boolean
 }
+
+const StyledSider = styled(Sider)`
+  overflow: hidden;
+  height: 100vh;
+  border-right: 1px solid #e8e8e8;
+  padding-bottom: 64px;
+  .ant-layout-sider-children {
+    overflow: auto;
+  }
+`;
 
 const StyledBrandLogo = styled.div`
   cursor: pointer;
@@ -39,6 +40,11 @@ const StyledBrandLogo = styled.div`
   }};
 `;
 
+const StyledMenu = styled(Menu)`
+  border-right: 0 !important;
+  width: calc(100% - 1px) !important;
+`;
+
 class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: number }> {
   constructor(props: RouteComponentProps) {
     super(props);
@@ -50,8 +56,8 @@ class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: 
   }
 
   changeRoute(
-    path: string | null | undefined,
     selectedKeys: ISelectedKeys,
+    path?: string,
   ) {
     const { history } = this.props;
     const { setSelectedKeys } = this.context;
@@ -87,14 +93,13 @@ class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: 
           src={brandLogo}
           collapsed={collapsed}
           onClick={() => {
-            this.changeRoute('/', { itemKey: 'dashboard' });
+            this.changeRoute({ itemKey: 'dashboard' }, '/');
           }}
         />
-        <Menu
+        <StyledMenu
           defaultOpenKeys={[subMenuKeyContext]}
           defaultSelectedKeys={[itemKeyContext]}
           mode="inline"
-          style={{ width: 'calc(100% - 1px)', borderRight: 0 }}
         >
           {navRoutes.map(({ label, path, groups, iconType }: INavRoute) => {
             if (groups && groups.length > 0) {
@@ -119,7 +124,7 @@ class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: 
                             <Menu.Item
                               key={itemKey}
                               onClick={() => {
-                                this.changeRoute(itemPath, { itemKey, subMenuKey });
+                                this.changeRoute({ itemKey, subMenuKey }, itemPath);
                               }}
                             >
                               <span>{itemLabel}</span>
@@ -135,17 +140,15 @@ class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: 
             return (
               <Menu.Item
                 key={slugify(label)}
-                onClick={() => this.changeRoute(path, { itemKey: slugify(label) })}
+                onClick={() => this.changeRoute({ itemKey: slugify(label) }, path)}
               >
                 <Icon type={iconType} />
                 <span>{label}</span>
               </Menu.Item>
             );
           })}
-        </Menu>
-        <div>
-          <AppUserMenu {...selectedKeys} />
-        </div>
+        </StyledMenu>
+        <AppUserMenu {...selectedKeys} collapsed={collapsed} />
       </StyledSider>
     );
   }

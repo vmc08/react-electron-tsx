@@ -2,7 +2,7 @@ import React, { createContext } from 'react';
 
 interface IUserContextState {
   account: any,
-  token: string | null | undefined
+  token: string | null
 }
 
 const UserContext = createContext({});
@@ -32,7 +32,7 @@ class UserProvider extends React.Component<{}, IUserContextState> {
       </UserContext.Provider>
     );
   }
-};
+}
 
 const UserConsumer = UserContext.Consumer;
 

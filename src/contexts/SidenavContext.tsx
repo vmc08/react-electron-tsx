@@ -4,7 +4,7 @@ import { getDefaultSelectedKeys, getSidenavState, setSidenavState } from '../uti
 
 export interface ISelectedKeys {
   itemKey: string,
-  subMenuKey?: string | null
+  subMenuKey?: string
 }
 
 interface ISidenavProviderState {
