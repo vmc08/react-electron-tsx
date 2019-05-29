@@ -39,10 +39,14 @@ const StyledBrandLogo = styled.div`
   }};
 `;
 
-class AppSidenav extends React.Component<RouteComponentProps> {
+class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: number }> {
   constructor(props: RouteComponentProps) {
     super(props);
+    this.state = {
+      collapsedWidth: 80,
+    };
     this.changeRoute = this.changeRoute.bind(this);
+    this.onBreakpoint = this.onBreakpoint.bind(this);
   }
 
   changeRoute(
@@ -55,17 +59,29 @@ class AppSidenav extends React.Component<RouteComponentProps> {
     history.push(path || '/');
   }
 
+  onBreakpoint(broken: boolean) {
+    if (broken) {
+      this.setState({ collapsedWidth: 0 });
+    } else {
+      this.setState({ collapsedWidth: 80 });
+    }
+  }
+
   render() {
+    const { collapsedWidth } = this.state;
     const { collapsed, selectedKeys } = this.context;
     const { itemKey: itemKeyContext, subMenuKey: subMenuKeyContext } = selectedKeys;
     const brandLogo = collapsed ? logoCollapsed : logoLight;
     return (
       <StyledSider
-        trigger={null}
-        theme="light"
         collapsible
-        collapsed={collapsed}
+        theme="light"
+        trigger={null}
         width={256}
+        collapsed={collapsed}
+        collapsedWidth={collapsedWidth}
+        breakpoint="sm"
+        onBreakpoint={this.onBreakpoint}
       >
         <StyledBrandLogo
           src={brandLogo}
@@ -127,7 +143,9 @@ class AppSidenav extends React.Component<RouteComponentProps> {
             );
           })}
         </Menu>
-        <AppUserMenu {...selectedKeys} />
+        <div>
+          <AppUserMenu {...selectedKeys} />
+        </div>
       </StyledSider>
     );
   }
