@@ -24,9 +24,7 @@ class AppLayout extends React.Component<IAppLayoutProps> {
     const { children, requireAuth } = this.props;
     const { account, token } = this.context;
     if (requireAuth && !(account && token)) {
-      return <React.Fragment>
-        {children}
-      </React.Fragment>;
+      return null;
     }
     return (
       <Layout style={{ minHeight: '100vh' }}>

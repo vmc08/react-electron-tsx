@@ -45,7 +45,7 @@ const StyledMenu = styled(Menu)`
   width: calc(100% - 1px) !important;
 `;
 
-class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: number }> {
+class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWidth: number }> {
   constructor(props: RouteComponentProps) {
     super(props);
     this.state = {
@@ -75,7 +75,7 @@ class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: 
 
   render() {
     const { collapsedWidth } = this.state;
-    const { collapsed, selectedKeys } = this.context;
+    const { collapsed, selectedKeys, setSelectedKeys } = this.context;
     const { itemKey: itemKeyContext, subMenuKey: subMenuKeyContext } = selectedKeys;
     const brandLogo = collapsed ? logoCollapsed : logoLight;
     return (
@@ -149,7 +149,11 @@ class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: 
             );
           })}
         </StyledMenu>
-        <AppUserMenu {...selectedKeys} changeRoute={this.changeRoute} />
+        <AppUserMenu
+          {...selectedKeys}
+          changeRoute={this.changeRoute}
+          setSelectedKeys={setSelectedKeys}
+        />
       </StyledSider>
     );
   }

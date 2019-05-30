@@ -9,7 +9,8 @@ import { deleteSidenavState } from '../../utils/navUtils';
 const { SubMenu, ItemGroup, Item } = Menu;
 
 interface IAppUserMenuProps extends ISelectedKeys, RouteComponentProps {
-  changeRoute: (selectedKeys: { itemKey: string }, path: string) => {}
+  changeRoute: (selectedKeys: { itemKey: string }, path: string) => {},
+  setSelectedKeys: (selectedKeys: ISelectedKeys) => {}
 }
 
 const StyledMenu = styled(Menu)`
@@ -47,9 +48,10 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
   }
 
   logoutSession() {
-    const { history } = this.props;
+    const { history, setSelectedKeys } = this.props;
     deleteAuthToken();
     deleteSidenavState();
+    setSelectedKeys({ itemKey: 'dashboard' });
     history.replace('/login');
   }
 

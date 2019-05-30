@@ -82,6 +82,7 @@ export default <P extends object>(
                 tip="Loading..."
                 indicator={LoadingIcon}
                 spinning={loading}
+                style={{ minHeight: 400 }}
               >
                 <ComposedComponent {...newProps as P} />
               </Spin>

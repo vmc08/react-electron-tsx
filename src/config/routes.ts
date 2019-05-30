@@ -10,7 +10,7 @@ const routes = [
     path: '/login',
   },
   {
-    component: RequireAuth(Dashboard),
+    component: RequireAuth(Dashboard, false),
     exact: true,
     path: '/',
   },
