@@ -1,8 +1,16 @@
 import RequireAuth from '../HOC/RequireAuth';
 
-import Dashboard from '../pages/Dashboard';
-import Documentation from '../pages/Documentation';
 import Login from '../pages/Login';
+import Dashboard from '../pages/Dashboard';
+import Chart from '../pages/Chart';
+import Reits from '../pages/Reits';
+import Portfolio from '../pages/Portfolio';
+import Watchlist from '../pages/Watchlist';
+import Insights from '../pages/Insights';
+import Transactions from '../pages/Transactions';
+import MarketBriefs from '../pages/MarketBriefs';
+import Training from '../pages/Training';
+import Documentation from '../pages/Documentation';
 
 const routes = [
   {
@@ -15,8 +23,40 @@ const routes = [
     path: '/',
   },
   {
+    component: RequireAuth(Chart, false),
+    path: '/chart',
+  },
+  {
+    component: RequireAuth(Reits, false),
+    path: '/reits',
+  },
+  {
+    component: RequireAuth(Portfolio),
+    path: '/portfolio',
+  },
+  {
+    component: RequireAuth(Watchlist),
+    path: '/watchlist',
+  },
+  {
+    component: RequireAuth(Insights, false),
+    path: '/insights',
+  },
+  {
+    component: RequireAuth(Transactions, false),
+    path: '/transactions',
+  },
+  {
+    component: RequireAuth(MarketBriefs, false),
+    path: '/market-briefs',
+  },
+  {
+    component: RequireAuth(Training),
+    path: '/training',
+  },
+  {
     component: RequireAuth(Documentation),
-    path: '/documentation/user/account',
+    path: '/documentation/:group/:api',
   },
 ];
 

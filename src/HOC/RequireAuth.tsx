@@ -8,6 +8,10 @@ import { IAccount } from '../apollo/types/graphql-types';
 
 import UserContext from '../contexts/UserContext';
 
+const redirectToDashboardPaths = [
+  '/login',
+];
+
 interface IQueryVariables {
   token: string
 }
@@ -37,7 +41,10 @@ export default <P extends object>(
     redirectToHome() {
       if (isLoggedIn()) {
         const { history } = this.props;
-        history.replace('/');
+        const { pathname } = window.location;
+        if (redirectToDashboardPaths.includes(pathname)) {
+          history.replace('/');
+        }
       }
     }
 
