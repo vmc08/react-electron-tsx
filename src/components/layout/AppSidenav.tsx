@@ -99,6 +99,7 @@ class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: 
         <StyledMenu
           defaultOpenKeys={[subMenuKeyContext]}
           defaultSelectedKeys={[itemKeyContext]}
+          selectedKeys={[itemKeyContext]}
           mode="inline"
         >
           {navRoutes.map(({ label, path, groups, iconType }: INavRoute) => {
@@ -148,7 +149,7 @@ class AppSidenav extends React.Component<RouteComponentProps, { collapsedWidth: 
             );
           })}
         </StyledMenu>
-        <AppUserMenu {...selectedKeys} collapsed={collapsed} />
+        <AppUserMenu {...selectedKeys} changeRoute={this.changeRoute} />
       </StyledSider>
     );
   }

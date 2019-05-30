@@ -1,13 +1,15 @@
 import React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import { Menu, Icon } from 'antd';
 import { ISelectedKeys } from '../../contexts/SidenavContext';
+import { deleteAuthToken } from '../../utils/authUtils';
+import { deleteSidenavState } from '../../utils/navUtils';
 
-const { SubMenu, ItemGroup } = Menu;
+const { SubMenu, ItemGroup, Item } = Menu;
 
-interface IAppUserMenuProps extends ISelectedKeys {
-  collapsed: boolean,
-  subMenuKey: string
+interface IAppUserMenuProps extends ISelectedKeys, RouteComponentProps {
+  changeRoute: (selectedKeys: { itemKey: string }, path: string) => {}
 }
 
 const StyledMenu = styled(Menu)`
@@ -34,17 +36,29 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
+const StyledMenuItem = styled(Item)`
+  padding: 0 28px !important;
+`;
+
 class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
   constructor(props: IAppUserMenuProps) {
     super(props);
+    this.logoutSession = this.logoutSession.bind(this);
+  }
+
+  logoutSession() {
+    const { history } = this.props;
+    deleteAuthToken();
+    deleteSidenavState();
+    history.replace('/login');
   }
 
   render() {
-    const { itemKey, subMenuKey, collapsed } = this.props;
+    const { itemKey, changeRoute } = this.props;
     return (
       <StyledMenu
-        defaultOpenKeys={[subMenuKey]}
         defaultSelectedKeys={[itemKey]}
+        selectedKeys={[itemKey]}
       >
         <SubMenu
           className="user-menu"
@@ -59,9 +73,32 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
             </span>
           }
         >
-          <ItemGroup title="Professional" key="group-user">
-            <Menu.Item key="x5">Option 5</Menu.Item>
-            <Menu.Item key="x6">Option 6</Menu.Item>
+          <ItemGroup title="Professional Plan" key="group-user">
+            <StyledMenuItem
+              disabled={false}
+              onClick={() => {
+                window.open('https://help.reitscreener.com', '_blank');
+              }}
+            >
+              <Icon type="question" />
+              <span>Knowledge Base</span>
+            </StyledMenuItem>
+            <StyledMenuItem
+              key="account-settings"
+              onClick={() => {
+                changeRoute({ itemKey: 'account-settings' }, '/account/settings');
+              }}
+            >
+              <Icon type="setting" />
+              <span>Settings</span>
+            </StyledMenuItem>
+            <StyledMenuItem
+              key="logout"
+              onClick={this.logoutSession}
+            >
+              <Icon type="logout" />
+              <span>Sign Out</span>
+            </StyledMenuItem>
           </ItemGroup>
         </SubMenu>
       </StyledMenu>
@@ -69,4 +106,4 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
   }
 }
 
-export default AppUserMenu;
+export default withRouter(AppUserMenu);

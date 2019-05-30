@@ -23,7 +23,7 @@ const App = () => {
             key={path}
             path={path}
             exact={exact}
-            render={(props: RouteComponentProps) => <Component {...props} {...rest} />}
+            render={(props: RouteComponentProps & any) => <Component {...props} {...rest} />}
           />
         ))}
         <Route component={FourOhFour} />

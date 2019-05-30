@@ -55,7 +55,7 @@ export default <P extends object>(
     }
 
     render() {
-      let newProps = {...this.props};
+      let newProps = {...this.props, requireAuth};
       const token = getAuthToken();
       const skipAuth = !isLoggedIn();
       return (
@@ -74,7 +74,7 @@ export default <P extends object>(
             }
             if (data) {
               const { account } = data;
-              newProps = {...this.props, account, token};
+              newProps = {...this.props, account, token, requireAuth};
             }
             return (
               <Spin

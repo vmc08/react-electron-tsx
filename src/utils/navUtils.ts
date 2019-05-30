@@ -57,15 +57,6 @@ export const navRoutes = [{
     items: [{
       path: '/documentation/user/account',
       label: 'Account',
-    }, {
-      path: '/documentation/user/account1',
-      label: 'Account1',
-    }, {
-      path: '/documentation/user/account2',
-      label: 'Account2',
-    }, {
-      path: '/documentation/user/account3',
-      label: 'Account3',
     }],
   }],
 }];
