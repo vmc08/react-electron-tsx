@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
-import { Layout, Menu, Icon, Button } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 import { navRoutes, INavRoute, INavGroup, getDefaultSelectedKeys } from '../../utils/navUtils';
 import { slugify } from '../../utils/stringUtils';
 import SidenavContext, { ISelectedKeys } from '../../contexts/SidenavContext';
@@ -62,9 +62,9 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
 
   syncActiveSidenav() {
     const { setSelectedKeys, selectedKeys } = this.context;
-    const derivedSelectedKeys = getDefaultSelectedKeys();
+    const derivedSelectedKeys = getDefaultSelectedKeys(navRoutes);
     if (JSON.stringify(selectedKeys) !== JSON.stringify(derivedSelectedKeys)) {
-      setSelectedKeys(getDefaultSelectedKeys());
+      setSelectedKeys(getDefaultSelectedKeys(navRoutes));
     }
   }
 
@@ -163,7 +163,7 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
           })}
         </StyledMenu>
         <AppUserMenu
-          {...selectedKeys}
+          collapsed={collapsed}
           changeRoute={this.changeRoute}
           setSelectedKeys={setSelectedKeys}
         />

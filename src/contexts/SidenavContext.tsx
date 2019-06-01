@@ -1,6 +1,11 @@
 import React, { createContext, useContext } from 'react';
 
-import { getDefaultSelectedKeys, getSidenavState, setSidenavState } from '../utils/navUtils';
+import {
+  getDefaultSelectedKeys,
+  getSidenavState,
+  setSidenavState,
+  navRoutes,
+} from '../utils/navUtils';
 
 export interface ISelectedKeys {
   itemKey?: string,
@@ -19,7 +24,7 @@ class SidenavProvider extends React.Component<{}, ISidenavProviderState> {
     super(props);
     this.state = {
       collapsed: getSidenavState(),
-      selectedKeys: getDefaultSelectedKeys(),
+      selectedKeys: getDefaultSelectedKeys(navRoutes),
     };
     this.toggleCollapse = this.toggleCollapse.bind(this);
     this.setSelectedKeys = this.setSelectedKeys.bind(this);

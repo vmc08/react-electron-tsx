@@ -8,9 +8,11 @@ export interface INavGroup {
 
 export interface INavRoute {
   label: string,
+  externalLink?: string,
   path?: string,
   iconType?: string,
-  groups?: INavGroup[]
+  groups?: INavGroup[],
+  customAction?: boolean
 }
 
 export const navRoutes = [{
@@ -61,13 +63,27 @@ export const navRoutes = [{
   }],
 }];
 
-export const getDefaultSelectedKeys = (): ISelectedKeys => {
+export const userRoutes = [{
+  iconType: 'global',
+  externalLink: 'https://help.reitscreener.com',
+  label: 'Knowledge Base',
+}, {
+  path: '/account/settings',
+  iconType: 'setting',
+  label: 'Settings',
+}, {
+  customAction: true,
+  iconType: 'logout',
+  label: 'Sign Out',
+}];
+
+export const getDefaultSelectedKeys = (navSource: INavRoute[]): ISelectedKeys => {
   let defaultKeys: ISelectedKeys = {
     itemKey: undefined,
     subMenuKey: undefined,
   };
   const { pathname } = window.location;
-  navRoutes.map(({ path, label, groups }) => {
+  navSource.map(({ path, label, groups }) => {
     if (groups && groups.length > 0) {
       const subMenuKey = getSidenavState() ? null : `sub-${slugify(label)}`;
       groups.map(({ items }) => {

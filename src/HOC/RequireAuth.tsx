@@ -6,7 +6,7 @@ import { isLoggedIn, getAuthToken } from '../utils/authUtils';
 import { ACCOUNT } from '../apollo/queries/user';
 import { IAccount } from '../apollo/types/graphql-types';
 
-import UserContext from '../contexts/UserContext';
+import { UserProvider } from '../contexts/UserContext';
 
 const redirectToDashboardPaths = [
   '/login',
@@ -29,7 +29,6 @@ export default <P extends object>(
   class RequireAuth extends React.Component<P & RouteComponentProps> {
     constructor(props: P & RouteComponentProps) {
       super(props);
-      this.setUserContext = this.setUserContext.bind(this);
       this.redirectToHome = this.redirectToHome.bind(this);
       this.redirectToLogin = this.redirectToLogin.bind(this);
     }
@@ -55,12 +54,6 @@ export default <P extends object>(
       }
     }
 
-    setUserContext({ account }: any) {
-      const { setUserValues } = this.context;
-      const token = getAuthToken();
-      setUserValues({ account, token });
-    }
-
     render() {
       let newProps = {...this.props, requireAuth};
       const token = getAuthToken();
@@ -70,7 +63,6 @@ export default <P extends object>(
           query={ACCOUNT}
           variables={{ token }}
           skip={skipAuth}
-          onCompleted={this.setUserContext}
         >
           {({ loading, data, error }) => {
             if (error) {
@@ -84,23 +76,22 @@ export default <P extends object>(
               newProps = {...this.props, account, token, requireAuth};
             }
             return (
-              <Spin
-                size="large"
-                tip="Loading..."
-                indicator={LoadingIcon}
-                spinning={loading}
-                style={{ minHeight: 400 }}
-              >
-                <ComposedComponent {...newProps as P} />
-              </Spin>
+              <UserProvider value={newProps}>
+                <Spin
+                  size="large"
+                  tip="Loading..."
+                  indicator={LoadingIcon}
+                  spinning={loading}
+                  style={{ minHeight: 400 }}
+                >
+                  <ComposedComponent {...newProps as P} />
+                </Spin>
+              </UserProvider>
             );
         }}
         </Query>
       );
     }
   }
-
-  RequireAuth.contextType = UserContext;
-
   return RequireAuth;
 };

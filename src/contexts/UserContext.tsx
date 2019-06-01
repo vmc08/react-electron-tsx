@@ -1,33 +1,12 @@
 import React, { createContext, useContext } from 'react';
 
-interface IUserContextState {
-  account: any,
-  token: string | null
-}
-
 const UserContext = createContext({});
 
-class UserProvider extends React.Component<{}, IUserContextState> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      account: null,
-      token: null,
-    };
-    this.setUserValues = this.setUserValues.bind(this);
-  }
-
-  setUserValues(userValues: IUserContextState) {
-    const { account: accountState } = this.state;
-    if (!accountState) {
-      this.setState(userValues);
-    }
-  }
-
+class UserProvider extends React.Component<{ value: any }> {
   render() {
-    const { setUserValues, state } = this;
+    const { value: { account, token } } = this.props;
     return (
-      <UserContext.Provider value={{ ...state, setUserValues }}>
+      <UserContext.Provider value={{ account, token }}>
         {this.props.children}
       </UserContext.Provider>
     );
