@@ -63,7 +63,7 @@ export const navRoutes = [{
 
 export const getDefaultSelectedKeys = (): ISelectedKeys => {
   let defaultKeys: ISelectedKeys = {
-    itemKey: 'dashboard',
+    itemKey: undefined,
     subMenuKey: undefined,
   };
   const { pathname } = window.location;

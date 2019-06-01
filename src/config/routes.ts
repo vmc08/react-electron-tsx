@@ -11,6 +11,7 @@ import Transactions from '../pages/Transactions';
 import MarketBriefs from '../pages/MarketBriefs';
 import Training from '../pages/Training';
 import Documentation from '../pages/Documentation';
+import Settings from '../pages/Settings';
 
 const routes = [
   {
@@ -57,6 +58,10 @@ const routes = [
   {
     component: RequireAuth(Documentation),
     path: '/documentation/:group/:api',
+  },
+  {
+    component: RequireAuth(Settings),
+    path: '/account/settings',
   },
 ];
 

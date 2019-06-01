@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useContext } from 'react';
 
 interface IUserContextState {
   account: any,
@@ -36,6 +36,8 @@ class UserProvider extends React.Component<{}, IUserContextState> {
 
 const UserConsumer = UserContext.Consumer;
 
-export { UserProvider, UserConsumer };
+const useUserContextValue = () => useContext(UserContext);
+
+export { UserProvider, UserConsumer, useUserContextValue };
 
 export default UserContext;

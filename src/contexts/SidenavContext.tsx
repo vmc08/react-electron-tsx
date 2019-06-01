@@ -1,9 +1,9 @@
-import React, { createContext } from 'react';
+import React, { createContext, useContext } from 'react';
 
 import { getDefaultSelectedKeys, getSidenavState, setSidenavState } from '../utils/navUtils';
 
 export interface ISelectedKeys {
-  itemKey: string,
+  itemKey?: string,
   subMenuKey?: string
 }
 
@@ -52,6 +52,8 @@ class SidenavProvider extends React.Component<{}, ISidenavProviderState> {
 
 const SidenavConsumer = SidenavContext.Consumer;
 
-export { SidenavProvider, SidenavConsumer };
+const useSidenavContextValue = () => useContext(SidenavContext);
+
+export { SidenavProvider, SidenavConsumer, useSidenavContextValue };
 
 export default SidenavContext;
