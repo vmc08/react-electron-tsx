@@ -10,6 +10,7 @@ import { UserProvider } from '../contexts/UserContext';
 
 const redirectToDashboardPaths = [
   '/login',
+  '/register',
 ];
 
 interface IQueryVariables {

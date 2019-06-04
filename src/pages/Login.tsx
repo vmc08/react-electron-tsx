@@ -1,14 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { Card, Row, Col, Typography } from 'antd';
 
 import LoginForm from '../components/forms/auth/LoginForm';
 import logoLight from '../assets/images/logo-light.png';
 
+const { Title, Paragraph } = Typography;
+
 const LoginWrapper = styled.div`
   height: 100vh;
   display: flex;
-  align-items: center;
+  padding-top: 24px;
+  align-items: flex-start;
   justify-content: center;
   .ant-card {
     max-width: 650px;
@@ -17,22 +21,16 @@ const LoginWrapper = styled.div`
       padding: 0;
       .root-row {
         .root-col {
-          :not(.width-divider) {
-            display: flex;
-            flex-direction: column;
-            div.ant-typography {
-              flex-grow: 1;
-            }
-          }
           padding: 24px;
-          &.with-divider {
-            border-left: 1px solid rgb(232, 232, 232);
-            @media only screen and (max-width: 576px) {
-              border-left: none;
-            }
-            .ant-form-item:last-of-type {
-              margin-bottom: 0;
-            }
+          &:first-of-type {
+            padding-bottom: 12px;
+          }
+          h3 {
+            font-weight: 600;
+          }
+          .ant-typography {
+            margin-bottom: 0;
+            text-align: center;
           }
         }
       }
@@ -40,31 +38,40 @@ const LoginWrapper = styled.div`
   }
 `;
 
-const StyledBrandLogo = styled.div`
-  height: 32px;
-  background-image: url(${(props: { src: string }) => props.src});
-  background-size: contain;
-  background-repeat: no-repeat;
+const StyledBrandLogo = styled.img`
+  height: 42px;
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 24px;
+`;
+
+const StyledDiv = styled.div`
+  padding: '24px 12px';
 `;
 
 class Login extends React.Component {
   render() {
     return (
       <LoginWrapper>
-        <Card>
-          <Row className="root-row" type="flex">
-            <Col sm={12} md={10} className="root-col">
-              <Typography.Title level={4}>Log In</Typography.Title>
-              <Typography.Paragraph>
-                By Signing up, you can avail the features of our services.
-              </Typography.Paragraph>
-              <StyledBrandLogo src={logoLight} />
-            </Col>
-            <Col sm={12} md={14} className="root-col with-divider">
-              <LoginForm />
-            </Col>
-          </Row>
-        </Card>
+        <StyledDiv>
+          <StyledBrandLogo src={logoLight} alt="REITScreener" />
+          <Card>
+            <Row className="root-row" type="flex">
+              <Col xs={24} className="root-col">
+                <Title level={3}>Welcome back</Title>
+              </Col>
+              <Col xs={24} className="root-col">
+                <LoginForm />
+                <Paragraph>
+                  Don't have an account? <Link to="/register">Sign up for free</Link>
+                </Paragraph>
+                <Paragraph>
+                  Forgot your password? <Link to="/password/reset">Reset it</Link>
+                </Paragraph>
+              </Col>
+            </Row>
+          </Card>
+        </StyledDiv>
       </LoginWrapper>
     );
   }

@@ -1,5 +1,6 @@
 import RequireAuth from '../HOC/RequireAuth';
 
+import Register from '../pages/Register';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Chart from '../pages/Chart';
@@ -14,6 +15,10 @@ import Documentation from '../pages/Documentation';
 import Settings from '../pages/Settings';
 
 const routes = [
+  {
+    component: RequireAuth(Register, false),
+    path: '/register',
+  },
   {
     component: RequireAuth(Login, false),
     path: '/login',

@@ -57,6 +57,7 @@ const CreateAntField = (AntComponent: React.ComponentType<any>) => ({
         onBlur={onBlur}
         onChange={type ? onInputChange : onChange}
         disabled={disabled}
+        size="large"
       >
         {selectOptions && (
           selectOptions.map(({ name, value }) => <Option key={name} value={value}>{name}</Option>)

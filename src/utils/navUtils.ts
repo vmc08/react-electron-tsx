@@ -51,17 +51,19 @@ export const navRoutes = [{
   path: '/training',
   iconType: 'team',
   label: 'Training',
-}, {
-  iconType: 'book',
-  label: 'API Documentation',
-  groups: [{
-    title: 'User',
-    items: [{
-      path: '/documentation/user/account',
-      label: 'Account',
-    }],
-  }],
 }];
+
+// , {
+//   iconType: 'book',
+//   label: 'API Documentation',
+//   groups: [{
+//     title: 'User',
+//     items: [{
+//       path: '/documentation/user/account',
+//       label: 'Account',
+//     }],
+//   }],
+// }
 
 export const userRoutes = [{
   iconType: 'global',

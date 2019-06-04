@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Mutation } from 'react-apollo';
 import { Formik, Form, Field, FormikProps } from 'formik';
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import { Form as AntdForm, Icon, Checkbox, Button, Alert, message } from 'antd';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { Form as AntdForm, Icon, Button, Alert, message } from 'antd';
 
 import { LoginSchema } from '../validations';
 import { AntInput } from '../../AntDesignFields';
@@ -21,7 +21,7 @@ interface ILoginFormState {
 }
 
 const StyledIcon = styled(Icon)`
-  color: 'rgba(0,0,0,.25)';
+  color: 'rgba(0, 0, 0, .25)';
 `;
 
 class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
@@ -41,11 +41,10 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
 
   async onSubmit(values: any, loginMutation: any) {
     const { history } = this.props;
-    const { remember, ...rest } = values;
     this.setState({ isLoading: true });
     await loginMutation({
       variables: {
-        input: rest,
+        input: values,
       },
     })
     .then(({ data }: any) => {
@@ -88,17 +87,17 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
                 onSubmit={(values) => {
                   this.onSubmit(values, loginMutation);
                 }}
-                render={({ submitCount, errors, setFieldValue }: FormikProps<any>) => {
+                render={({ submitCount, errors }: FormikProps<any>) => {
                   return (
                     <Form>
                       <Field
                         component={AntInput}
                         name="username"
                         type="email"
-                        placeholder="Username"
+                        placeholder="Email address"
                         disabled={isLoading}
                         submitCount={submitCount}
-                        prefix={<StyledIcon type="user" />}
+                        prefix={<StyledIcon type="mail" />}
                       />
                       <Field
                         component={AntInput}
@@ -110,24 +109,15 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
                         prefix={<StyledIcon type="lock" />}
                       />
                       <AntdForm.Item>
-                        <Checkbox
-                          disabled={isLoading}
-                          name="remember"
-                          onChange={(e) => setFieldValue('remember', e.target.checked)}
-                        >
-                          Remember me
-                        </Checkbox>
-                        <Link className="float-right" to="/">
-                          Forgot password
-                        </Link>
                         <Button
                           block
                           type="primary"
                           htmlType="submit"
+                          size="large"
                           loading={isLoading}
                           disabled={isLoading || hasValidObjectValues(errors)}
                         >
-                          Log in
+                          Sign in
                         </Button>
                       </AntdForm.Item>
                     </Form>

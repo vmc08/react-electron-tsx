@@ -12,6 +12,7 @@ import {
   getDefaultSelectedKeys,
 } from '../../utils/navUtils';
 import { slugify } from '../../utils/stringUtils';
+import { customerPlans } from '../../utils/appDataUtils';
 
 const { SubMenu, ItemGroup, Item } = Menu;
 
@@ -34,13 +35,14 @@ const StyledMenu = styled(Menu)`
     font-weight: 600;
     span > sub {
       top: 32%;
-      right: 54%;
+      right: 48%;
       font-size: 12px;
       font-weight: normal;
       background: #1890ff;
       color: #fff;
       padding: 2px 8px;
       border-radius: 10px;
+      text-transform: uppercase;
     }
   }
 `;
@@ -116,17 +118,18 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
             <span>
               <Icon type="user" />
               <span>
-                hecatemilo@gmail.com
-                <sub>Professional Plan</sub>
+                {account.username}
+                <sub>{customerPlans[account.level]} Plan</sub>
               </span>
             </span>
           }
         >
-          <ItemGroup title="Professional Plan" key="group-user">
+          <ItemGroup title={`${customerPlans[account.level]} PLAN`} key="group-user">
             {userRoutes.map((userRoute: INavRoute, idx) => {
               const { label, customAction, path, iconType, externalLink } = userRoute;
               return (
                 <Item
+                  style={{ padding: '0 28px' }}
                   key={slugify(label || '/') || idx}
                   disabled={false}
                   onClick={() => {
