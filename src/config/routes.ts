@@ -1,5 +1,6 @@
 import RequireAuth from '../HOC/RequireAuth';
 
+import PasswordReset from '../pages/PasswordReset';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
@@ -15,6 +16,10 @@ import Documentation from '../pages/Documentation';
 import Settings from '../pages/Settings';
 
 const routes = [
+  {
+    component: RequireAuth(PasswordReset, false),
+    path: '/password-reset',
+  },
   {
     component: RequireAuth(Register, false),
     path: '/register',

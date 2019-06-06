@@ -5,11 +5,11 @@ import { Formik, Form, Field, FormikProps } from 'formik';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Form as AntdForm, Icon, Button, Alert, message } from 'antd';
 
-import { LoginSchema } from '../validations';
-import { AntInput } from '../../AntDesignFields';
-import { setAuthToken } from '../../../utils/authUtils';
-import { hasValidObjectValues } from '../../../utils/objectUtils';
-import { CREATE_ACCESS_TOKEN } from '../../../apollo/mutations/user';
+import { LoginSchema } from './validations';
+import { AntInput } from '../AntDesignFields';
+import { setAuthToken } from '../../utils/authUtils';
+import { hasValidObjectValues } from '../../utils/objectUtils';
+import { CREATE_ACCESS_TOKEN } from '../../apollo/mutations/user';
 
 interface ILoginFormState {
   isLoading: boolean,

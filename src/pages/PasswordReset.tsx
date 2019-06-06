@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Typography } from 'antd';
 
-import LoginForm from '../components/forms/LoginForm';
+import PasswordResetForm from '../components/forms/PasswordResetForm';
 import logoLight from '../assets/images/logo-light.png';
 
 const { Title, Paragraph } = Typography;
 
-const LoginWrapper = styled.div`
+const PasswordResetWrapper = styled.div`
   height: 100vh;
   display: flex;
   padding-top: 24px;
@@ -56,32 +56,32 @@ const StyledDiv = styled.div`
   padding: 24px 12px;
 `;
 
-class Login extends React.Component {
+class PasswordReset extends React.Component {
   render() {
     return (
-      <LoginWrapper>
+      <PasswordResetWrapper>
         <StyledDiv>
           <StyledBrandLogo src={logoLight} alt="REITScreener" />
           <Card>
             <Row className="root-row" type="flex">
               <Col xs={24} className="root-col">
-                <Title level={3}>Welcome back</Title>
+                <Title level={3}>Forgot your password?</Title>
+                <Paragraph strong>
+                  Just enter the email you used to sign up and we'll send you a link to reset it.
+                </Paragraph>
               </Col>
               <Col xs={24} className="root-col">
-                <LoginForm />
+                <PasswordResetForm />
                 <Paragraph>
-                  Don't have an account? <Link to="/register">Sign up for free</Link>
-                </Paragraph>
-                <Paragraph>
-                  Forgot your password? <Link to="/password-reset">Reset it</Link>
+                  You remember your password? <Link to="/login">Sign in here</Link>
                 </Paragraph>
               </Col>
             </Row>
           </Card>
         </StyledDiv>
-      </LoginWrapper>
+      </PasswordResetWrapper>
     );
   }
 }
 
-export default Login;
+export default PasswordReset;
