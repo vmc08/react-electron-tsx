@@ -1,5 +1,6 @@
 import RequireAuth from '../HOC/RequireAuth';
 
+import NewPassword from '../pages/NewPassword';
 import PasswordReset from '../pages/PasswordReset';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
@@ -17,12 +18,16 @@ import Settings from '../pages/Settings';
 
 const routes = [
   {
+    component: RequireAuth(NewPassword, false),
+    path: '/account/password/reset',
+  },
+  {
     component: RequireAuth(PasswordReset, false),
     path: '/password-reset',
   },
   {
     component: RequireAuth(Register, false),
-    path: '/register',
+    path: '/register/:affiliateId?',
   },
   {
     component: RequireAuth(Login, false),

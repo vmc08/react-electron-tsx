@@ -1,12 +1,12 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router-dom';
-import { Spin, Icon } from 'antd';
 import { isLoggedIn, getAuthToken } from '../utils/authUtils';
 import { ACCOUNT } from '../apollo/queries/user';
 import { IAccount } from '../apollo/types/graphql-types';
 
 import { UserProvider } from '../contexts/UserContext';
+import PageSpinner from '../components/spinners/PageSpinner';
 
 const redirectToDashboardPaths = [
   '/login',
@@ -20,8 +20,6 @@ interface IQueryVariables {
 interface IQueryData {
   account: IAccount
 }
-
-const LoadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 export default <P extends object>(
   ComposedComponent: React.ComponentType<P>,
@@ -78,15 +76,9 @@ export default <P extends object>(
             }
             return (
               <UserProvider value={newProps}>
-                <Spin
-                  size="large"
-                  tip="Loading..."
-                  indicator={LoadingIcon}
-                  spinning={loading}
-                  style={{ minHeight: 400 }}
-                >
+                <PageSpinner loading={loading}>
                   <ComposedComponent {...newProps as P} />
-                </Spin>
+                </PageSpinner>
               </UserProvider>
             );
         }}

@@ -1,12 +1,30 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { Query } from 'react-apollo';
+import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Card, Row, Col, Typography } from 'antd';
 
 import RegistrationForm from '../components/forms/RegistrationForm';
+import PageSpinner from '../components/spinners/PageSpinner';
 import logoLight from '../assets/images/logo-light.png';
+import { AFFILIATE } from '../apollo/queries/affiliate';
 
 const { Title, Paragraph } = Typography;
+
+interface IQueryVariables {
+  affiliateId: string,
+}
+
+interface IQueryData {
+  affiliate: {
+    affiliateId: string,
+    plan: string,
+    period: number,
+    years: number,
+    discount: number,
+  },
+}
 
 const RegisterWrapper = styled.div`
   height: 100vh;
@@ -56,31 +74,55 @@ const StyledDiv = styled.div`
   padding: 24px 12px;
 `;
 
-class Login extends React.Component {
+class Login extends React.Component<RouteComponentProps<{ affiliateId: string }>> {
   render() {
+    const { match: { params } } = this.props;
+    const { affiliateId } = params;
+    let affiliatePlan: string | ReactNode | undefined;
     return (
-      <RegisterWrapper>
-        <StyledDiv>
-          <StyledBrandLogo src={logoLight} alt="REITScreener" />
-          <Card>
-            <Row className="root-row" type="flex">
-              <Col xs={24} className="root-col">
-                <Title level={3}>Start with your free REITScreener account</Title>
-              </Col>
-              <Col xs={24} className="root-col">
-                <RegistrationForm />
-                <Paragraph>
-                  By registering you agree with the<br/>
-                  <Link to="/terms-and-conditions">Terms and Conditions</Link>
-                </Paragraph>
-                <Paragraph>
-                  Already have an account? <Link to="/login">Sign in</Link>
-                </Paragraph>
-              </Col>
-            </Row>
-          </Card>
-        </StyledDiv>
-      </RegisterWrapper>
+      <Query<IQueryData, IQueryVariables>
+        query={AFFILIATE}
+        variables={{ affiliateId }}
+        skip={!affiliateId}
+      >
+        {({ loading, data, error }) => {
+          if (error) {
+            return <Redirect to="/login?error=affiliateId" />;
+          }
+          if (data && !loading) {
+            const { affiliate: { plan } } = data;
+            affiliatePlan = <span style={{ textTransform: 'capitalize' }}>{plan} Trial</span>;
+          }
+          const titleText = (affiliateId && affiliatePlan) || loading ?
+            affiliatePlan : 'Start with your free REITScreener account';
+          return (
+            <PageSpinner loading={loading}>
+              <RegisterWrapper>
+                <StyledDiv>
+                  <StyledBrandLogo draggable={false} src={logoLight} alt="REITScreener" />
+                  <Card>
+                    <Row className="root-row" type="flex">
+                      <Col xs={24} className="root-col">
+                        <Title level={3}>{titleText}</Title>
+                      </Col>
+                      <Col xs={24} className="root-col">
+                        <RegistrationForm />
+                        <Paragraph>
+                          By registering you agree with the<br/>
+                          <Link to="/terms-and-conditions">Terms and Conditions</Link>
+                        </Paragraph>
+                        <Paragraph>
+                          Already have an account? <Link to="/login">Sign in</Link>
+                        </Paragraph>
+                      </Col>
+                    </Row>
+                  </Card>
+                </StyledDiv>
+              </RegisterWrapper>
+            </PageSpinner>
+          );
+        }}
+      </Query>
     );
   }
 }

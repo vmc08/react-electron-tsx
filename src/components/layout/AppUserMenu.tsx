@@ -34,15 +34,12 @@ const StyledMenu = styled(Menu)`
     display: flex;
     font-weight: 600;
     span > sub {
-      top: 32%;
-      right: 48%;
+      bottom: 35%;
       font-size: 12px;
       font-weight: normal;
-      background: #1890ff;
-      color: #fff;
-      padding: 2px 8px;
-      border-radius: 10px;
       text-transform: uppercase;
+      position: absolute;
+      left: 40px;
     }
   }
 `;

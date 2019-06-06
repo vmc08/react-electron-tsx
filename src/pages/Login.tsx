@@ -61,7 +61,7 @@ class Login extends React.Component {
     return (
       <LoginWrapper>
         <StyledDiv>
-          <StyledBrandLogo src={logoLight} alt="REITScreener" />
+          <StyledBrandLogo draggable={false} src={logoLight} alt="REITScreener" />
           <Card>
             <Row className="root-row" type="flex">
               <Col xs={24} className="root-col">

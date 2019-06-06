@@ -4,17 +4,17 @@ import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Typography } from 'antd';
 
-import PasswordResetForm from '../components/forms/PasswordResetForm';
+import NewPasswordForm from '../components/forms/NewPasswordForm';
 import logoLight from '../assets/images/logo-light.png';
-import mailSuccess from '../assets/images/mail-success.png';
+import keyImg from '../assets/images/key.png';
 
 const { Title, Paragraph } = Typography;
 
-interface IPasswordResetState {
-  emailSent: boolean,
+interface INewPasswordState {
+  doneReset: boolean,
 }
 
-const PasswordResetWrapper = styled.div`
+const NewPasswordWrapper = styled.div`
   height: 100vh;
   display: flex;
   padding-top: 24px;
@@ -72,54 +72,49 @@ const StyledDiv = styled.div`
   padding: 24px 12px;
 `;
 
-class PasswordReset extends React.Component<{}, IPasswordResetState> {
+class NewPassword extends React.Component<{}, INewPasswordState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      emailSent: false,
+      doneReset: false,
     };
-    this.resetPasswordCallback = this.resetPasswordCallback.bind(this);
+    this.doneResetPassswordCallback = this.doneResetPassswordCallback.bind(this);
   }
 
-  resetPasswordCallback(emailStatus: boolean) {
-    this.setState({ emailSent: emailStatus });
+  doneResetPassswordCallback(resetStatus: boolean) {
+    this.setState({ doneReset: resetStatus });
   }
 
   render() {
-    const { emailSent } = this.state;
-    const titleText = emailSent ? 'Mail sent successfully' : 'Forgot your password?';
-    const paragraphElement = emailSent ? (
+    const { doneReset } = this.state;
+    const titleText = doneReset ? 'Password has been changed' : 'Reset your password';
+    const paragraphElement = doneReset ? (
       <Paragraph strong>
-        A link has been generated and sent to your email.<br/>
         <Link to="/login">Go back to signin</Link>
       </Paragraph>
-    ) : (
-      <Paragraph strong>
-        Just enter the email you used to sign up and we'll send you a link to reset it.
-      </Paragraph>
-    );
+    ) : null;
 
-    const emailSentClass = cx({
+    const doneResetClass = cx({
       'root-col': true,
-      'max-padding': emailSent,
+      'max-padding': doneReset,
     });
 
     return (
-      <PasswordResetWrapper>
+      <NewPasswordWrapper>
         <StyledDiv>
           <StyledBrandLogo draggable={false} src={logoLight} alt="REITScreener" />
           <Card>
             <Row className="root-row" type="flex">
-              <Col xs={24} className={emailSentClass}>
-                {emailSent && (
-                  <StyledEmailImg src={mailSuccess} alt="Email sent" />
+              <Col xs={24} className={doneResetClass}>
+                {doneReset && (
+                  <StyledEmailImg src={keyImg} alt="Password changed" />
                 )}
                 <Title level={3}>{titleText}</Title>
                 {paragraphElement}
               </Col>
-              {!emailSent && (
+              {!doneReset && (
                 <Col xs={24} className="root-col">
-                  <PasswordResetForm resetPassswordCallback={this.resetPasswordCallback} />
+                  <NewPasswordForm doneResetPassswordCallback={this.doneResetPassswordCallback} />
                   <Paragraph>
                     You remember your password? <Link to="/login">Sign in here</Link>
                   </Paragraph>
@@ -128,9 +123,9 @@ class PasswordReset extends React.Component<{}, IPasswordResetState> {
             </Row>
           </Card>
         </StyledDiv>
-      </PasswordResetWrapper>
+      </NewPasswordWrapper>
     );
   }
 }
 
-export default PasswordReset;
+export default NewPassword;

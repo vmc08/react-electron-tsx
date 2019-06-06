@@ -7,3 +7,15 @@ export const CREATE_ACCESS_TOKEN = gql`
     }
   }
 `;
+
+export const REQUEST_RESET_PASSWORD = gql`
+  mutation RequestResetPassword ($input: RequestResetPasswordInput!) {
+    requestResetPassword(input: $input)
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+  mutation ResetPassword ($token: String!, $input: ResetPasswordInput!) {
+    resetPassword(token: $token, input: $input)
+  }
+`;

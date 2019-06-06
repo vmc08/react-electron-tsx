@@ -11,6 +11,10 @@ import { setAuthToken } from '../../utils/authUtils';
 import { hasValidObjectValues } from '../../utils/objectUtils';
 import { CREATE_ACCESS_TOKEN } from '../../apollo/mutations/user';
 
+const redirectErrors: { [key: string]: string; } = {
+  affiliateId: 'Invalid affiliate code',
+};
+
 interface ILoginFormState {
   isLoading: boolean,
   error: string | null,
@@ -29,14 +33,25 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
     super(props);
     this.state = {
       isLoading: false,
-      error: null,
+      error: this.getRedirectError(),
       user: {
         username: '',
         password: '',
       },
     };
     this.onSubmit = this.onSubmit.bind(this);
+    this.getRedirectError = this.getRedirectError.bind(this);
     this.onErrorClose = this.onErrorClose.bind(this);
+  }
+
+  getRedirectError() {
+    const { location } = this.props;
+    const queryParams = new URLSearchParams(location.search);
+    const errorKey = queryParams.get('error');
+    if (errorKey) {
+      return redirectErrors[errorKey];
+    }
+    return null;
   }
 
   async onSubmit(values: any, loginMutation: any) {
