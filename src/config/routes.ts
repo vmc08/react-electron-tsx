@@ -1,8 +1,10 @@
 import RequireAuth from '../HOC/RequireAuth';
 
+import RegisterQuiz from '../pages/RegisterQuiz';
+import RegisterVerification from '../pages/RegisterVerification';
+import Register from '../pages/Register';
 import NewPassword from '../pages/NewPassword';
 import PasswordReset from '../pages/PasswordReset';
-import Register from '../pages/Register';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Chart from '../pages/Chart';
@@ -18,16 +20,31 @@ import Settings from '../pages/Settings';
 
 const routes = [
   {
+    component: RequireAuth(RegisterQuiz, false),
+    exact: true,
+    path: '/register/quiz',
+  },
+  {
+    component: RequireAuth(RegisterVerification, false),
+    exact: true,
+    path: '/register/verify-email',
+  },
+  {
+    component: RequireAuth(Register, false),
+    path: '/register/trial/:affiliateId',
+  },
+  {
+    component: RequireAuth(Register, false),
+    exact: true,
+    path: '/register/user',
+  },
+  {
     component: RequireAuth(NewPassword, false),
     path: '/account/password/reset',
   },
   {
     component: RequireAuth(PasswordReset, false),
     path: '/password-reset',
-  },
-  {
-    component: RequireAuth(Register, false),
-    path: '/register/:affiliateId?',
   },
   {
     component: RequireAuth(Login, false),

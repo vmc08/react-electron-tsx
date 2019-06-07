@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Query } from 'react-apollo';
+import { Query, withApollo, graphql, compose } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -9,8 +9,14 @@ import RegistrationForm from '../components/forms/RegistrationForm';
 import PageSpinner from '../components/spinners/PageSpinner';
 import logoLight from '../assets/images/logo-light.png';
 import { AFFILIATE } from '../apollo/queries/affiliate';
+import { SEND_ONBOARDING_CODE } from '../apollo/mutations/user';
 
 const { Title, Paragraph } = Typography;
+
+interface IRegisterProps extends RouteComponentProps<any> {
+  affiliateId: string,
+  sendOnboardingCode: any,
+}
 
 interface IQueryVariables {
   affiliateId: string,
@@ -74,11 +80,16 @@ const StyledDiv = styled.div`
   padding: 24px 12px;
 `;
 
-class Login extends React.Component<RouteComponentProps<{ affiliateId: string }>> {
+class Login extends React.Component<IRegisterProps> {
+  constructor(props: IRegisterProps) {
+    super(props);
+  }
+
   render() {
-    const { match: { params } } = this.props;
+    const { match: { params }, sendOnboardingCode } = this.props;
     const { affiliateId } = params;
     let affiliatePlan: string | ReactNode | undefined;
+
     return (
       <Query<IQueryData, IQueryVariables>
         query={AFFILIATE}
@@ -106,7 +117,10 @@ class Login extends React.Component<RouteComponentProps<{ affiliateId: string }>
                         <Title level={3}>{titleText}</Title>
                       </Col>
                       <Col xs={24} className="root-col">
-                        <RegistrationForm />
+                        <RegistrationForm
+                          affiliateId={affiliateId}
+                          sendOnboardingCode={sendOnboardingCode}
+                        />
                         <Paragraph>
                           By registering you agree with the<br/>
                           <Link to="/terms-and-conditions">Terms and Conditions</Link>
@@ -127,4 +141,7 @@ class Login extends React.Component<RouteComponentProps<{ affiliateId: string }>
   }
 }
 
-export default Login;
+export default compose(
+  withApollo,
+  graphql(SEND_ONBOARDING_CODE, { name: 'sendOnboardingCode' }),
+)(Login);

@@ -7,7 +7,7 @@ import { Form as AntdForm, Icon, Button, Alert, message } from 'antd';
 
 import { LoginSchema } from './validations';
 import { AntInput } from '../AntDesignFields';
-import { setAuthToken } from '../../utils/authUtils';
+import { setAuthToken } from '../../utils/userUtils';
 import { hasValidObjectValues } from '../../utils/objectUtils';
 import { CREATE_ACCESS_TOKEN } from '../../apollo/mutations/user';
 

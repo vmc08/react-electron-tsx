@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Icon } from 'antd';
 import { useUserContextValue } from '../../contexts/UserContext';
 import { useSidenavContextValue } from '../../contexts/SidenavContext';
+import AccountVerifier from '../../HOC/AccountVerifier';
 
 const { Content, Footer } = Layout;
 
@@ -43,4 +44,4 @@ const AppLayout = (props: IAppLayoutProps) => {
   );
 };
 
-export default AppLayout;
+export default AccountVerifier<IAppLayoutProps>(AppLayout);

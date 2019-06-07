@@ -1,7 +1,7 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router-dom';
-import { isLoggedIn, getAuthToken } from '../utils/authUtils';
+import { isLoggedIn, getAuthToken } from '../utils/userUtils';
 import { ACCOUNT } from '../apollo/queries/user';
 import { IAccount } from '../apollo/types/graphql-types';
 
@@ -10,7 +10,8 @@ import PageSpinner from '../components/spinners/PageSpinner';
 
 const redirectToDashboardPaths = [
   '/login',
-  '/register',
+  '/password-reset',
+  '/account/password/reset',
 ];
 
 interface IQueryVariables {

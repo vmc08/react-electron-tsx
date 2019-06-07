@@ -19,3 +19,21 @@ export const RESET_PASSWORD = gql`
     resetPassword(token: $token, input: $input)
   }
 `;
+
+export const CREATE_ACCOUNT = gql`
+  mutation CreateAccount ($input: CreateAccountInput!, $affiliateId: String) {
+    createAccount(input: $input, affiliateId: $affiliateId) {
+      token
+      talk {
+        token
+        userId
+      }
+    }
+  }
+`;
+
+export const SEND_ONBOARDING_CODE = gql`
+  mutation SendOnboardingCode ($token: String!) {
+    sendOnboardingCode (token: $token)
+  }
+`;

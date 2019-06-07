@@ -5,4 +5,7 @@ export interface IAccount {
   lastname: string,
   created: string,
   level: number,
+  verified: boolean,
+  onboarded: boolean,
+  scored: boolean,
 }

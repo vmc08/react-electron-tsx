@@ -70,7 +70,7 @@ class Login extends React.Component {
               <Col xs={24} className="root-col">
                 <LoginForm />
                 <Paragraph>
-                  Don't have an account? <Link to="/register">Sign up for free</Link>
+                  Don't have an account? <Link to="/register/user">Sign up for free</Link>
                 </Paragraph>
                 <Paragraph>
                   Forgot your password? <Link to="/password-reset">Reset it</Link>

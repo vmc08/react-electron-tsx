@@ -3,20 +3,25 @@ import styled from 'styled-components';
 import { Mutation } from 'react-apollo';
 import { Formik, Form, Field, FormikProps } from 'formik';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Form as AntdForm, Icon, Button, Alert, message, Row, Col } from 'antd';
+import { Form as AntdForm, Icon, Button, Alert, Row, Col } from 'antd';
 
 import { SignupSchema } from './validations';
 import { AntInput } from '../AntDesignFields';
-import { setAuthToken } from '../../utils/authUtils';
 import { hasValidObjectValues } from '../../utils/objectUtils';
-import { CREATE_ACCESS_TOKEN } from '../../apollo/mutations/user';
+import { isLoggedIn, getAuthToken, setAuthToken, setTalkToken } from '../../utils/userUtils';
+import { CREATE_ACCOUNT } from '../../apollo/mutations/user';
+
+interface IRegistrationFormProps extends RouteComponentProps {
+  affiliateId: string | null,
+  sendOnboardingCode: any,
+}
 
 interface IRegistrationFormState {
   isLoading: boolean,
   error: string | null,
   user: {
-    firstName: string,
-    lastName: string,
+    firstname: string,
+    lastname: string,
     username: string,
     password: string,
   },
@@ -26,15 +31,15 @@ const StyledIcon = styled(Icon)`
   color: 'rgba(0, 0, 0, .25)';
 `;
 
-class RegistrationForm extends React.Component<RouteComponentProps, IRegistrationFormState> {
-  constructor(props: RouteComponentProps) {
+class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistrationFormState> {
+  constructor(props: IRegistrationFormProps) {
     super(props);
     this.state = {
       isLoading: false,
       error: null,
       user: {
-        firstName: '',
-        lastName: '',
+        firstname: '',
+        lastname: '',
         username: '',
         password: '',
       },
@@ -43,20 +48,23 @@ class RegistrationForm extends React.Component<RouteComponentProps, IRegistratio
     this.onErrorClose = this.onErrorClose.bind(this);
   }
 
-  async onSubmit(values: any, loginMutation: any) {
-    const { history } = this.props;
+  async onSubmit(values: any, createAccountMutation: any) {
+    const { history, affiliateId, sendOnboardingCode } = this.props;
     this.setState({ isLoading: true });
-    await loginMutation({
+    await createAccountMutation({
       variables: {
         input: values,
+        affiliateId,
       },
     })
-    .then(({ data }: any) => {
-      const { token } = data.createAccessToken;
-      setAuthToken(token);
+    .then(async ({ data }: any) => {
+      const { createAccount } = data;
+      const { token: userToken, talk: { token: talkToken } } = createAccount;
+      setAuthToken(userToken);
+      setTalkToken(talkToken);
+      await sendOnboardingCode({ variables: { token: userToken } });
       this.setState({ isLoading: false });
-      message.success('Login success', 1);
-      history.replace('/');
+      history.replace('/register/verify-email');
     })
     .catch((error: any) => {
       const { message: errorMessage } = error.graphQLErrors[0];
@@ -82,14 +90,14 @@ class RegistrationForm extends React.Component<RouteComponentProps, IRegistratio
             />
           </AntdForm.Item>
         )}
-        <Mutation<any> mutation={CREATE_ACCESS_TOKEN}>
-          {(loginMutation) => {
+        <Mutation<any> mutation={CREATE_ACCOUNT}>
+          {(createAccountMutation) => {
             return (
               <Formik
                 initialValues={user}
                 validationSchema={SignupSchema}
                 onSubmit={(values) => {
-                  this.onSubmit(values, loginMutation);
+                  this.onSubmit(values, createAccountMutation);
                 }}
                 render={({ submitCount, errors }: FormikProps<any>) => {
                   return (
@@ -98,7 +106,7 @@ class RegistrationForm extends React.Component<RouteComponentProps, IRegistratio
                         <Col xs={24} md={12}>
                           <Field
                             component={AntInput}
-                            name="firstName"
+                            name="firstname"
                             type="text"
                             placeholder="First name"
                             disabled={isLoading}
@@ -108,7 +116,7 @@ class RegistrationForm extends React.Component<RouteComponentProps, IRegistratio
                         <Col xs={24} md={12}>
                           <Field
                             component={AntInput}
-                            name="lastName"
+                            name="lastname"
                             type="text"
                             placeholder="Last name"
                             disabled={isLoading}

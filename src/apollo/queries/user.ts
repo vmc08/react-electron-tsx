@@ -7,8 +7,64 @@ export const ACCOUNT = gql`
       username
       firstname
       lastname
-      created
+      phone
+      address
+      city
+      country
+      avatar
+      verified
+      scored
+      onboarded
+      assessed
       level
+      score
+      exchange
+      affiliateId
+      currency
+      created
+      answer {
+        order
+        answer
+        correct
+        status
+      }
+      subscriptionPlan {
+        plan
+        status
+        affiliateId
+        trialEnd
+        amountDiscount
+        percentDiscount
+      }
+      cards {
+        cardId
+        expMonth
+        expYear
+        brand
+        country
+        last4
+      }
+      invoices {
+        invoiceId
+        invoice
+        amountDue
+        amountPaid
+        created
+        discount
+        currency
+        items {
+          name
+          description
+          quantity
+          amount
+        }
+      }
+      charges {
+        date
+        currency
+        amount
+        description
+      }
     }
   }
 `;

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Menu, Icon, Button } from 'antd';
 import { ISelectedKeys } from '../../contexts/SidenavContext';
 import UserContext from '../../contexts/UserContext';
-import { deleteAuthToken } from '../../utils/authUtils';
+import { deleteAuthToken } from '../../utils/userUtils';
 import {
   deleteSidenavState,
   userRoutes,
@@ -55,7 +55,7 @@ const EntryLinkMenu = ({ collapsed }: {collapsed: boolean}) => {
         padding: '16px 24px',
       }}
     >
-      <Link to="/register">
+      <Link to="/register/user">
         <Button
           type="primary"
           block
