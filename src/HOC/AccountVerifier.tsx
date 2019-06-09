@@ -2,6 +2,9 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import UserContext from '../contexts/UserContext';
 
+const verificationPath = '/register/verify-email';
+const quizPath = '/register/quiz';
+
 export default <P extends object>(
   ComposedComponent: React.ComponentType<P>,
   blockAuthenticatedUser: boolean = false,
@@ -10,15 +13,16 @@ export default <P extends object>(
     static contextType = UserContext;
     render() {
       const { account, token }: any = this.context;
+      const { pathname } = window.location;
       if (account && token) {
         const { scored, verified } = account;
-        if (!verified) {
-          return <Redirect to="/register/verify-email" />;
+        if (!verified && pathname !== verificationPath) {
+          return <Redirect to={verificationPath} />;
         }
-        if (!scored) {
-          return <Redirect to="/register/quiz" />;
+        if (!scored && pathname !== quizPath) {
+          return <Redirect to={quizPath} />;
         }
-        if (blockAuthenticatedUser) {
+        if (blockAuthenticatedUser && scored && verified) {
           return <Redirect to="/" />;
         }
       }
