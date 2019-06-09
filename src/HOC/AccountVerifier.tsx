@@ -4,6 +4,7 @@ import UserContext from '../contexts/UserContext';
 
 export default <P extends object>(
   ComposedComponent: React.ComponentType<P>,
+  blockAuthenticatedUser: boolean = false,
 ) => {
   class AccountVerifier extends React.Component<P> {
     static contextType = UserContext;
@@ -16,6 +17,9 @@ export default <P extends object>(
         }
         if (!scored) {
           return <Redirect to="/register/quiz" />;
+        }
+        if (blockAuthenticatedUser) {
+          return <Redirect to="/" />;
         }
       }
       return (

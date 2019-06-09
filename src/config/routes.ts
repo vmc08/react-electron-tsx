@@ -20,12 +20,12 @@ import Settings from '../pages/Settings';
 
 const routes = [
   {
-    component: RequireAuth(RegisterQuiz, false),
+    component: RequireAuth(RegisterQuiz),
     exact: true,
     path: '/register/quiz',
   },
   {
-    component: RequireAuth(RegisterVerification, false),
+    component: RequireAuth(RegisterVerification),
     exact: true,
     path: '/register/verify-email',
   },

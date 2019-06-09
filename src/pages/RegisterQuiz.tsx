@@ -1,5 +1,7 @@
 import React from 'react';
 
+import AccountVerifier from '../HOC/AccountVerifier';
+
 class RegisterQuiz extends React.Component {
   render() {
     return (
@@ -8,4 +10,4 @@ class RegisterQuiz extends React.Component {
   }
 }
 
-export default RegisterQuiz;
+export default AccountVerifier(RegisterQuiz, true);

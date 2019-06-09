@@ -78,7 +78,7 @@ export default <P extends object>(
             return (
               <UserProvider value={newProps}>
                 <PageSpinner loading={loading}>
-                  <ComposedComponent {...newProps as P} />
+                  {!loading && <ComposedComponent {...newProps as P} />}
                 </PageSpinner>
               </UserProvider>
             );

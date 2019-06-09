@@ -7,6 +7,7 @@ import { Card, Row, Col, Typography } from 'antd';
 
 import RegistrationForm from '../components/forms/RegistrationForm';
 import PageSpinner from '../components/spinners/PageSpinner';
+import AccountVerifier from '../HOC/AccountVerifier';
 import logoLight from '../assets/images/logo-light.png';
 import { AFFILIATE } from '../apollo/queries/affiliate';
 import { SEND_ONBOARDING_CODE } from '../apollo/mutations/user';
@@ -144,4 +145,4 @@ class Login extends React.Component<IRegisterProps> {
 export default compose(
   withApollo,
   graphql(SEND_ONBOARDING_CODE, { name: 'sendOnboardingCode' }),
-)(Login);
+)(AccountVerifier(Login, true));

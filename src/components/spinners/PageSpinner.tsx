@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Spin, Icon } from 'antd';
 
 interface IPageSpinner {
@@ -6,16 +7,26 @@ interface IPageSpinner {
   children: any,
 }
 
+const StyledSpin = styled(Spin)`
+  min-height: 100vh;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .ant-spin-text {
+    padding-top: 12px;
+  }
+`;
+
 const LoadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 export default ({ loading, children }: IPageSpinner) => (
-  <Spin
+  <StyledSpin
     size="large"
     tip="Loading..."
     indicator={LoadingIcon}
     spinning={loading}
-    style={{ minHeight: 400 }}
   >
     {children}
-  </Spin>
+  </StyledSpin>
 );
