@@ -7,26 +7,30 @@ interface IPageSpinner {
   children: any,
 }
 
-const StyledSpin = styled(Spin)`
-  min-height: 100vh;
-  display: flex !important;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  .ant-spin-text {
-    padding-top: 12px;
+const StyledDiv = styled.div`
+  .ant-spin {
+    min-height: 100vh;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .ant-spin-text {
+      padding-top: 12px;
+    }
   }
 `;
 
 const LoadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 export default ({ loading, children }: IPageSpinner) => (
-  <StyledSpin
-    size="large"
-    tip="Loading..."
-    indicator={LoadingIcon}
-    spinning={loading}
-  >
-    {children}
-  </StyledSpin>
+  <StyledDiv>
+    <Spin
+      size="large"
+      tip="Loading..."
+      indicator={LoadingIcon}
+      spinning={loading}
+    >
+      {children}
+    </Spin>
+  </StyledDiv>
 );

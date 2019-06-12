@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Typography } from 'antd';
 
-import LoginForm from '../components/forms/LoginForm';
+import LoginForm from '../components/forms/user/LoginForm';
 import logoLight from '../assets/images/logo-light.png';
 
 const { Title, Paragraph } = Typography;

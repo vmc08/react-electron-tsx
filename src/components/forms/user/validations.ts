@@ -35,3 +35,9 @@ export const NewPasswordSchema = Yup.object().shape({
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
     .required('Password confirmation  can\'t be blank'),
 });
+
+export const VerificationSchema = Yup.object().shape({
+  code: Yup.string()
+    .min(6, 'Incomplete code')
+    .required('Code is required'),
+});

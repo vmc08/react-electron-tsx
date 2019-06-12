@@ -5,69 +5,58 @@ import { Formik, Form, Field, FormikProps } from 'formik';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Form as AntdForm, Icon, Button, Alert, message } from 'antd';
 
-import { LoginSchema } from './validations';
-import { AntInput } from '../AntDesignFields';
-import { setAuthToken } from '../../utils/userUtils';
-import { hasValidObjectValues } from '../../utils/objectUtils';
-import { CREATE_ACCESS_TOKEN } from '../../apollo/mutations/user';
+import { PasswordResetSchema } from './validations';
+import { AntInput } from '../../AntDesignFields';
+import { hasValidObjectValues } from '../../../utils/objectUtils';
+import { REQUEST_RESET_PASSWORD } from '../../../apollo/mutations/user';
 
-const redirectErrors: { [key: string]: string; } = {
-  affiliateId: 'Invalid affiliate code',
-};
-
-interface ILoginFormState {
+interface IPasswordResetFormState {
   isLoading: boolean,
   error: string | null,
   user: {
     username: string,
-    password: string,
   },
+}
+
+interface IPasswordResetProps extends RouteComponentProps {
+  resetPassswordCallback: (emailStatus: boolean) => void,
 }
 
 const StyledIcon = styled(Icon)`
   color: 'rgba(0, 0, 0, .25)';
 `;
 
-class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
-  constructor(props: RouteComponentProps) {
+class PasswordResetForm extends React.Component<IPasswordResetProps, IPasswordResetFormState> {
+  constructor(props: IPasswordResetProps) {
     super(props);
     this.state = {
       isLoading: false,
-      error: this.getRedirectError(),
+      error: null,
       user: {
         username: '',
-        password: '',
       },
     };
     this.onSubmit = this.onSubmit.bind(this);
-    this.getRedirectError = this.getRedirectError.bind(this);
     this.onErrorClose = this.onErrorClose.bind(this);
   }
 
-  getRedirectError() {
-    const { location } = this.props;
-    const queryParams = new URLSearchParams(location.search);
-    const errorKey = queryParams.get('error');
-    if (errorKey) {
-      return redirectErrors[errorKey];
-    }
-    return null;
-  }
-
-  async onSubmit(values: any, loginMutation: any) {
-    const { history } = this.props;
+  async onSubmit(values: any, resetPasswordMutation: any) {
+    const { resetPassswordCallback } = this.props;
     this.setState({ isLoading: true });
-    await loginMutation({
+    await resetPasswordMutation({
       variables: {
         input: values,
       },
     })
     .then(({ data }: any) => {
-      const { token } = data.createAccessToken;
-      setAuthToken(token);
+      const { requestResetPassword } = data;
       this.setState({ isLoading: false });
-      message.success('Login success', 1);
-      history.replace('/');
+      if (requestResetPassword) {
+        message.success('Reset link has been sent to your email');
+      } else {
+        message.error('Something went wrong upon processing reset email');
+      }
+      resetPassswordCallback(requestResetPassword);
     })
     .catch((error: any) => {
       const { message: errorMessage } = error.graphQLErrors[0];
@@ -93,14 +82,14 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
             />
           </AntdForm.Item>
         )}
-        <Mutation<any> mutation={CREATE_ACCESS_TOKEN}>
-          {(loginMutation) => {
+        <Mutation<any> mutation={REQUEST_RESET_PASSWORD}>
+          {(resetPasswordMutation) => {
             return (
               <Formik
                 initialValues={user}
-                validationSchema={LoginSchema}
+                validationSchema={PasswordResetSchema}
                 onSubmit={(values) => {
-                  this.onSubmit(values, loginMutation);
+                  this.onSubmit(values, resetPasswordMutation);
                 }}
                 render={({ submitCount, errors }: FormikProps<any>) => {
                   return (
@@ -114,15 +103,6 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
                         submitCount={submitCount}
                         prefix={<StyledIcon type="mail" />}
                       />
-                      <Field
-                        component={AntInput}
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        disabled={isLoading}
-                        submitCount={submitCount}
-                        prefix={<StyledIcon type="lock" />}
-                      />
                       <AntdForm.Item>
                         <Button
                           block
@@ -132,7 +112,7 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
                           loading={isLoading}
                           disabled={isLoading || hasValidObjectValues(errors)}
                         >
-                          Sign in
+                          Send email
                         </Button>
                       </AntdForm.Item>
                     </Form>
@@ -147,4 +127,4 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
   }
 }
 
-export default withRouter(LoginForm);
+export default withRouter(PasswordResetForm);

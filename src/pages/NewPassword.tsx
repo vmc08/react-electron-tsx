@@ -4,7 +4,7 @@ import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Typography } from 'antd';
 
-import NewPasswordForm from '../components/forms/NewPasswordForm';
+import NewPasswordForm from '../components/forms/user/NewPasswordForm';
 import logoLight from '../assets/images/logo-light.png';
 import keyImg from '../assets/images/key.png';
 
@@ -116,7 +116,7 @@ class NewPassword extends React.Component<{}, INewPasswordState> {
                 <Col xs={24} className="root-col">
                   <NewPasswordForm doneResetPassswordCallback={this.doneResetPassswordCallback} />
                   <Paragraph>
-                    You remember your password? <Link to="/login">Sign in here</Link>
+                    Remember your password? <Link to="/login">Sign in here</Link>
                   </Paragraph>
                 </Col>
               )}

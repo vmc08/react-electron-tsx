@@ -37,3 +37,9 @@ export const SEND_ONBOARDING_CODE = gql`
     sendOnboardingCode (token: $token)
   }
 `;
+
+export const VERIFY_ONBOARDING_CODE = gql`
+  mutation VerifyOnboardingCode ($token: String!, $code: String!) {
+    verifyOnboardingCode (token: $token, code: $code)
+  }
+`;

@@ -16,10 +16,10 @@ export default <P extends object>(
       const { pathname } = window.location;
       if (account && token) {
         const { scored, verified } = account;
-        if (!verified && pathname !== verificationPath) {
+        if ((!verified && !scored) && pathname !== verificationPath) {
           return <Redirect to={verificationPath} />;
         }
-        if (!scored && pathname !== quizPath) {
+        if ((verified && !scored) && pathname !== quizPath) {
           return <Redirect to={quizPath} />;
         }
         if (blockAuthenticatedUser && scored && verified) {

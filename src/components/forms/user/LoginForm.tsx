@@ -3,25 +3,22 @@ import styled from 'styled-components';
 import { Mutation } from 'react-apollo';
 import { Formik, Form, Field, FormikProps } from 'formik';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Form as AntdForm, Icon, Button, Alert, Row, Col } from 'antd';
+import { Form as AntdForm, Icon, Button, Alert, message } from 'antd';
 
-import { SignupSchema } from './validations';
-import { AntInput } from '../AntDesignFields';
-import { hasValidObjectValues } from '../../utils/objectUtils';
-import { isLoggedIn, getAuthToken, setAuthToken, setTalkToken } from '../../utils/userUtils';
-import { CREATE_ACCOUNT } from '../../apollo/mutations/user';
+import { LoginSchema } from './validations';
+import { AntInput } from '../../AntDesignFields';
+import { setAuthToken } from '../../../utils/userUtils';
+import { hasValidObjectValues } from '../../../utils/objectUtils';
+import { CREATE_ACCESS_TOKEN } from '../../../apollo/mutations/user';
 
-interface IRegistrationFormProps extends RouteComponentProps {
-  affiliateId: string | null,
-  sendOnboardingCode: any,
-}
+const redirectErrors: { [key: string]: string; } = {
+  affiliateId: 'Invalid affiliate code',
+};
 
-interface IRegistrationFormState {
+interface ILoginFormState {
   isLoading: boolean,
   error: string | null,
   user: {
-    firstname: string,
-    lastname: string,
     username: string,
     password: string,
   },
@@ -31,40 +28,46 @@ const StyledIcon = styled(Icon)`
   color: 'rgba(0, 0, 0, .25)';
 `;
 
-class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistrationFormState> {
-  constructor(props: IRegistrationFormProps) {
+class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
+  constructor(props: RouteComponentProps) {
     super(props);
     this.state = {
       isLoading: false,
-      error: null,
+      error: this.getRedirectError(),
       user: {
-        firstname: '',
-        lastname: '',
         username: '',
         password: '',
       },
     };
     this.onSubmit = this.onSubmit.bind(this);
+    this.getRedirectError = this.getRedirectError.bind(this);
     this.onErrorClose = this.onErrorClose.bind(this);
   }
 
-  async onSubmit(values: any, createAccountMutation: any) {
-    const { history, affiliateId, sendOnboardingCode } = this.props;
+  getRedirectError() {
+    const { location } = this.props;
+    const queryParams = new URLSearchParams(location.search);
+    const errorKey = queryParams.get('error');
+    if (errorKey) {
+      return redirectErrors[errorKey];
+    }
+    return null;
+  }
+
+  async onSubmit(values: any, loginMutation: any) {
+    const { history } = this.props;
     this.setState({ isLoading: true });
-    await createAccountMutation({
+    await loginMutation({
       variables: {
         input: values,
-        affiliateId,
       },
     })
-    .then(async ({ data }: any) => {
-      const { createAccount } = data;
-      const { token: userToken, talk: { token: talkToken } } = createAccount;
-      setAuthToken(userToken);
-      setTalkToken(talkToken);
-      await sendOnboardingCode({ variables: { token: userToken } });
+    .then(({ data }: any) => {
+      const { token } = data.createAccessToken;
+      setAuthToken(token);
       this.setState({ isLoading: false });
-      history.replace('/register/verify-email');
+      message.success('Login success', 1);
+      history.replace('/');
     })
     .catch((error: any) => {
       const { message: errorMessage } = error.graphQLErrors[0];
@@ -90,40 +93,18 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
             />
           </AntdForm.Item>
         )}
-        <Mutation<any> mutation={CREATE_ACCOUNT}>
-          {(createAccountMutation) => {
+        <Mutation<any> mutation={CREATE_ACCESS_TOKEN}>
+          {(loginMutation) => {
             return (
               <Formik
                 initialValues={user}
-                validationSchema={SignupSchema}
+                validationSchema={LoginSchema}
                 onSubmit={(values) => {
-                  this.onSubmit(values, createAccountMutation);
+                  this.onSubmit(values, loginMutation);
                 }}
                 render={({ submitCount, errors }: FormikProps<any>) => {
                   return (
                     <Form>
-                      <Row gutter={24}>
-                        <Col xs={24} md={12}>
-                          <Field
-                            component={AntInput}
-                            name="firstname"
-                            type="text"
-                            placeholder="First name"
-                            disabled={isLoading}
-                            submitCount={submitCount}
-                          />
-                        </Col>
-                        <Col xs={24} md={12}>
-                          <Field
-                            component={AntInput}
-                            name="lastname"
-                            type="text"
-                            placeholder="Last name"
-                            disabled={isLoading}
-                            submitCount={submitCount}
-                          />
-                        </Col>
-                      </Row>
                       <Field
                         component={AntInput}
                         name="username"
@@ -151,7 +132,7 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
                           loading={isLoading}
                           disabled={isLoading || hasValidObjectValues(errors)}
                         >
-                          Register
+                          Sign in
                         </Button>
                       </AntdForm.Item>
                     </Form>
@@ -166,4 +147,4 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
   }
 }
 
-export default withRouter(RegistrationForm);
+export default withRouter(LoginForm);
