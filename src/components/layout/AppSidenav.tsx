@@ -115,7 +115,7 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
           selectedKeys={[itemKeyContext]}
           mode="inline"
         >
-          {navRoutes.map(({ label, path, groups, iconType }: INavRoute) => {
+          {navRoutes.map(({ label, path, groups, iconType, externalLink }: INavRoute) => {
             if (groups && groups.length > 0) {
               const subMenuKey = `sub-${slugify(label)}`;
               return (
@@ -132,13 +132,21 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
                     return (
                       <ItemGroup title={title} key={`group-${slugify(title)}`}>
                         {items.map((item: INavRoute) => {
-                          const { label: itemLabel, path: itemPath } = item;
+                          const {
+                            label: itemLabel,
+                            path: itemPath,
+                            externalLink: itemExternalLink,
+                          } = item;
                           const itemKey = slugify(itemLabel);
                           return (
                             <Menu.Item
                               key={itemKey}
                               onClick={() => {
-                                this.changeRoute({ itemKey, subMenuKey }, itemPath);
+                                if (itemExternalLink) {
+                                  window.open(itemExternalLink, '_blank');
+                                } else {
+                                  this.changeRoute({ itemKey, subMenuKey }, itemPath);
+                                }
                               }}
                             >
                               <span>{itemLabel}</span>
@@ -154,7 +162,13 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
             return (
               <Menu.Item
                 key={slugify(label)}
-                onClick={() => this.changeRoute({ itemKey: slugify(label) }, path)}
+                onClick={() => {
+                  if (externalLink) {
+                    window.open(externalLink, '_blank');
+                  } else {
+                    this.changeRoute({ itemKey: slugify(label) }, path);
+                  }
+                }}
               >
                 <Icon type={iconType} />
                 <span>{label}</span>

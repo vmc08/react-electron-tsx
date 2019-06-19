@@ -51,6 +51,10 @@ export const navRoutes = [{
   path: '/training',
   iconType: 'team',
   label: 'Training',
+}, {
+  iconType: 'question-circle',
+  externalLink: 'https://help.reitscreener.com',
+  label: 'Help',
 }];
 
 // , {
@@ -66,10 +70,6 @@ export const navRoutes = [{
 // }
 
 export const userRoutes = [{
-  iconType: 'global',
-  externalLink: 'https://help.reitscreener.com',
-  label: 'Knowledge Base',
-}, {
   path: '/account/settings',
   iconType: 'setting',
   label: 'Settings',
