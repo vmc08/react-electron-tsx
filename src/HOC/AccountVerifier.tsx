@@ -19,7 +19,7 @@ export default <P extends object>(
         if ((!verified && !scored) && pathname !== verificationPath) {
           return <Redirect to={verificationPath} />;
         }
-        if ((verified && !scored) && pathname !== quizPath) {
+        if ((verified && !scored) && !pathname.includes(quizPath)) {
           return <Redirect to={quizPath} />;
         }
         if (blockAuthenticatedUser && scored && verified) {

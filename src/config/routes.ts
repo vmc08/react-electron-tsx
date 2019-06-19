@@ -22,7 +22,7 @@ const routes = [
   {
     component: RequireAuth(RegisterQuiz),
     exact: true,
-    path: '/register/quiz',
+    path: '/register/quiz/:quizNumber?',
   },
   {
     component: RequireAuth(RegisterVerification),
