@@ -1,22 +1,41 @@
 import RequireAuth from '../HOC/RequireAuth';
+import LoadableComponent from './LoadableComponent';
 
-import RegisterQuiz from '../pages/RegisterQuiz';
-import RegisterVerification from '../pages/RegisterVerification';
-import Register from '../pages/Register';
-import NewPassword from '../pages/NewPassword';
-import PasswordReset from '../pages/PasswordReset';
-import Login from '../pages/Login';
-import Dashboard from '../pages/Dashboard';
-import Chart from '../pages/Chart';
-import Reits from '../pages/Reits';
-import Portfolio from '../pages/Portfolio';
-import Watchlist from '../pages/Watchlist';
-import Insights from '../pages/Insights';
-import Transactions from '../pages/Transactions';
-import MarketBriefs from '../pages/MarketBriefs';
-import Training from '../pages/Training';
-import Documentation from '../pages/Documentation';
-import Settings from '../pages/Settings';
+const RegisterQuiz =  LoadableComponent({ componentName: 'pages/RegisterQuiz' });
+const RegisterVerification = LoadableComponent({ componentName: 'pages/RegisterVerification' });
+const Register = LoadableComponent({ componentName: 'pages/Register' });
+const NewPassword = LoadableComponent({ componentName: 'pages/NewPassword' });
+const PasswordReset = LoadableComponent({ componentName: 'pages/PasswordReset' });
+const Login = LoadableComponent({ componentName: 'pages/Login' });
+const Dashboard = LoadableComponent({ componentName: 'pages/Dashboard' });
+const Chart = LoadableComponent({ componentName: 'pages/Chart' });
+const Reits = LoadableComponent({ componentName: 'pages/Reits' });
+const Portfolio = LoadableComponent({ componentName: 'pages/Portfolio' });
+const Watchlist = LoadableComponent({ componentName: 'pages/Watchlist' });
+const Insights = LoadableComponent({ componentName: 'pages/Insights' });
+const Transactions = LoadableComponent({ componentName: 'pages/Transactions' });
+const MarketBriefs = LoadableComponent({ componentName: 'pages/MarketBriefs' });
+const Training = LoadableComponent({ componentName: 'pages/Training' });
+const Documentation = LoadableComponent({ componentName: 'pages/Documentation' });
+const Settings = LoadableComponent({ componentName: 'pages/Settings' });
+
+RegisterQuiz.preload();
+RegisterVerification.preload();
+Register.preload();
+NewPassword.preload();
+PasswordReset.preload();
+Login.preload();
+Dashboard.preload();
+Chart.preload();
+Reits.preload();
+Portfolio.preload();
+Watchlist.preload();
+Insights.preload();
+Transactions.preload();
+MarketBriefs.preload();
+Training.preload();
+Documentation.preload();
+Settings.preload();
 
 const routes = [
   {
