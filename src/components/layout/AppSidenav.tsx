@@ -19,6 +19,8 @@ interface IStyledLogoProp {
 }
 
 const StyledSider = styled(Sider)`
+  position: sticky !important;
+  top: 0px;
   overflow: hidden;
   height: 100vh;
   border-right: 1px solid #e8e8e8;

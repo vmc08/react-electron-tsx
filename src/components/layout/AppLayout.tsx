@@ -1,13 +1,14 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Layout, Icon } from 'antd';
 import { useUserContextValue } from '../../contexts/UserContext';
 import { useSidenavContextValue } from '../../contexts/SidenavContext';
 import AccountVerifier from '../../HOC/AccountVerifier';
 
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 
 import AppSideNav from './AppSidenav';
-import AppBreadcrumb from './AppBreadcrumb';
+// import AppBreadcrumb from './AppBreadcrumb';
 
 const { Header } = Layout;
 
@@ -15,6 +16,24 @@ interface IAppLayoutProps {
   requireAuth: boolean,
   children: any
 }
+
+const StyledHeader = styled(Header)`
+  background: #fff !important;
+  padding: 0 24px;
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+`;
+
+const StyledContent = styled(Content)`
+  padding: 24px;
+  margin-top: 64px;
+  @media only screen and (max-width: 600px) {
+    margin-right: ${(props: { collapsed: number }) => {
+      return `${props.collapsed ? 0 : '-256px'}`;
+    }};
+  }
+`;
 
 const AppLayout = (props: IAppLayoutProps) => {
   const { children, requireAuth } = props;
@@ -27,18 +46,17 @@ const AppLayout = (props: IAppLayoutProps) => {
     <Layout style={{ minHeight: '100vh' }}>
       <AppSideNav />
       <Layout>
-        <Header style={{ background: '#fff', padding: '0 24px' }}>
+        <StyledHeader>
           <Icon
             className="trigger"
             type={collapsed ? 'menu-unfold' : 'menu-fold'}
             onClick={toggleCollapse}
           />
-        </Header>
-        <Content style={{ margin: '0 24px' }}>
-          <AppBreadcrumb />
+        </StyledHeader>
+        <StyledContent collapsed={collapsed ? 1 : 0}>
+          {/* <AppBreadcrumb /> */}
           {children}
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>Reitscreener ©2019</Footer>
+        </StyledContent>
       </Layout>
     </Layout>
   );
