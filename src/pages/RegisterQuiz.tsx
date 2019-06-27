@@ -35,12 +35,6 @@ const RegisterQuizWrapper = styled.div`
       h3 {
         font-weight: 700;
       }
-      .ant-typography {
-        text-align: center;
-        a:hover {
-          text-decoration: underline;
-        }
-      }
     }
   }
 `;
@@ -53,6 +47,7 @@ const StyledButton = styled(Button)`
   min-width: 180px;
   display: block !important;
   margin: 24px auto;
+  text-transform: uppercase;
 `;
 
 class RegisterQuiz extends React.Component<
@@ -78,7 +73,7 @@ class RegisterQuiz extends React.Component<
 
   componentDidMount() {
     const { location, history } = this.props;
-    if (!location.pathname.match(/\/register\/quiz\/[2-5]$/g)) {
+    if (!location.pathname.match(/\/register\/quiz\/[2-6]$/g)) {
       history.push('/register/quiz/1');
     }
   }
@@ -98,16 +93,18 @@ class RegisterQuiz extends React.Component<
                 lg={{ span: 10, offset: 7 }}
                 className="root-col"
               >
-                <Title level={3}>Welcome to the REITScreener Quiz</Title>
+                <Title level={3} className="text-center">Start Investing Smarter and Better</Title>
                 <Title level={4}>
                   Whether you’re new to REITs or an experienced investor,&nbsp;
-                  REITScreener can help you start investing smarter and better.&nbsp;
-                  This quiz shouldn’t take more than 2 minutes and it will help you
-                  (and us!) figure out where you are in your investing&nbsp;
-                  journey and what’s your ideal next step. 👍
+                  REITScreener makes it easy for you to make smarter investments.&nbsp;
+                </Title>
+                <Title level={4}>
+                  Let’s get to know you better – it won’t take more than a minute&nbsp;
+                  and it will help you (and us!) figure out where you are in your&nbsp;
+                  investing journey and what’s your ideal next step.👍
                 </Title>
                 <StyledButton type="primary" size="large">
-                  <Link to="/register/quiz/1">Start the quiz</Link>
+                  <Link to="/register/quiz/1">Let’s Go</Link>
                 </StyledButton>
               </Col>
             </Row>

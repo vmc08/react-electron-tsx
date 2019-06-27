@@ -25,8 +25,6 @@ export const ACCOUNT = gql`
       answer {
         order
         answer
-        correct
-        status
       }
       subscriptionPlan {
         plan
