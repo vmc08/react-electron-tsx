@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { Row, Col, Typography } from 'antd';
 
-import AccountVerifier from '../HOC/AccountVerifier';
-import Verification from '../components/forms/user/Verification';
-import UserContext from '../contexts/UserContext';
+import AccountVerifier from '../../../HOC/AccountVerifier';
+import VerificationForm from '../../forms/user/Verification';
+import UserContext from '../../../contexts/UserContext';
 
 const { Title, Text } = Typography;
 
-const RegisterVerificationWrapper = styled.div`
+const VerificationWrapper = styled.div`
   height: 100vh;
   display: flex;
   padding-top: 24px;
@@ -37,12 +37,12 @@ const StyledDiv = styled.div`
   padding: 24px 12px;
 `;
 
-class RegisterVerification extends React.Component {
+class Verification extends React.Component {
   render() {
     const { account, token } = this.context;
-    const { username } = account;
+    const { username } = account || { username: null };
     return (
-      <RegisterVerificationWrapper>
+      <VerificationWrapper>
         <StyledDiv>
           <Row className="root-row" type="flex">
             <Col xs={24} className="root-col">
@@ -54,15 +54,15 @@ class RegisterVerification extends React.Component {
               </Title>
             </Col>
             <Col xs={24} className="root-col">
-              <Verification userToken={token} />
+              <VerificationForm userToken={token} />
             </Col>
           </Row>
         </StyledDiv>
-      </RegisterVerificationWrapper>
+      </VerificationWrapper>
     );
   }
 }
 
-RegisterVerification.contextType = UserContext;
+Verification.contextType = UserContext;
 
-export default AccountVerifier(RegisterVerification, true);
+export default AccountVerifier(Verification, true);

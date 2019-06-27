@@ -1,26 +1,22 @@
 import RequireAuth from '../HOC/RequireAuth';
 import LoadableComponent from './LoadableComponent';
 
-const RegisterQuiz =  LoadableComponent({ componentName: 'pages/RegisterQuiz' });
-const RegisterVerification = LoadableComponent({ componentName: 'pages/RegisterVerification' });
-const Register = LoadableComponent({ componentName: 'pages/Register' });
-const NewPassword = LoadableComponent({ componentName: 'pages/NewPassword' });
-const PasswordReset = LoadableComponent({ componentName: 'pages/PasswordReset' });
-const Login = LoadableComponent({ componentName: 'pages/Login' });
-const Dashboard = LoadableComponent({ componentName: 'pages/Dashboard' });
-const Chart = LoadableComponent({ componentName: 'pages/Chart' });
-const Reits = LoadableComponent({ componentName: 'pages/Reits' });
-const Portfolio = LoadableComponent({ componentName: 'pages/Portfolio' });
-const Watchlist = LoadableComponent({ componentName: 'pages/Watchlist' });
-const Insights = LoadableComponent({ componentName: 'pages/Insights' });
-const Transactions = LoadableComponent({ componentName: 'pages/Transactions' });
-const MarketBriefs = LoadableComponent({ componentName: 'pages/MarketBriefs' });
-const Training = LoadableComponent({ componentName: 'pages/Training' });
-const Documentation = LoadableComponent({ componentName: 'pages/Documentation' });
-const Settings = LoadableComponent({ componentName: 'pages/Settings' });
+const Register = LoadableComponent({ componentPathName: 'pages/Register' });
+const NewPassword = LoadableComponent({ componentPathName: 'pages/NewPassword' });
+const PasswordReset = LoadableComponent({ componentPathName: 'pages/PasswordReset' });
+const Login = LoadableComponent({ componentPathName: 'pages/Login' });
+const Dashboard = LoadableComponent({ componentPathName: 'pages/Dashboard' });
+const Chart = LoadableComponent({ componentPathName: 'pages/Chart' });
+const Reits = LoadableComponent({ componentPathName: 'pages/Reits' });
+const Portfolio = LoadableComponent({ componentPathName: 'pages/Portfolio' });
+const Watchlist = LoadableComponent({ componentPathName: 'pages/Watchlist' });
+const Insights = LoadableComponent({ componentPathName: 'pages/Insights' });
+const Transactions = LoadableComponent({ componentPathName: 'pages/Transactions' });
+const MarketBriefs = LoadableComponent({ componentPathName: 'pages/MarketBriefs' });
+const Training = LoadableComponent({ componentPathName: 'pages/Training' });
+const Documentation = LoadableComponent({ componentPathName: 'pages/Documentation' });
+const Settings = LoadableComponent({ componentPathName: 'pages/Settings' });
 
-RegisterQuiz.preload();
-RegisterVerification.preload();
 Register.preload();
 NewPassword.preload();
 PasswordReset.preload();
@@ -39,23 +35,8 @@ Settings.preload();
 
 const routes = [
   {
-    component: RequireAuth(RegisterQuiz),
-    exact: true,
-    path: '/register/quiz/:quizNumber?',
-  },
-  {
-    component: RequireAuth(RegisterVerification),
-    exact: true,
-    path: '/register/verify-email',
-  },
-  {
     component: RequireAuth(Register, false),
-    path: '/register/trial/:affiliateId',
-  },
-  {
-    component: RequireAuth(Register, false),
-    exact: true,
-    path: '/register/user',
+    path: '/register',
   },
   {
     component: RequireAuth(NewPassword, false),

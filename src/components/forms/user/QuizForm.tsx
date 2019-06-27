@@ -3,24 +3,57 @@ import styled from 'styled-components';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Row, Col, Typography, Radio, Button, Steps } from 'antd';
 
-import { questions } from '../../../utils/onBoardingUtils';
+import { questions, IQuestion } from '../../../utils/onBoardingUtils';
 import {
   getOnboardingAnswers,
   setOnboardingAnswers,
   IOnboardingAnswer,
 } from '../../../utils/userUtils';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 const { Step } = Steps;
 const { Group: RadioGroup, Button: RadioButton } = Radio;
 
 interface IQuizFormProps extends RouteComponentProps {
   quizNumber: number,
+  question: IQuestion,
 }
 
 interface IQuizFormStates {
   answer: string | null,
 }
+
+interface ICustomRadioGroupProps {
+  options: string[] | undefined,
+  answer: string | null,
+  selectAnswer: (e: any) => void
+}
+
+const StyledSteps = styled(Steps)`
+  .ant-steps-item {
+    margin-right: 0 !important;
+    &.ant-steps-item-finish {
+      .ant-steps-item-icon {
+        background: #1890ff;
+      }
+    }
+    .ant-steps-item-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 0 !important;
+      .ant-steps-icon {
+        display: none;
+      }
+    }
+    .ant-steps-item-content > .ant-steps-item-title {
+      &:after {
+        left: 0;
+        height: 3px;
+        top: 12px;
+      }
+    }
+  }
+`;
 
 const StyledRadioGroup = styled(RadioGroup)`
   display: block !important;
@@ -39,11 +72,26 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const CustomRadioGroup = ({ options, selectAnswer, answer }: ICustomRadioGroupProps) => {
+  return (
+    <StyledRadioGroup value={answer} size="large">
+      {options && options.map((option, idx) => (
+        <RadioButton
+          value={option}
+          key={idx}
+          onChange={() => selectAnswer(option)}
+        >
+          {option}
+        </RadioButton>
+      ))}
+    </StyledRadioGroup>
+  );
+};
+
 class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
   constructor(props: IQuizFormProps) {
     super(props);
     this.pageChange = this.pageChange.bind(this);
-    this.stepChange = this.stepChange.bind(this);
     this.selectAnswer = this.selectAnswer.bind(this);
     this.state = {
       answer: null,
@@ -58,91 +106,84 @@ class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
       history.push(`/register/quiz/${lastQuestionNumber}`);
     } else if (quizNumber < lastQuestionNumber) {
       const reducedAnswers: IOnboardingAnswer[] = getOnboardingAnswers().slice(0, quizNumber);
-      const { answer } = reducedAnswers.pop() || { answer: null };
       setOnboardingAnswers(reducedAnswers);
+      const { answer } = reducedAnswers.pop() || { answer: null };
       this.setState({ answer });
     }
   }
 
-  selectAnswer(e: any) {
+  selectAnswer(value: string | null) {
     this.setState({
-      answer: e.target.value,
+      answer: value,
+    }, () => {
+      const { quizNumber } = this.props;
+      const onBoardingAnswers: IOnboardingAnswer[] = getOnboardingAnswers();
+      const { answer } = this.state;
+      onBoardingAnswers[quizNumber - 1] = { answer };
+      setOnboardingAnswers(onBoardingAnswers);
     });
   }
 
   pageChange(pageNumber: number) {
     const { history, quizNumber } = this.props;
     const toPageNum = quizNumber + pageNumber;
-    const onBoardingAnswers: IOnboardingAnswer[] = getOnboardingAnswers();
-    const { answer } = this.state;
     if (pageNumber > 0) {
-      onBoardingAnswers.push({ answer });
-      setOnboardingAnswers(onBoardingAnswers);
       this.setState({ answer: null });
+      history.push(`/register/quiz/${toPageNum || ''}`);
     } else {
+      const onBoardingAnswers: IOnboardingAnswer[] = getOnboardingAnswers();
       const {
         answer: currentAnswer,
       }: IOnboardingAnswer = onBoardingAnswers.pop() || { answer: null };
-      setOnboardingAnswers(onBoardingAnswers);
       this.setState({ answer: currentAnswer });
     }
-    history.push(`/register/quiz/${toPageNum || ''}`);
-  }
-
-  stepChange(currentStep: number) {
-    const { history, quizNumber } = this.props;
-    const toPageNum = currentStep + 1;
-    if (toPageNum > quizNumber) {
-      return null;
-    }
-    history.push(`/register/quiz/${toPageNum}`);
   }
 
   render() {
     const { answer } = this.state;
-    const { quizNumber } = this.props;
-    const currentStep = quizNumber - 1;
-    const { question, options } = questions[currentStep] || { question: null, options: [] };
-    const lastQuestion = quizNumber === questions.length;
+    const { quizNumber, question: propsQuestion, history } = this.props;
+    const { question, options, subQuestions = [] }: IQuestion = propsQuestion;
+    const lastQuestion = (quizNumber === questions.length);
+    const derivedQuestion: IQuestion | undefined = subQuestions.find(({ requiredAnswer }) => {
+      const { answer: previousAnswer }: IOnboardingAnswer = getOnboardingAnswers().pop() || {
+        answer: null,
+      };
+      return requiredAnswer === previousAnswer;
+    });
+
     return (
       <Row className="root-row" type="flex">
         <Col xs={24} md={{ span: 12, offset: 6 }} lg={{ span: 10, offset: 7 }} className="root-col">
-          <Title level={3} style={{ marginBottom: 36 }}>Questions</Title>
-          <Steps
-            current={currentStep}
+          <StyledSteps
+            current={quizNumber - 1}
             style={{ display: 'flex' }}
-            onChange={this.stepChange}
           >
             {questions.map((_, i) => (
               <Step key={i} />
             ))}
-          </Steps>
+          </StyledSteps>
         </Col>
         <Col xs={24} md={{ span: 12, offset: 6 }} lg={{ span: 10, offset: 7 }} className="root-col">
           <Title level={4}>
-            {question}
+            {derivedQuestion ? derivedQuestion.question : question}
           </Title>
         </Col>
         <Col xs={24} md={{ span: 12, offset: 6 }} lg={{ span: 10, offset: 7 }} className="root-col">
-          <Paragraph style={{ textAlign: 'center' }}>Select one</Paragraph>
-          <StyledRadioGroup value={answer} size="large">
-            {options.map((option, idx) => (
-              <RadioButton
-                value={option}
-                key={idx}
-                onChange={this.selectAnswer}
-              >
-                {option}
-              </RadioButton>
-            ))}
-          </StyledRadioGroup>
+          <CustomRadioGroup
+            answer={answer}
+            options={derivedQuestion ? derivedQuestion.options : options}
+            selectAnswer={this.selectAnswer}
+          />
           <Row gutter={{ xs: 12, sm: 14, md: 18, lg: 24 }}>
             <Col xs={12}>
               <StyledButton
                 className="float-right"
                 size="large"
                 block
-                onClick={() => this.pageChange(-1)}
+                onClick={() => {
+                  this.pageChange(-1);
+                  history.goBack();
+                }}
               >
                 Previous
               </StyledButton>
@@ -153,7 +194,8 @@ class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
                 size="large"
                 block
                 onClick={() => {
-                  lastQuestion ? this.pageChange(-1) : this.pageChange(1);
+                  const increment = (quizNumber === 4 && answer === 'Yes, I have') ? 2 : 1;
+                  lastQuestion ? this.pageChange(-1) : this.pageChange(increment);
                 }}
                 disabled={!answer}
               >

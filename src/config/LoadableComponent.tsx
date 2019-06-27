@@ -5,11 +5,11 @@ import { Spin, Icon } from 'antd';
 const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 interface ILoadableComponentProps {
-  componentName: string,
+  componentPathName: string,
 }
 
-const LoadableComponent = ({ componentName }: ILoadableComponentProps) => {
-  return loadable(() => import(`../${componentName}`), {
+const LoadableComponent = ({ componentPathName }: ILoadableComponentProps) => {
+  return loadable(() => import(`../${componentPathName}`), {
     fallback: <Spin indicator={antIcon} />,
   });
 };
