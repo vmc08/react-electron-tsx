@@ -3,30 +3,22 @@ import styled from 'styled-components';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Row, Col, Typography, Radio, Button, Steps } from 'antd';
 
+import QuizContext from '../../../contexts/QuizContext';
 import { questions, IQuestion } from '../../../utils/onBoardingUtils';
-import {
-  getOnboardingAnswers,
-  setOnboardingAnswers,
-  IOnboardingAnswer,
-} from '../../../utils/userUtils';
 
 const { Title } = Typography;
 const { Step } = Steps;
 const { Group: RadioGroup, Button: RadioButton } = Radio;
 
 interface IQuizFormProps extends RouteComponentProps {
-  quizNumber: number,
+  currentIndex: number,
   question: IQuestion,
-}
-
-interface IQuizFormStates {
-  answer: string | null,
 }
 
 interface ICustomRadioGroupProps {
   options: string[] | undefined,
   answer: string | null,
-  selectAnswer: (e: any) => void
+  selectAnswer: (e: string) => void
 }
 
 const StyledSteps = styled(Steps)`
@@ -88,66 +80,33 @@ const CustomRadioGroup = ({ options, selectAnswer, answer }: ICustomRadioGroupPr
   );
 };
 
-class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
+class QuizForm extends React.PureComponent<IQuizFormProps> {
   constructor(props: IQuizFormProps) {
     super(props);
-    this.pageChange = this.pageChange.bind(this);
-    this.selectAnswer = this.selectAnswer.bind(this);
-    this.state = {
-      answer: null,
-    };
   }
 
   componentDidMount() {
-    const { history, quizNumber } = this.props;
-    const onBoardingAnswers: IOnboardingAnswer[] = getOnboardingAnswers();
-    const lastQuestionNumber = onBoardingAnswers.length + 1;
-    if (quizNumber > lastQuestionNumber) {
-      history.push(`/register/quiz/${lastQuestionNumber}`);
-    } else if (quizNumber < lastQuestionNumber) {
-      const reducedAnswers: IOnboardingAnswer[] = getOnboardingAnswers().slice(0, quizNumber);
-      setOnboardingAnswers(reducedAnswers);
-      const { answer } = reducedAnswers.pop() || { answer: null };
-      this.setState({ answer });
-    }
-  }
-
-  selectAnswer(value: string | null) {
-    this.setState({
-      answer: value,
-    }, () => {
-      const { quizNumber } = this.props;
-      const onBoardingAnswers: IOnboardingAnswer[] = getOnboardingAnswers();
-      const { answer } = this.state;
-      onBoardingAnswers[quizNumber - 1] = { answer };
-      setOnboardingAnswers(onBoardingAnswers);
-    });
-  }
-
-  pageChange(pageNumber: number) {
-    const { history, quizNumber } = this.props;
-    const toPageNum = quizNumber + pageNumber;
-    if (pageNumber > 0) {
-      this.setState({ answer: null });
-      history.push(`/register/quiz/${toPageNum || ''}`);
-    } else {
-      const onBoardingAnswers: IOnboardingAnswer[] = getOnboardingAnswers();
-      const {
-        answer: currentAnswer,
-      }: IOnboardingAnswer = onBoardingAnswers.pop() || { answer: null };
-      this.setState({ answer: currentAnswer });
+    const { history, currentIndex } = this.props;
+    const { answers, setAnswers } = this.context;
+    // forcing 5th question via direct access to url when previous answer is invalid
+    const skipNext = (answers[currentIndex - 1] === 'Yes, I have' && currentIndex === 4);
+    if ((currentIndex - answers.length) > 0 || skipNext) {
+      setAnswers(answers.slice(0, 1));
+      history.push('/register/quiz/1');
     }
   }
 
   render() {
-    const { answer } = this.state;
-    const { quizNumber, question: propsQuestion, history } = this.props;
+    const { answers, setSelectedAnswer, setAnswers }: any = this.context;
+    const { question: propsQuestion, history, currentIndex } = this.props;
+
     const { question, options, subQuestions = [] }: IQuestion = propsQuestion;
+    const quizNumber = currentIndex + 1;
+    const currentAnswer = answers[currentIndex];
+    const previousAnswer = answers[currentIndex - 1];
     const lastQuestion = (quizNumber === questions.length);
+
     const derivedQuestion: IQuestion | undefined = subQuestions.find(({ requiredAnswer }) => {
-      const { answer: previousAnswer }: IOnboardingAnswer = getOnboardingAnswers().pop() || {
-        answer: null,
-      };
       return requiredAnswer === previousAnswer;
     });
 
@@ -155,7 +114,7 @@ class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
       <Row className="root-row" type="flex">
         <Col xs={24} md={{ span: 12, offset: 6 }} lg={{ span: 10, offset: 7 }} className="root-col">
           <StyledSteps
-            current={quizNumber - 1}
+            current={currentIndex}
             style={{ display: 'flex' }}
           >
             {questions.map((_, i) => (
@@ -170,9 +129,9 @@ class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
         </Col>
         <Col xs={24} md={{ span: 12, offset: 6 }} lg={{ span: 10, offset: 7 }} className="root-col">
           <CustomRadioGroup
-            answer={answer}
+            answer={currentAnswer}
             options={derivedQuestion ? derivedQuestion.options : options}
-            selectAnswer={this.selectAnswer}
+            selectAnswer={(selectedOption) => setSelectedAnswer(currentIndex, selectedOption)}
           />
           <Row gutter={{ xs: 12, sm: 14, md: 18, lg: 24 }}>
             <Col xs={12}>
@@ -181,7 +140,9 @@ class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
                 size="large"
                 block
                 onClick={() => {
-                  this.pageChange(-1);
+                  (currentIndex === 5 && previousAnswer === null) ?
+                    setAnswers(answers.filter((a: string) => a)) :
+                    setAnswers(answers.slice(0, currentIndex));
                   history.goBack();
                 }}
               >
@@ -194,10 +155,13 @@ class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
                 size="large"
                 block
                 onClick={() => {
-                  const increment = (quizNumber === 4 && answer === 'Yes, I have') ? 2 : 1;
-                  lastQuestion ? this.pageChange(-1) : this.pageChange(increment);
+                  const increment = (quizNumber === 4 && currentAnswer === 'Yes, I have') ? 2 : 1;
+                  if (quizNumber === 4 && currentAnswer === 'Yes, I have') {
+                    setSelectedAnswer(quizNumber, null);
+                  }
+                  history.push(`/register/quiz/${quizNumber + increment}`);
                 }}
-                disabled={!answer}
+                disabled={!currentAnswer}
               >
                 {lastQuestion ? 'Submit answers' : 'Next'}
               </StyledButton>
@@ -208,5 +172,7 @@ class QuizForm extends React.PureComponent<IQuizFormProps, IQuizFormStates> {
     );
   }
 }
+
+QuizForm.contextType = QuizContext;
 
 export default withRouter(QuizForm);

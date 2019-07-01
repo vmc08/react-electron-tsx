@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
+import { Link, Switch, Route, Redirect, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Row, Col, Typography, Button } from 'antd';
 
 import AccountVerifier from '../../../HOC/AccountVerifier';
@@ -49,8 +49,6 @@ class Quiz extends React.Component<RouteComponentProps> {
   }
 
   render() {
-    const { account, token } = this.context;
-
     return (
       <QuizWrapper>
         <StyledDiv>
@@ -89,7 +87,12 @@ class Quiz extends React.Component<RouteComponentProps> {
               <Route
                 key={i}
                 path={`/register/quiz/${i + 1}`}
-                render={() => <QuizForm quizNumber={i + 1} question={question} />}
+                render={() => (
+                  <QuizForm
+                    currentIndex={i}
+                    question={question}
+                  />
+                )}
               />
             ))}
             <Route render={() => <Redirect to="/register/quiz" />} />
@@ -100,6 +103,4 @@ class Quiz extends React.Component<RouteComponentProps> {
   }
 }
 
-Quiz.contextType = UserContext;
-
-export default AccountVerifier(Quiz, true);
+export default AccountVerifier(withRouter(Quiz), true);

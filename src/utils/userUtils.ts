@@ -1,7 +1,3 @@
-export interface IOnboardingAnswer {
-  answer: string | null,
-}
-
 export const setAuthToken = (token: string): void => localStorage.setItem('auth_token', token);
 
 export const getAuthToken = (): string => localStorage.getItem('auth_token') || '';
@@ -14,11 +10,11 @@ export const setTalkToken = (token: string): void => localStorage.setItem('talk_
 
 export const getTalkToken = (): string => localStorage.getItem('talk_token') || '';
 
-export const setOnboardingAnswers = (answers: IOnboardingAnswer[]): void => {
+export const setOnboardingAnswers = (answers: string[] | null[]): void => {
   sessionStorage.setItem('onboarding_answers', JSON.stringify(answers));
 };
 
-export const getOnboardingAnswers = (): IOnboardingAnswer[] | [] => {
+export const getOnboardingAnswers = (): string[] | null[] => {
   const answers = sessionStorage.getItem('onboarding_answers') || '[]';
   return JSON.parse(answers);
 };

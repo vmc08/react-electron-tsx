@@ -4,10 +4,19 @@ import routes from './config/routes';
 import FourOhFour from './pages/FourOhFour';
 
 import { SidenavProvider } from './contexts/SidenavContext';
+import { QuizProvider } from './contexts/QuizContext';
+
+const AppProviders = ({ children }: any) => (
+  <SidenavProvider>
+    <QuizProvider>
+      {children}
+    </QuizProvider>
+  </SidenavProvider>
+);
 
 const App = () => {
   return (
-    <SidenavProvider>
+    <AppProviders>
       <Switch>
         {routes.map(({ component: Component, exact, path, ...rest }) => (
           <Route
@@ -19,7 +28,7 @@ const App = () => {
         ))}
         <Route component={FourOhFour} />
       </Switch>
-    </SidenavProvider>
+    </AppProviders>
   );
 };
 
