@@ -2,7 +2,7 @@ import { gql } from 'apollo-boost';
 
 export const CREATE_ACCESS_TOKEN = gql`
   mutation CreateAccessToken ($input: CreateAccessTokenInput!) {
-    createAccessToken(input: $input) {
+    createAccessToken (input: $input) {
       token
     }
   }
@@ -10,19 +10,19 @@ export const CREATE_ACCESS_TOKEN = gql`
 
 export const REQUEST_RESET_PASSWORD = gql`
   mutation RequestResetPassword ($input: RequestResetPasswordInput!) {
-    requestResetPassword(input: $input)
+    requestResetPassword (input: $input)
   }
 `;
 
 export const RESET_PASSWORD = gql`
   mutation ResetPassword ($token: String!, $input: ResetPasswordInput!) {
-    resetPassword(token: $token, input: $input)
+    resetPassword (token: $token, input: $input)
   }
 `;
 
 export const CREATE_ACCOUNT = gql`
   mutation CreateAccount ($input: CreateAccountInput!, $affiliateId: String) {
-    createAccount(input: $input, affiliateId: $affiliateId) {
+    createAccount (input: $input, affiliateId: $affiliateId) {
       token
       talk {
         token
@@ -41,5 +41,11 @@ export const SEND_ONBOARDING_CODE = gql`
 export const VERIFY_ONBOARDING_CODE = gql`
   mutation VerifyOnboardingCode ($token: String!, $code: String!) {
     verifyOnboardingCode (token: $token, code: $code)
+  }
+`;
+
+export const ASSESS_ONBOARDING_SCORE = gql`
+  mutation AssessOnboardingScore ($token: String!, $input: [OnboardingAnswerInput]!) {
+    assessOnboardingScore (token: $token, input: $input)
   }
 `;
