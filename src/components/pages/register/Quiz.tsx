@@ -9,11 +9,12 @@ import QuizForm from '../../forms/user/QuizForm';
 
 import { questions } from '../../../utils/onBoardingUtils';
 import UserContext from '../../../contexts/UserContext';
+import { ACCOUNT } from '../../../apollo/queries/user';
 import { ASSESS_ONBOARDING_SCORE } from '../../../apollo/mutations/user';
 
 const { Title } = Typography;
 
-interface IQuizProps extends RouteComponentProps<any> {
+interface IQuizProps {
   assessOnboardingScore: any,
 }
 
@@ -74,19 +75,23 @@ class Quiz extends React.PureComponent<IQuizProps, IQuizStates> {
 
   async submitAnswers(answers: string[]) {
     const { token } = this.context;
-    const { assessOnboardingScore, history } = this.props;
+    const { assessOnboardingScore } = this.props;
     const input = answers.map((answer: string, order: number) => ({
       answer, order,
     }));
     this.setState({ isLoading: true });
     await assessOnboardingScore({
       variables: { token, input },
+      awaitRefetchQueries: true,
+      refetchQueries: [{
+        query: ACCOUNT,
+        variables: { token },
+        fetchPolicy: 'network-only',
+      }],
     }).then(({ data }: any) => {
       const { assessOnboardingScore: userOnboarded } = data;
       if (userOnboarded) {
-        this.setState({ isLoading: false });
         message.success('Thank you for sharing us those information', 2);
-        history.replace('/register/welcome');
       }
     }).catch((error: any) => {
       const { message: errorMessage } = error.graphQLErrors[0];
@@ -164,4 +169,4 @@ const ComposedQuiz = compose(
   graphql(ASSESS_ONBOARDING_SCORE, { name: 'assessOnboardingScore' }),
 )(Quiz);
 
-export default AccountVerifier(withRouter(ComposedQuiz), true);
+export default AccountVerifier(ComposedQuiz, true);

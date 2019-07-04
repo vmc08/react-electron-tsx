@@ -76,16 +76,11 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
     this.setState({ verifying: true });
     await verifyOnboardingCode({
       variables: { token: userToken, code },
-      refetchQueries: [
-        {
-          query: ACCOUNT,
-          variables: { token: userToken },
-        },
-      ],
-    }).then(({ data }: any) => {
-      this.setState({ verifying: false });
-    })
-    .catch((error: any) => {
+      refetchQueries: [{
+        query: ACCOUNT,
+        variables: { token: userToken },
+      }],
+    }).catch((error: any) => {
       const { message: errorMessage } = error.graphQLErrors[0];
       this.setState({ verifying: false, error: errorMessage });
     });

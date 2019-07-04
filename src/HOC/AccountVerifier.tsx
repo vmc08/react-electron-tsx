@@ -4,6 +4,7 @@ import UserContext from '../contexts/UserContext';
 
 const verificationPath = '/register/verify-email';
 const quizPath = '/register/quiz';
+const welcomePath = '/register/welcome';
 
 export default <P extends object>(
   ComposedComponent: React.ComponentType<P>,
@@ -22,8 +23,8 @@ export default <P extends object>(
         if ((verified && !scored) && !pathname.includes(quizPath)) {
           return <Redirect to={quizPath} />;
         }
-        if (blockAuthenticatedUser && scored && verified) {
-          return <Redirect to="/" />;
+        if (blockAuthenticatedUser && scored && verified && pathname !== welcomePath) {
+          return <Redirect to={welcomePath} />;
         }
       }
       return (

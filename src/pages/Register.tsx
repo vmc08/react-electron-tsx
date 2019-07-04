@@ -15,6 +15,10 @@ const Quiz = LoadableComponent({
   componentPathName: 'components/pages/register/Quiz',
 });
 
+const Welcome = LoadableComponent({
+  componentPathName: 'components/pages/register/Welcome',
+});
+
 const FourOhFour = LoadableComponent({
   componentPathName: 'pages/FourOhFour',
 });
@@ -28,6 +32,7 @@ const Register = () => {
       <Route path="/register/trial/:affiliateId" component={RequireAuth(FreeAndTrial, false)} />
       <Route path="/register/verify-email" component={RequireAuth(Verification)} />
       <Route path="/register/quiz" component={RequireAuth(Quiz)} />
+      <Route path="/register/welcome" component={RequireAuth(Welcome)} />
       <Route component={FourOhFour} />
     </Switch>
   );
