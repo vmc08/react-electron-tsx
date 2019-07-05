@@ -1,0 +1,9 @@
+body {
+  background-color: #f5f5f5;
+}
+
+.ant-menu-submenu-popup {
+  background: transparent;
+  padding-bottom: 8px;
+  padding-left: 3px;
+}

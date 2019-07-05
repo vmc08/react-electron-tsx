@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
-import { Link, Switch, Route, Redirect, withRouter, RouteComponentProps } from 'react-router-dom';
+import { Link, Switch, Route, Redirect } from 'react-router-dom';
 import { Row, Col, Typography, Button, message } from 'antd';
 
 import AccountVerifier from '../../../HOC/AccountVerifier';
@@ -132,9 +132,11 @@ class Quiz extends React.PureComponent<IQuizProps, IQuizStates> {
                       and it will help you (and us!) figure out where you are in your&nbsp;
                       investing journey and what’s your ideal next step.👍
                     </Title>
-                    <StyledButton type="primary" size="large">
-                      <Link to="/register/quiz/1">Let’s Go</Link>
-                    </StyledButton>
+                    <Link to="/register/quiz/1">
+                      <StyledButton type="primary" size="large">
+                        Let’s Go
+                      </StyledButton>
+                    </Link>
                   </Col>
                 </Row>
               )}

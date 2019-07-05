@@ -7,7 +7,8 @@ import * as serviceWorker from './serviceWorker';
 
 import App from './App';
 import 'antd/dist/antd.css';
-import './app.css';
+import './stylesheets/bootstrap-utilities.css';
+import './stylesheets/app.css';
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_API_URL,

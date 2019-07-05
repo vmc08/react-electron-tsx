@@ -19,7 +19,7 @@ interface IAppLayoutProps {
 
 const StyledHeader = styled(Header)`
   background: #fff !important;
-  padding: 0 24px;
+  padding: 0 25px !important;
   position: fixed;
   width: 100%;
   z-index: 1;
