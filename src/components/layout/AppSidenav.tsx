@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Tooltip } from 'antd';
 import { navRoutes, INavRoute, INavGroup, getDefaultSelectedKeys } from '../../utils/navUtils';
 import { slugify } from '../../utils/stringUtils';
 import SidenavContext, { ISelectedKeys } from '../../contexts/SidenavContext';
@@ -160,7 +160,13 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
                                 }
                               }}
                             >
-                              <span>{itemLabel}</span>
+                              <Tooltip
+                                placement="right"
+                                title={collapsed ? itemLabel : null}
+                                overlayClassName="custom-tooltip"
+                              >
+                                <span>{itemLabel}</span>
+                              </Tooltip>
                             </Menu.Item>
                           );
                         })}
@@ -181,8 +187,14 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
                   }
                 }}
               >
-                <Icon type={iconType} />
-                <span>{label}</span>
+                <Tooltip
+                  placement="right"
+                  title={collapsed ? label : null}
+                  overlayClassName="custom-tooltip"
+                >
+                  <Icon type={iconType} />
+                  <span>{label}</span>
+                </Tooltip>
               </Menu.Item>
             );
           })}

@@ -12,3 +12,15 @@ body {
   position: fixed;
   left: 0 !important;
 }
+
+.ant-dropdown-menu-inline-collapsed-tooltip {
+  display: none;
+}
+
+.ant-menu-inline-collapsed-tooltip {
+  display: none;
+}
+
+.custom-tooltip {
+  left: 67px !important;
+}
