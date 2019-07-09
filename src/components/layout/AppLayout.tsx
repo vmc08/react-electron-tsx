@@ -18,6 +18,9 @@ interface IAppLayoutProps {
 }
 
 const StyledHeader = styled(Header)`
+  height: 56px !important;
+  line-height: 56px !important;
+  border-bottom: 1px solid #e8e8e8;
   background: #fff !important;
   padding: 0 25px !important;
   position: fixed;

@@ -53,7 +53,7 @@ const StyledMenu = styled(Menu)`
 `;
 
 const StyledDropdownMenus = styled(Menu)`
-  width: 185px;
+  width: 175px;
   position: fixed;
   left: 22px;
 `;

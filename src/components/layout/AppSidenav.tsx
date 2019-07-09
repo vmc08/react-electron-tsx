@@ -60,7 +60,7 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
   constructor(props: RouteComponentProps) {
     super(props);
     this.state = {
-      collapsedWidth: 80,
+      collapsedWidth: 64,
     };
     this.changeRoute = this.changeRoute.bind(this);
     this.onBreakpoint = this.onBreakpoint.bind(this);
@@ -107,7 +107,7 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
         collapsible
         theme="light"
         trigger={null}
-        width={235}
+        width={225}
         collapsed={collapsed}
         collapsedWidth={collapsedWidth}
         breakpoint="sm"
