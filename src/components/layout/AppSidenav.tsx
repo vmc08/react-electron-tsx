@@ -28,6 +28,15 @@ const StyledSider = styled(Sider)`
   .ant-layout-sider-children {
     overflow: auto;
   }
+  &.ant-layout-sider-collapsed {
+    .ant-layout-sider-children {
+      .ant-menu-inline-collapsed {
+        .ant-menu-item, .ant-menu-submenu-title {
+          padding: 0 24px !important;
+        }
+      }
+    }
+  }
 `;
 
 const StyledBrandLogo = styled.div`
@@ -84,7 +93,7 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
     if (broken) {
       this.setState({ collapsedWidth: 0 });
     } else {
-      this.setState({ collapsedWidth: 80 });
+      this.setState({ collapsedWidth: 64 });
     }
   }
 
@@ -98,7 +107,7 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
         collapsible
         theme="light"
         trigger={null}
-        width={256}
+        width={235}
         collapsed={collapsed}
         collapsedWidth={collapsedWidth}
         breakpoint="sm"

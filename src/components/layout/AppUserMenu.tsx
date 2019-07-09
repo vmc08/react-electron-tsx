@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Menu, Icon, Button } from 'antd';
+import { Menu, Icon, Button, Dropdown } from 'antd';
 import { ISelectedKeys } from '../../contexts/SidenavContext';
 import UserContext from '../../contexts/UserContext';
 import { deleteAuthToken } from '../../utils/userUtils';
@@ -14,7 +14,7 @@ import {
 import { slugify } from '../../utils/stringUtils';
 import { customerPlans } from '../../utils/appDataUtils';
 
-const { SubMenu, ItemGroup, Item } = Menu;
+const { Item } = Menu;
 
 interface IAppUserMenuProps extends RouteComponentProps {
   collapsed: boolean,
@@ -22,26 +22,40 @@ interface IAppUserMenuProps extends RouteComponentProps {
   setSelectedKeys: (selectedKeys: ISelectedKeys) => {}
 }
 
+interface IDropdownMenus {
+  changeRoute: (selectedKeys: { itemKey: string }, path?: string) => void,
+  logoutSession: () => void,
+}
+
 const StyledMenu = styled(Menu)`
   border-right: 0 !important;
   width: calc(100% - 1px) !important;
   position: absolute;
   bottom: 0;
-  .user-menu > .ant-menu-submenu-title {
+  .ant-menu-item {
     min-height: 64px !important;
     margin: 0 !important;
     background: #fff;
     display: flex;
     font-weight: 600;
-    span > sub {
-      bottom: 35%;
-      font-size: 12px;
-      font-weight: normal;
-      text-transform: uppercase;
-      position: absolute;
-      left: 40px;
+    padding: 0 24px !important;
+    .ant-dropdown-trigger {
+      span > sub {
+        bottom: 35%;
+        font-size: 12px;
+        font-weight: normal;
+        text-transform: uppercase;
+        position: absolute;
+        left: 48px;
+      }
     }
   }
+`;
+
+const StyledDropdownMenus = styled(Menu)`
+  width: 185px;
+  position: fixed;
+  left: 22px;
 `;
 
 const EntryLinkMenu = ({ collapsed }: {collapsed: boolean}) => {
@@ -51,7 +65,7 @@ const EntryLinkMenu = ({ collapsed }: {collapsed: boolean}) => {
       style={{
         position: 'absolute',
         bottom: 0,
-        width: 256,
+        width: 235,
         padding: '16px 24px',
       }}
     >
@@ -77,6 +91,42 @@ const EntryLinkMenu = ({ collapsed }: {collapsed: boolean}) => {
   );
 };
 
+const DropdownMenus = ({ logoutSession, changeRoute }: IDropdownMenus) => {
+  const { itemKey } = getDefaultSelectedKeys(userRoutes);
+  const menuProps = {
+    ...(itemKey && {
+      defaultSelectedKeys: [itemKey],
+      selectedKeys: [itemKey] }
+    ),
+  };
+  return (
+    <StyledDropdownMenus {...menuProps}>
+      {userRoutes.map((userRoute: INavRoute, idx) => {
+        const { label, customAction, path, iconType, externalLink } = userRoute;
+        return (
+          <Item
+            className="px-3 py-2"
+            key={slugify(label || '/') || idx}
+            disabled={false}
+            onClick={() => {
+              if (externalLink) {
+                window.open(externalLink, '_blank');
+              } else if (customAction) {
+                logoutSession();
+              } else {
+                changeRoute({ itemKey: slugify(label || '/') }, path);
+              }
+            }}
+          >
+            <Icon type={iconType} className="mr-3 ml-1" />
+            <span>{label}</span>
+          </Item>
+        );
+      })}
+    </StyledDropdownMenus>
+  );
+};
+
 class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
   constructor(props: IAppUserMenuProps) {
     super(props);
@@ -99,19 +149,15 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
         <EntryLinkMenu collapsed={collapsed} />
       );
     }
-    const { itemKey } = getDefaultSelectedKeys(userRoutes);
-    const menuProps = {
-      ...(itemKey && {
-        defaultSelectedKeys: [itemKey],
-        selectedKeys: [itemKey] }
-      ),
-    };
     return (
-      <StyledMenu {...menuProps}>
-        <SubMenu
-          className="user-menu"
-          key="sub-user"
-          title={
+      <StyledMenu selectable={false}>
+        <Item key="sub-user">
+          <Dropdown
+            overlay={DropdownMenus({ changeRoute, logoutSession: this.logoutSession })}
+            trigger={['click']}
+            placement="topCenter"
+            overlayClassName="dropdown-root"
+          >
             <span>
               <Icon type="user" />
               <span>
@@ -119,33 +165,8 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
                 <sub>{customerPlans[account.level]} Plan</sub>
               </span>
             </span>
-          }
-        >
-          <ItemGroup title={`${customerPlans[account.level]} PLAN`} key="group-user">
-            {userRoutes.map((userRoute: INavRoute, idx) => {
-              const { label, customAction, path, iconType, externalLink } = userRoute;
-              return (
-                <Item
-                  style={{ padding: '0 28px' }}
-                  key={slugify(label || '/') || idx}
-                  disabled={false}
-                  onClick={() => {
-                    if (externalLink) {
-                      window.open(externalLink, '_blank');
-                    } else if (customAction) {
-                      this.logoutSession();
-                    } else {
-                      changeRoute({ itemKey: slugify(label || '/') }, path);
-                    }
-                  }}
-                >
-                  <Icon type={iconType} />
-                  <span>{label}</span>
-                </Item>
-              );
-            })}
-          </ItemGroup>
-        </SubMenu>
+          </Dropdown>
+        </Item>
       </StyledMenu>
     );
   }
