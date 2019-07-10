@@ -128,7 +128,7 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
                         type="error"
                         closable
                         onClose={this.onErrorClose}
-                        style={{ marginBottom: 24 }}
+                        className="mb-4"
                       />
                     </Col>
                   )}
@@ -147,7 +147,7 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
                       type="primary"
                       htmlType="submit"
                       size="large"
-                      style={{ marginBottom: 24 }}
+                      className="mb-4"
                       loading={verifying}
                       disabled={
                         (hasValidObjectValues(errors) && !!touched.code) || resending || verifying
@@ -168,7 +168,7 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
         </Paragraph>
         <Button
           icon="reload"
-          style={{ display: 'block', margin: '0 auto' }}
+          className="d-block my-0 mx-auto"
           onClick={this.onCodeResend}
           disabled={verifying || resending}
           loading={resending}

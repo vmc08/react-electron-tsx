@@ -10,7 +10,13 @@ interface ILoadableComponentProps {
 
 const LoadableComponent = ({ componentPathName }: ILoadableComponentProps) => {
   return loadable(() => import(`../${componentPathName}`), {
-    fallback: <Spin indicator={antIcon} />,
+    fallback: (
+      <Spin
+        size="large"
+        className="code-splitting-spinner"
+        indicator={antIcon}
+      />
+    ),
   });
 };
 

@@ -91,6 +91,7 @@ class Quiz extends React.PureComponent<IQuizProps, IQuizStates> {
     }).then(({ data }: any) => {
       const { assessOnboardingScore: userOnboarded } = data;
       if (userOnboarded) {
+        sessionStorage.removeItem('onboarding_answers');
         message.success('Thank you for sharing us those information', 2);
       }
     }).catch((error: any) => {

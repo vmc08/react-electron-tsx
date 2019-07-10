@@ -58,32 +58,32 @@ const StyledDropdownMenus = styled(Menu)`
   left: 22px;
 `;
 
+const StyledSpan = styled.span`
+  width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+`;
+
 const EntryLinkMenu = ({ collapsed }: {collapsed: boolean}) => {
   if (collapsed) { return null; }
   return (
     <div
+      className="py-3 px-4"
       style={{
         position: 'absolute',
         bottom: 0,
-        width: 235,
-        padding: '16px 24px',
+        width: 225,
       }}
     >
       <Link to="/register/user">
-        <Button
-          type="primary"
-          block
-          style={{ marginBottom: 8 }}
-        >
+        <Button className="mb-2" type="primary" block>
           Sign up
         </Button>
       </Link>
       <Link to="/login">
-        <Button
-          type="link"
-          block
-          style={{ marginBottom: 8 }}
-        >
+        <Button className="mb-2" type="link" block>
           Login
         </Button>
       </Link>
@@ -159,11 +159,11 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
             overlayClassName="dropdown-root"
           >
             <span>
-              <Icon type="user" />
-              <span>
-                {account.username}
+              <Icon type="user" style={{ verticalAlign: 12 }} />
+              <StyledSpan>
+                {account.firstname || account.username}
                 <sub>{customerPlans[account.level]} Plan</sub>
-              </span>
+              </StyledSpan>
             </span>
           </Dropdown>
         </Item>
