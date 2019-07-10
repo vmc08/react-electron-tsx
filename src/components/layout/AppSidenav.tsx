@@ -18,6 +18,12 @@ interface IStyledLogoProp {
   collapsed: boolean
 }
 
+interface IMenuItemWrapper {
+  collapsed: boolean,
+  label: string,
+  children: any,
+}
+
 const StyledSider = styled(Sider)`
   position: sticky !important;
   top: 0px;
@@ -55,6 +61,21 @@ const StyledMenu = styled(Menu)`
   border-right: 0 !important;
   width: calc(100% - 1px) !important;
 `;
+
+const MenuItemWrapper = ({ collapsed, children, label }: IMenuItemWrapper) => {
+  if (!collapsed) {
+    return children;
+  }
+  return (
+    <Tooltip
+      placement="right"
+      title={label}
+      overlayClassName="custom-tooltip"
+    >
+      {children}
+    </Tooltip>
+  );
+};
 
 class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWidth: number }> {
   constructor(props: RouteComponentProps) {
@@ -160,13 +181,9 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
                                 }
                               }}
                             >
-                              <Tooltip
-                                placement="right"
-                                title={collapsed ? itemLabel : null}
-                                overlayClassName="custom-tooltip"
-                              >
+                              <MenuItemWrapper collapsed={collapsed} label={itemLabel}>
                                 <span>{itemLabel}</span>
-                              </Tooltip>
+                              </MenuItemWrapper>
                             </Menu.Item>
                           );
                         })}
@@ -187,14 +204,10 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
                   }
                 }}
               >
-                <Tooltip
-                  placement="right"
-                  title={collapsed ? label : null}
-                  overlayClassName="custom-tooltip"
-                >
+                <MenuItemWrapper collapsed={collapsed} label={label}>
                   <Icon type={iconType} />
                   <span>{label}</span>
-                </Tooltip>
+                </MenuItemWrapper>
               </Menu.Item>
             );
           })}

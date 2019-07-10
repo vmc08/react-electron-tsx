@@ -40,11 +40,11 @@ class Dashboard extends React.Component<{ requireAuth: boolean }> {
                     <TopLosers />
                   </Col>
                 </Row>
-                <Row gutter={24}>
-                  <Col xs={{ span: 24, order: 2 }} xl={16}>
+                <Row type="flex" gutter={24}>
+                  <Col xs={{ span: 24, order: 2 }} xl={{ span: 16, order: 1 }}>
                     Insights here
                   </Col>
-                  <Col xs={{ span: 24, order: 1 }} xl={8}>
+                  <Col xs={{ span: 24, order: 1 }} xl={{ span: 8, order: 2 }}>
                     <Row gutter={24}>
                       <Col>
                         <Portfolio />

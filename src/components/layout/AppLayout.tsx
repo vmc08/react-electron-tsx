@@ -30,10 +30,10 @@ const StyledHeader = styled(Header)`
 
 const StyledContent = styled(Content)`
   padding: 24px;
-  margin-top: 64px;
+  margin-top: 56px;
   @media only screen and (max-width: 600px) {
     margin-right: ${(props: { collapsed: number }) => {
-      return `${props.collapsed ? 0 : '-256px'}`;
+      return `${props.collapsed ? 0 : '-225px'}`;
     }};
   }
 `;
