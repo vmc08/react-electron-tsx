@@ -29,9 +29,9 @@ const StyledHeader = styled(Header)`
 `;
 
 const StyledContent = styled(Content)`
-  padding: 24px;
   margin-top: 56px;
-  @media only screen and (max-width: 600px) {
+  @media (max-width: 577px) and (orientation: portrait),
+  (max-width: 824px) and (orientation: landscape) {
     margin-right: ${(props: { collapsed: number }) => {
       return `${props.collapsed ? 0 : '-225px'}`;
     }};
@@ -56,7 +56,7 @@ const AppLayout = (props: IAppLayoutProps) => {
             onClick={toggleCollapse}
           />
         </StyledHeader>
-        <StyledContent collapsed={collapsed ? 1 : 0}>
+        <StyledContent className="p-2 p-sm-3" collapsed={collapsed ? 1 : 0}>
           {/* <AppBreadcrumb /> */}
           {children}
         </StyledContent>

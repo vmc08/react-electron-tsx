@@ -4,7 +4,7 @@ import { Card, Typography } from 'antd';
 class HeatMap extends React.Component {
   render() {
     return (
-      <Card loading/>
+      <Card className="mb-2 mb-sm-3" loading/>
     );
   }
 }

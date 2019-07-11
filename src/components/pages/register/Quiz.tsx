@@ -27,7 +27,7 @@ const QuizWrapper = styled.div`
   height: 100vh;
   .root-row {
     padding-top: 50px;
-    @media only screen and (max-width: 600px) {
+    @media (max-width: 577px) {
       padding-top: 0;
     }
     &.main {
@@ -35,12 +35,12 @@ const QuizWrapper = styled.div`
     }
     .root-col {
       padding: 24px;
-      @media only screen and (max-width: 600px) {
+      @media (max-width: 577px) {
         padding: 24px 0;
       }
       &:nth-child(2) {
         padding: 12px 24px;
-        @media only screen and (max-width: 600px) {
+        @media (max-width: 577px) {
           padding: 12px;
         }
         }
