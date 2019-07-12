@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Row, Col } from 'antd';
+import { Row, Col, Menu } from 'antd';
 
-import { UserConsumer } from '../contexts/UserContext';
 import AppLayout from '../components/layout/AppLayout';
 import MarketCap from '../components/pages/dashboard/MarketCap';
 import HeatMap from '../components/pages/dashboard/HeatMap';
@@ -11,6 +10,37 @@ import TopVolume from '../components/pages/dashboard/TopVolume';
 import TopLosers from '../components/pages/dashboard/TopLosers';
 import Portfolio from '../components/pages/dashboard/Portfolio';
 import Watchlist from '../components/pages/dashboard/Watchlist';
+
+import { UserConsumer } from '../contexts/UserContext';
+import { useIntervalContextContextValue } from '../contexts/IntervalContext';
+
+const StyledMenu = styled(Menu)`
+  background: transparent !important;
+  border-bottom: 0 !important;
+`;
+
+const dashboardInterval = ['Week', 'Month', 'Year'];
+
+const IntervalMenu = () => {
+  const { interval, setDashboardInterval }: any = useIntervalContextContextValue();
+  return (
+    <StyledMenu
+      className="mb-2 mb-sm-3"
+      mode="horizontal"
+      defaultSelectedKeys={[interval]}
+      selectedKeys={[interval]}
+    >
+      {dashboardInterval.map((di) => (
+        <Menu.Item
+          key={di.charAt(0)}
+          onClick={() => setDashboardInterval(di.charAt(0))}
+        >
+          {di}
+        </Menu.Item>
+      ))}
+    </StyledMenu>
+  );
+};
 
 class Dashboard extends React.Component<{ requireAuth: boolean }> {
   render() {
@@ -22,6 +52,9 @@ class Dashboard extends React.Component<{ requireAuth: boolean }> {
             return (
               <>
                 <Row gutter={16}>
+                  <Col xs={24}>
+                    <IntervalMenu />
+                  </Col>
                   <Col xs={24} xl={12}>
                     <MarketCap />
                   </Col>

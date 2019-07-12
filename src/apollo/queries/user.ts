@@ -26,10 +26,9 @@ export const ACCOUNT = gql`
         order
         answer
       }
-      subscriptionPlan {
+      plan {
         plan
         status
-        affiliateId
         trialEnd
         amountDiscount
         percentDiscount

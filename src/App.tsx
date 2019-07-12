@@ -5,11 +5,14 @@ import FourOhFour from './pages/FourOhFour';
 
 import { SidenavProvider } from './contexts/SidenavContext';
 import { QuizProvider } from './contexts/QuizContext';
+import { IntervalProvider } from './contexts/IntervalContext';
 
 const AppProviders = ({ children }: any) => (
   <SidenavProvider>
     <QuizProvider>
-      {children}
+      <IntervalProvider>
+        {children}
+      </IntervalProvider>
     </QuizProvider>
   </SidenavProvider>
 );

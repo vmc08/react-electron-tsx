@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card, Typography } from 'antd';
 
+import { HEAT_MAP } from '../../../apollo/queries/dashboard';
+
 class HeatMap extends React.Component {
   render() {
     return (
