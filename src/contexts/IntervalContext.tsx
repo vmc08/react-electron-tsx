@@ -28,10 +28,10 @@ class IntervalProvider extends React.Component<{}, { interval: string }> {
   }
 }
 
-const UserConsumer = IntervalContext.Consumer;
+const IntervalConsumer = IntervalContext.Consumer;
 
-const useIntervalContextContextValue = () => useContext(IntervalContext);
+const useIntervalContext = () => useContext(IntervalContext);
 
-export { IntervalProvider, UserConsumer, useIntervalContextContextValue };
+export { IntervalProvider, IntervalConsumer, useIntervalContext };
 
 export default IntervalContext;

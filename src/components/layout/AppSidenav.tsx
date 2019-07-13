@@ -60,6 +60,9 @@ const StyledBrandLogo = styled.div`
 const StyledMenu = styled(Menu)`
   border-right: 0 !important;
   width: calc(100% - 1px) !important;
+  .ant-menu-item:after {
+    display: none;
+  }
 `;
 
 const MenuItemWrapper = ({ collapsed, children, label }: IMenuItemWrapper) => {

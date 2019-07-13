@@ -6,12 +6,15 @@ import FourOhFour from './pages/FourOhFour';
 import { SidenavProvider } from './contexts/SidenavContext';
 import { QuizProvider } from './contexts/QuizContext';
 import { IntervalProvider } from './contexts/IntervalContext';
+import { MarketsProvider } from './contexts/MarketsContext';
 
 const AppProviders = ({ children }: any) => (
   <SidenavProvider>
     <QuizProvider>
       <IntervalProvider>
-        {children}
+        <MarketsProvider>
+          {children}
+        </MarketsProvider>
       </IntervalProvider>
     </QuizProvider>
   </SidenavProvider>

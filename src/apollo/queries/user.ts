@@ -11,21 +11,14 @@ export const ACCOUNT = gql`
       address
       city
       country
-      avatar
       verified
       scored
-      onboarded
       assessed
       level
       score
       exchange
       affiliateId
       currency
-      created
-      answer {
-        order
-        answer
-      }
       plan {
         plan
         status
@@ -34,11 +27,7 @@ export const ACCOUNT = gql`
         percentDiscount
       }
       cards {
-        cardId
-        expMonth
-        expYear
         brand
-        country
         last4
       }
       invoices {

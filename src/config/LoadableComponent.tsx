@@ -2,21 +2,24 @@ import React from 'react';
 import loadable from '@loadable/component';
 import { Spin, Icon } from 'antd';
 
-const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
+const LoadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 interface ILoadableComponentProps {
   componentPathName: string,
+  loadingComponent?: any,
 }
 
-const LoadableComponent = ({ componentPathName }: ILoadableComponentProps) => {
+const DefaultLoader = (
+  <Spin
+    size="large"
+    className="code-splitting-spinner"
+    indicator={LoadingIcon}
+  />
+);
+
+const LoadableComponent = ({ componentPathName, loadingComponent }: ILoadableComponentProps) => {
   return loadable(() => import(`../${componentPathName}`), {
-    fallback: (
-      <Spin
-        size="large"
-        className="code-splitting-spinner"
-        indicator={antIcon}
-      />
-    ),
+    fallback: loadingComponent || DefaultLoader,
   });
 };
 
