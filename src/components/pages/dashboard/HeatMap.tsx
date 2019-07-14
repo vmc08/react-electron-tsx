@@ -14,15 +14,15 @@ const { Title } = Typography;
 const HeatMap = () => {
   const { token }: any = useUserContextValue();
   const { interval }: any = useIntervalContext();
-  const { market: exchange }: any = useMarketsContextValue();
+  const { market: { marketCode } }: any = useMarketsContextValue();
   return (
     <Query<any>
       query={HEAT_MAP}
-      variables={{ token, exchange, interval }}
+      variables={{ token, exchange: marketCode, interval }}
     >
       {({ data, loading, error }) => {
         return (
-          <Card className="mb-2 mb-sm-3 p-3" bodyStyle={{ padding: 0 }}>
+          <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
             <Title level={4}>Heat Map</Title>
             <Divider className="my-3" />
             <DashboardSpinner isLoading={loading}>

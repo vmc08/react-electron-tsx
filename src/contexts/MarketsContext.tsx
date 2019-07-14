@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from 'react';
+import { markets } from '../utils/appDataUtils';
 
 const MarketsContext = createContext({});
 
@@ -19,7 +20,10 @@ class MarketsProvider extends React.Component<{}, { market: string }> {
 
   render() {
     const { setMarket, state } = this;
-    const { market } = state;
+    const { market: marketCode } = state;
+    const market = markets.find((m: any) => {
+      return m.marketCode === marketCode;
+    });
     return (
       <MarketsContext.Provider value={{ market, setMarket }}>
         {this.props.children}

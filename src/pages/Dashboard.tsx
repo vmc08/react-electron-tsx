@@ -75,21 +75,21 @@ const Dashboard = (props: { requireAuth: boolean }) => {
         <Col xs={24}>
           <IntervalMenu />
         </Col>
-        <Col xs={24} xl={12}>
+        <Col className="pb-2 pb-sm-3" xs={24} xl={12}>
           <MarketCap />
         </Col>
-        <Col xs={24} xl={12}>
+        <Col className="pb-2 pb-sm-3" xs={24} xl={12}>
           <HeatMap />
         </Col>
       </Row>
-      <Row gutter={16}>
-        <Col xs={24} xl={8}>
+      <Row type="flex" gutter={16}>
+        <Col className="pb-2 pb-sm-3" xs={24} xl={8}>
           <TopGainers />
         </Col>
-        <Col xs={24} xl={8}>
+        <Col className="pb-2 pb-sm-3" xs={24} xl={8}>
           <TopVolume />
         </Col>
-        <Col xs={24} xl={8}>
+        <Col className="pb-2 pb-sm-3" xs={24} xl={8}>
           <TopLosers />
         </Col>
       </Row>
@@ -99,12 +99,12 @@ const Dashboard = (props: { requireAuth: boolean }) => {
         </Col>
         <Col xs={{ span: 24, order: 1 }} xl={{ span: 8, order: 2 }}>
           <Row gutter={16}>
-            <Col>
+            <Col className="mb-2 mb-sm-3">
               <Portfolio />
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col>
+            <Col className="mb-2 mb-lg-0">
               <Watchlist />
             </Col>
           </Row>

@@ -7,10 +7,10 @@ export const customerPlans = [
 ];
 
 export const markets = [
-  { label: 'Singapore', marketCode: 'SGX', countryCode: 'SG' },
-  { label: 'Hongkong', marketCode: 'HKEX', countryCode: 'HK' },
-  { label: 'Malaysia', marketCode: 'MYX', countryCode: 'MY' },
-  { label: 'Australia', marketCode: 'ASX', countryCode: 'AU' },
+  { label: 'Singapore', marketCode: 'SGX', countryCode: 'SG', currency: 'S$' },
+  { label: 'Hongkong', marketCode: 'HKEX', countryCode: 'HK', currency: 'HK$' },
+  { label: 'Malaysia', marketCode: 'MYX', countryCode: 'MY', currency: 'RM' },
+  { label: 'Australia', marketCode: 'ASX', countryCode: 'AU', currency: 'A$' },
 ];
 
 export const sectors = [

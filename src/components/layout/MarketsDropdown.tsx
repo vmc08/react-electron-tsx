@@ -9,8 +9,8 @@ import MarketsContext from '../../contexts/MarketsContext';
 const MarketsMenu = ({ market, setMarket }: any) => {
   return (
     <Menu
-      defaultSelectedKeys={[market]}
-      selectedKeys={[market]}
+      defaultSelectedKeys={[market.marketCode]}
+      selectedKeys={[market.marketCode]}
     >
       {markets.map(({ label, marketCode, countryCode }) => (
         <Menu.Item
@@ -42,7 +42,7 @@ class MarketsDropdown extends React.Component<{}, { visibility: boolean }> {
   render() {
     const { visibility } = this.state;
     const { market, setMarket } = this.context;
-    const { label, countryCode }: any = markets.find((m) => m.marketCode === market);
+    const { label, countryCode }: any = markets.find((m) => m.marketCode === market.marketCode);
     return (
       <Dropdown
         className="float-right mx-2"
