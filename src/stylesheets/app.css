@@ -24,3 +24,19 @@ body {
 .custom-tooltip {
   left: 67px !important;
 }
+
+.w-40 {
+  width: 40%;
+}
+
+.flex-center-contents {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-input-prefix {
+  background: transparent !important;
+}

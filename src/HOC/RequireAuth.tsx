@@ -73,7 +73,11 @@ export default <P extends object>(
             }
             if (data) {
               const { account } = data;
-              newProps = {...this.props, account, token, requireAuth};
+              newProps = {
+                ...this.props,
+                requireAuth, account, token,
+                authenticated: !!(account && token),
+              };
             }
             return (
               <UserProvider value={newProps}>

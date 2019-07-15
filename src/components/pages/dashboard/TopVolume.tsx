@@ -14,7 +14,7 @@ import { formatCurrency } from '../../../utils/numberUtils';
 const { Title } = Typography;
 const StyledTable = styled(Table)`
   .ant-table-placeholder {
-    border-bottom: 0;
+    border: 0;
   }
   .ant-table-row {
     td {
@@ -40,7 +40,7 @@ const TopVolume = () => {
           }));
         const columns = [
           { title: 'Reit Name', dataIndex: 'name', key: 'name' },
-          { title: 'Value', dataIndex: 'value', key: 'value', className: 'text-right' },
+          { title: 'Value', dataIndex: 'value', key: 'value', className: 'text-right w-40' },
         ];
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>

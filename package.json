@@ -19,7 +19,7 @@
     "@types/react-flag-icon-css": "^1.0.2",
     "@types/styled-components": "^4.1.14",
     "@types/yup": "^0.26.13",
-    "antd": "^3.19.4",
+    "antd": "^3.20.2",
     "apollo-boost": "^0.3.1",
     "classnames": "^2.2.6",
     "concurrently": "^4.1.0",

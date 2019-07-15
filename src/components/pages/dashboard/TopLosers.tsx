@@ -14,7 +14,7 @@ import { truncateDecimals } from '../../../utils/numberUtils';
 const { Title, Text } = Typography;
 const StyledTable = styled(Table)`
   .ant-table-placeholder {
-    border-bottom: 0;
+    border: 0;
   }
   .ant-table-row {
     td {
@@ -47,7 +47,7 @@ const TopLosers = () => {
             title: 'Value',
             dataIndex: 'value',
             key: 'value',
-            className: 'text-right',
+            className: 'text-right w-40',
             render: (text: string) => <Text type="danger">{text}</Text>,
           },
         ];
