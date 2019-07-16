@@ -9,7 +9,7 @@ export const formatCurrency = (actualValue: number) => {
     const units = ['k', 'M', 'B', 'T'];
     const unit = Math.floor(((actualValue).toFixed(0).length - 1) / 3) * 3;
     const minifiedNumb = parseFloat(`1e${unit}`);
-    const num = (actualValue / minifiedNumb).toFixed(2);
+    const num = truncateDecimals(actualValue / minifiedNumb);
     const unitname = units[Math.floor(unit / 3) - 1];
     return `${num}${unitname}`;
   }

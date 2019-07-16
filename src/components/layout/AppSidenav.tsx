@@ -73,7 +73,7 @@ const MenuItemWrapper = ({ collapsed, children, label }: IMenuItemWrapper) => {
     <Tooltip
       placement="right"
       title={label}
-      overlayClassName="custom-tooltip"
+      overlayClassName="sidenav-custom-tooltip"
     >
       {children}
     </Tooltip>

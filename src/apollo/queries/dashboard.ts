@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 import { REIT_FIELDS } from '../fields/reits';
-import { sectors } from '../../utils/appDataUtils';
+import { SECTORS } from '../../utils/data/appDataUtils';
 
 export const MARKET_CAP = gql`
   query MarketCap ($token: String!, $exchange: REITExchange!, $interval: Interval!) {
@@ -17,7 +17,7 @@ export const MARKET_CAP = gql`
 
 export const HEAT_MAP = gql`
   query HeatMap ($token: String!, $exchange: REITExchange!, $interval: Interval!) {
-    ${sectors.filter((s) => !s.disabled).map(({ label }) => {
+    ${SECTORS.filter((s) => !s.disabled).map(({ label }) => {
       return `
         ${label}: heatMap (
           token: $token, exchange: $exchange, interval: $interval, sector: ${label}

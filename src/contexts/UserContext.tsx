@@ -4,9 +4,9 @@ const UserContext = createContext({});
 
 class UserProvider extends React.Component<{ value: any }> {
   render() {
-    const { value: { account, token } } = this.props;
+    const { value: { account, token, authenticated } } = this.props;
     return (
-      <UserContext.Provider value={{ account, token }}>
+      <UserContext.Provider value={{ account, token, authenticated }}>
         {this.props.children}
       </UserContext.Provider>
     );

@@ -48,7 +48,7 @@ const TopGainers = () => {
             dataIndex: 'value',
             key: 'value',
             className: 'text-right w-40',
-            render: (text: string) => <Text style={{ color: '#52c41a' }}>{text}</Text>,
+            render: (text: string) => <Text style={{ color: '#52C41A' }}>{text}</Text>,
           },
         ];
         return (

@@ -12,7 +12,7 @@ import {
   getDefaultSelectedKeys,
 } from '../../utils/navUtils';
 import { slugify } from '../../utils/stringUtils';
-import { customerPlans } from '../../utils/appDataUtils';
+import { CUSTOMER_PLANS } from '../../utils/data/appDataUtils';
 
 const { Item } = Menu;
 
@@ -162,7 +162,7 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
               <Icon type="user" style={{ verticalAlign: 12 }} />
               <StyledSpan>
                 {account.firstname || account.username}
-                <sub>{customerPlans[account.level]} Plan</sub>
+                <sub>{CUSTOMER_PLANS[account.level]} Plan</sub>
               </StyledSpan>
             </span>
           </Dropdown>
