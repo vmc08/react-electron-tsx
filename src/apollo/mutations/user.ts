@@ -24,10 +24,6 @@ export const CREATE_ACCOUNT = gql`
   mutation CreateAccount ($input: CreateAccountInput!, $affiliateId: String) {
     createAccount (input: $input, affiliateId: $affiliateId) {
       token
-      talk {
-        token
-        userId
-      }
     }
   }
 `;

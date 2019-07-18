@@ -79,7 +79,7 @@ const Dashboard = (props: IDashboardProps) => {
     <AppLayout requireAuth={requireAuth}>
       {authenticated ? (
         <>
-          <Row gutter={16}>
+          <Row type="flex" gutter={16}>
             <Col xs={24}>
               <IntervalMenu />
             </Col>

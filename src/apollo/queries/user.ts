@@ -45,12 +45,6 @@ export const ACCOUNT = gql`
           amount
         }
       }
-      charges {
-        date
-        currency
-        amount
-        description
-      }
     }
   }
 `;

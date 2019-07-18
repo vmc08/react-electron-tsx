@@ -8,7 +8,7 @@ import { Form as AntdForm, Icon, Button, Alert, Row, Col } from 'antd';
 import { SignupSchema } from './validations';
 import { AntInput } from '../../AntDesignFields';
 import { hasValidObjectValues } from '../../../utils/objectUtils';
-import { setAuthToken, setTalkToken } from '../../../utils/userUtils';
+import { setAuthToken } from '../../../utils/userUtils';
 import { CREATE_ACCOUNT } from '../../../apollo/mutations/user';
 
 interface IRegistrationFormProps extends RouteComponentProps {
@@ -59,9 +59,8 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
     })
     .then(async ({ data }: any) => {
       const { createAccount } = data;
-      const { token: userToken, talk: { token: talkToken } } = createAccount;
+      const { token: userToken } = createAccount;
       setAuthToken(userToken);
-      setTalkToken(talkToken);
       await sendOnboardingCode({ variables: { token: userToken } });
       this.setState({ isLoading: false });
       history.replace('/register/verify-email');
