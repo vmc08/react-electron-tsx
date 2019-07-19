@@ -55,7 +55,7 @@ export default <P extends object>(
     }
 
     render() {
-      let newProps = {...this.props, requireAuth};
+      let newProps = { ...this.props, requireAuth };
       const token = getAuthToken();
       const skipAuth = !isLoggedIn();
       return (

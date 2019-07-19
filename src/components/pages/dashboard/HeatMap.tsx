@@ -15,6 +15,17 @@ import { truncateDecimals } from '../../../utils/numberUtils';
 
 const { Title, Text } = Typography;
 
+interface IHeatMapData {
+  value: number,
+  label: string,
+  level: number,
+}
+
+interface IHeatMapBar {
+  title: string,
+  data: IHeatMapData[],
+}
+
 const HeatMapTitle = styled.div`
   text-transform: capitalize;
   position: absolute;
@@ -34,11 +45,11 @@ const HeatMapContainer = styled.div`
   }
 `;
 
-const HeatMapBar = ({ title, data }: any) => {
+const HeatMapBar = ({ title, data }: IHeatMapBar) => {
   let progressPercent = 0;
-  const progressStrokeColors: any = {};
+  const progressStrokeColors: { [key: string]: string } = {};
 
-  data.forEach(({ level, value }: any) => {
+  data.forEach(({ level, value }) => {
     progressPercent = progressPercent + value * 100;
     const numberKey = `${truncateDecimals(progressPercent).toString()}`;
     progressStrokeColors[`${numberKey}%`] = HEAT_COLORS[level + 2];
@@ -60,9 +71,9 @@ const HeatMapBar = ({ title, data }: any) => {
 };
 
 const HeatMap = () => {
-  const { token }: any = useUserContextValue();
-  const { interval }: any = useIntervalContext();
-  const { market: { marketCode } }: any = useMarketsContextValue();
+  const { token } = useUserContextValue();
+  const { interval } = useIntervalContext();
+  const { market: { marketCode } } = useMarketsContextValue();
 
   let dataSource: any[] = [];
 

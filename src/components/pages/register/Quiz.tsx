@@ -88,7 +88,7 @@ class Quiz extends React.PureComponent<IQuizProps, IQuizStates> {
         variables: { token },
         fetchPolicy: 'network-only',
       }],
-    }).then(({ data }: any) => {
+    }).then(({ data }: { data: { assessOnboardingScore: boolean } }) => {
       const { assessOnboardingScore: userOnboarded } = data;
       if (userOnboarded) {
         sessionStorage.removeItem('onboarding_answers');

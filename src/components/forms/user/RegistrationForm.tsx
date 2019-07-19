@@ -16,15 +16,23 @@ interface IRegistrationFormProps extends RouteComponentProps {
   sendOnboardingCode: any,
 }
 
+interface IUser {
+  firstname: string,
+  lastname: string,
+  username: string,
+  password: string,
+}
+
 interface IRegistrationFormState {
   isLoading: boolean,
   error: string | null,
-  user: {
-    firstname: string,
-    lastname: string,
-    username: string,
-    password: string,
-  },
+  user: IUser,
+}
+
+interface ICreateAccountResult {
+  data: {
+    createAccount: { token: string },
+  }
 }
 
 const StyledIcon = styled(Icon)`
@@ -48,7 +56,7 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
     this.onErrorClose = this.onErrorClose.bind(this);
   }
 
-  async onSubmit(values: any, createAccountMutation: any) {
+  async onSubmit(values: IUser, createAccountMutation: any) {
     const { history, affiliateId, sendOnboardingCode } = this.props;
     this.setState({ isLoading: true });
     await createAccountMutation({
@@ -57,7 +65,7 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
         affiliateId,
       },
     })
-    .then(async ({ data }: any) => {
+    .then(async ({ data }: ICreateAccountResult) => {
       const { createAccount } = data;
       const { token: userToken } = createAccount;
       setAuthToken(userToken);
@@ -95,10 +103,10 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
               <Formik
                 initialValues={user}
                 validationSchema={SignupSchema}
-                onSubmit={(values) => {
+                onSubmit={(values: IUser) => {
                   this.onSubmit(values, createAccountMutation);
                 }}
-                render={({ submitCount, errors }: FormikProps<any>) => {
+                render={({ submitCount, errors }: FormikProps<{}>) => {
                   return (
                     <Form>
                       <Row gutter={24}>

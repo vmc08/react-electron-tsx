@@ -8,7 +8,7 @@ import { QuizProvider } from './contexts/QuizContext';
 import { IntervalProvider } from './contexts/IntervalContext';
 import { MarketsProvider } from './contexts/MarketsContext';
 
-const AppProviders = ({ children }: any) => (
+const AppProviders = ({ children }: { children: any }) => (
   <SidenavProvider>
     <QuizProvider>
       <IntervalProvider>

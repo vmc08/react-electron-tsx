@@ -53,7 +53,7 @@ const StyledMenu = styled(Menu)`
 `;
 
 const IntervalMenu = () => {
-  const { interval, setDashboardInterval }: any = useIntervalContext();
+  const { interval, setDashboardInterval } = useIntervalContext();
   return (
     <StyledMenu
       className="mb-2 mb-sm-3"

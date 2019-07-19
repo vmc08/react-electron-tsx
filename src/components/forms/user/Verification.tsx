@@ -91,7 +91,7 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
     this.setState({ resending: true });
     await sendOnboardingCode({
       variables: { token: userToken },
-    }).then(({ data }: any) => {
+    }).then(() => {
       this.setState({ resending: false });
       message.success('Code resent to your email', 3);
     })
@@ -116,7 +116,7 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
           onSubmit={(values) => {
             this.onVerify(values);
           }}
-          render={({ errors, values, setFieldValue, touched }: FormikProps<any>) => {
+          render={({ errors, values, setFieldValue, touched }: FormikProps<{ code: string }>) => {
             const errorMessage = (touched.code ? errors.code : null) || serverError;
             return (
               <Form>

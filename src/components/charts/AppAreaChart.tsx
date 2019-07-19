@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, TooltipProps,
 } from 'recharts';
 import { Card, Typography } from 'antd';
 import {
@@ -15,7 +15,7 @@ const { Paragraph } = Typography;
 
 interface IAppAreaChart {
   change: number,
-  dataSource: any[],
+  dataSource: Array<{ label: string, value: number }>,
   height: number,
   hideXLabels?: boolean,
   hideYLabels?: boolean,
@@ -27,6 +27,10 @@ interface ICustomDot {
   cy?: number,
   fill: string,
   stroke: string,
+}
+
+interface ITooltip extends TooltipProps {
+  currency: string
 }
 
 const CustomDot = ({ cx = 0, cy = 0, fill, stroke }: ICustomDot) => (
@@ -51,8 +55,8 @@ const CustomDot = ({ cx = 0, cy = 0, fill, stroke }: ICustomDot) => (
   </>
 );
 
-const CustomTooltip = ({ payload, currency }: any) => {
-  if (!payload.length) {
+const CustomTooltip = ({ payload, currency }: ITooltip) => {
+  if ((payload && !payload.length) || !payload) {
     return null;
   }
   const { payload: innerPayload, dataKey, color } = payload[0];
@@ -69,7 +73,7 @@ const CustomTooltip = ({ payload, currency }: any) => {
 const AppAreaChart = ({
   change, dataSource, height, hideYLabels = false, hideXLabels = false, hideTooltip = false,
 }: IAppAreaChart) => {
-  const { market: { currency } }: any = useMarketsContextValue();
+  const { market: { currency } } = useMarketsContextValue();
   const allValues = dataSource.map(({ value }) => value);
 
   const pointValues = dataSource.length ? [Math.min(...allValues), Math.max(...allValues)] : [];

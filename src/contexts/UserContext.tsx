@@ -1,6 +1,16 @@
 import React, { createContext, useContext } from 'react';
 
-const UserContext = createContext({});
+interface IUserContext {
+  account: object | null,
+  token: string | null,
+  authenticated: boolean,
+}
+
+const UserContext = createContext<IUserContext>({
+  account: null,
+  token: null,
+  authenticated: false,
+});
 
 class UserProvider extends React.Component<{ value: any }> {
   render() {

@@ -24,6 +24,17 @@ interface ILoginFormState {
   },
 }
 
+interface ILoginMutationResponse {
+  data: {
+    createAccessToken: { token: string },
+  }
+}
+
+interface IOnSubmitValues {
+  username: string,
+  password: string
+}
+
 const StyledIcon = styled(Icon)`
   color: 'rgba(0, 0, 0, .25)';
 `;
@@ -54,7 +65,7 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
     return null;
   }
 
-  async onSubmit(values: any, loginMutation: any) {
+  async onSubmit(values: IOnSubmitValues, loginMutation: any) {
     const { history } = this.props;
     this.setState({ isLoading: true });
     await loginMutation({
@@ -62,7 +73,7 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
         input: values,
       },
     })
-    .then(({ data }: any) => {
+    .then(({ data }: ILoginMutationResponse) => {
       const { token } = data.createAccessToken;
       setAuthToken(token);
       this.setState({ isLoading: false });
@@ -102,7 +113,7 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
                 onSubmit={(values) => {
                   this.onSubmit(values, loginMutation);
                 }}
-                render={({ submitCount, errors }: FormikProps<any>) => {
+                render={({ submitCount, errors }: FormikProps<{}>) => {
                   return (
                     <Form>
                       <Field

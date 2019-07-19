@@ -8,7 +8,17 @@ interface IQuizProviderState {
   answers: string[] | null[],
 }
 
-const QuizContext = createContext({});
+interface IQuizContext {
+  answers: string[] | null[],
+  setAnswers: (answers: string[] | null[]) => void,
+  setSelectedAnswer: (index: number, selectedAnswer: string) => void,
+}
+
+const QuizContext = createContext<IQuizContext>({
+  answers: [],
+  setAnswers: (answers: string[] | null[]) => answers,
+  setSelectedAnswer: (index: number, selectedAnswer: string) => index || selectedAnswer,
+});
 
 class QuizProvider extends React.Component<{}, IQuizProviderState> {
   constructor(props: {}) {

@@ -40,7 +40,7 @@ class PasswordResetForm extends React.Component<IPasswordResetProps, IPasswordRe
     this.onErrorClose = this.onErrorClose.bind(this);
   }
 
-  async onSubmit(values: any, resetPasswordMutation: any) {
+  async onSubmit(values: { username: string }, resetPasswordMutation: any) {
     const { resetPassswordCallback } = this.props;
     this.setState({ isLoading: true });
     await resetPasswordMutation({
@@ -48,7 +48,7 @@ class PasswordResetForm extends React.Component<IPasswordResetProps, IPasswordRe
         input: values,
       },
     })
-    .then(({ data }: any) => {
+    .then(({ data }: { data: { requestResetPassword: boolean } }) => {
       const { requestResetPassword } = data;
       this.setState({ isLoading: false });
       if (requestResetPassword) {
@@ -91,7 +91,7 @@ class PasswordResetForm extends React.Component<IPasswordResetProps, IPasswordRe
                 onSubmit={(values) => {
                   this.onSubmit(values, resetPasswordMutation);
                 }}
-                render={({ submitCount, errors }: FormikProps<any>) => {
+                render={({ submitCount, errors }: FormikProps<{}>) => {
                   return (
                     <Form>
                       <Field

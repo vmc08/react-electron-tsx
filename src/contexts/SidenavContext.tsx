@@ -17,7 +17,22 @@ interface ISidenavProviderState {
   selectedKeys: ISelectedKeys
 }
 
-const SidenavContext = createContext({});
+interface ISidenavContext {
+  collapsed: boolean,
+  toggleCollapse: () => void,
+  setSelectedKeys: (selectedKeys: ISelectedKeys) => void,
+  selectedKeys: ISelectedKeys,
+}
+
+const SidenavContext = createContext<ISidenavContext>({
+  collapsed: getSidenavState(),
+  toggleCollapse: () => undefined,
+  setSelectedKeys: (selectedKeys: ISelectedKeys) => selectedKeys,
+  selectedKeys: {
+    itemKey: undefined,
+    subMenuKey: undefined,
+  },
+});
 
 class SidenavProvider extends React.Component<{}, ISidenavProviderState> {
   constructor(props: {}) {

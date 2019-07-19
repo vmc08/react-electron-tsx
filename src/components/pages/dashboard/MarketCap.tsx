@@ -16,9 +16,9 @@ import { truncateDecimals } from '../../../utils/numberUtils';
 const { Title, Text } = Typography;
 
 const MarketCap = () => {
-  const { token }: any = useUserContextValue();
-  const { interval }: any = useIntervalContext();
-  const { market: { marketCode, currency } }: any = useMarketsContextValue();
+  const { token } = useUserContextValue();
+  const { interval } = useIntervalContext();
+  const { market: { marketCode, currency } } = useMarketsContextValue();
 
   let change = 0;
   let latestValue = 0;

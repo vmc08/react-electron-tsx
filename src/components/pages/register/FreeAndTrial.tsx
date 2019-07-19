@@ -14,8 +14,7 @@ import { SEND_ONBOARDING_CODE } from '../../../apollo/mutations/user';
 
 const { Title, Paragraph } = Typography;
 
-interface IFreeAndTrialProps extends RouteComponentProps<any> {
-  affiliateId: string,
+interface IFreeAndTrialProps extends RouteComponentProps<{ affiliateId: string }> {
   sendOnboardingCode: any,
 }
 

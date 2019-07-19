@@ -13,7 +13,7 @@ export default <P extends object>(
   class AccountVerifier extends React.Component<P> {
     static contextType = UserContext;
     render() {
-      const { account, token }: any = this.context;
+      const { account, token } = this.context;
       const { pathname } = window.location;
       if (account && token) {
         const { scored, verified } = account;

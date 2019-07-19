@@ -42,7 +42,7 @@ class NewPasswordForm extends React.Component<INewPasswordFormProps, INewPasswor
     this.onErrorClose = this.onErrorClose.bind(this);
   }
 
-  async onSubmit(values: any, resetPasswordMutation: any) {
+  async onSubmit(values: { password: string }, resetPasswordMutation: any) {
     const { password } = values;
     const { location, doneResetPassswordCallback } = this.props;
     const queryParams = new URLSearchParams(location.search);
@@ -59,7 +59,7 @@ class NewPasswordForm extends React.Component<INewPasswordFormProps, INewPasswor
         token,
       },
     })
-    .then(({ data }: any) => {
+    .then(({ data }: { data: { resetPassword: boolean } }) => {
       const { resetPassword } = data;
       this.setState({ isLoading: false });
       if (resetPassword) {
@@ -102,7 +102,7 @@ class NewPasswordForm extends React.Component<INewPasswordFormProps, INewPasswor
                 onSubmit={(values) => {
                   this.onSubmit(values, resetPasswordMutation);
                 }}
-                render={({ submitCount, errors }: FormikProps<any>) => {
+                render={({ submitCount, errors }: FormikProps<{}>) => {
                   return (
                     <Form>
                       <Field

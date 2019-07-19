@@ -42,9 +42,9 @@ const StyledContent = styled(Content)`
 
 const AppLayout = (props: IAppLayoutProps) => {
   const { children, requireAuth } = props;
-  const { account, token }: any = useUserContextValue();
-  const { toggleCollapse, collapsed }: any = useSidenavContextValue();
-  if (requireAuth && !(account && token)) {
+  const { authenticated } = useUserContextValue();
+  const { toggleCollapse, collapsed } = useSidenavContextValue();
+  if (requireAuth && !authenticated) {
     return null;
   }
   return (

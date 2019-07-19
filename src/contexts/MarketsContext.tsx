@@ -1,7 +1,25 @@
 import React, { createContext, useContext } from 'react';
 import { MARKETS } from '../utils/data/appDataUtils';
 
-const MarketsContext = createContext({});
+export const DEFAULT_MARKET = MARKETS[0];
+
+export interface IMarket {
+  label: string,
+  marketCode: string,
+  countryCode: string,
+  currency: string,
+  disabled: boolean,
+}
+
+export interface IMarketsContext {
+  setMarket?: (market: string) => void,
+  market: IMarket,
+}
+
+const MarketsContext = createContext<IMarketsContext>({
+  market: DEFAULT_MARKET,
+  setMarket: (m: string) => m,
+});
 
 class MarketsProvider extends React.Component<{}, { market: string }> {
   constructor(props: {}) {
@@ -21,9 +39,9 @@ class MarketsProvider extends React.Component<{}, { market: string }> {
   render() {
     const { setMarket, state } = this;
     const { market: marketCode } = state;
-    const market = MARKETS.find((m: any) => {
+    const market = MARKETS.find((m: IMarket) => {
       return m.marketCode === marketCode;
-    });
+    }) || DEFAULT_MARKET;
     return (
       <MarketsContext.Provider value={{ market, setMarket }}>
         {this.props.children}

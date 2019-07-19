@@ -4,10 +4,15 @@ import { Dropdown, Menu, Icon, Tooltip } from 'antd';
 import FlagIcon from '../FlagIcon';
 
 import { MARKETS } from '../../utils/data/appDataUtils';
-import MarketsContext from '../../contexts/MarketsContext';
+import MarketsContext, { IMarket, DEFAULT_MARKET } from '../../contexts/MarketsContext';
 import { UserConsumer } from '../../contexts/UserContext';
 
-const TooptipWrapper = ({ children, label }: any) => {
+interface ITooltipWrapper {
+  children: any,
+  label: string | null,
+}
+
+const TooptipWrapper = ({ children, label }: ITooltipWrapper) => {
   if (!label) {
     return children;
   }
@@ -76,7 +81,8 @@ class MarketsDropdown extends React.Component<{}, { visibility: boolean }> {
   render() {
     const { visibility } = this.state;
     const { market, setMarket } = this.context;
-    const { label, countryCode }: any = MARKETS.find((m) => m.marketCode === market.marketCode);
+    const { label, countryCode }: IMarket =
+      MARKETS.find((m) => m.marketCode === market.marketCode) || DEFAULT_MARKET;
     return (
       <UserConsumer>
         {({ account }: any) => (

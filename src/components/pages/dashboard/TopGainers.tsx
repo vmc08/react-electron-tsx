@@ -24,9 +24,9 @@ const StyledTable = styled(Table)`
 `;
 
 const TopGainers = () => {
-  const { token }: any = useUserContextValue();
-  const { interval }: any = useIntervalContext();
-  const { market: { marketCode } }: any = useMarketsContextValue();
+  const { token } = useUserContextValue();
+  const { interval } = useIntervalContext();
+  const { market: { marketCode } } = useMarketsContextValue();
   return (
     <Query<any>
       query={TOP_GAINERS}

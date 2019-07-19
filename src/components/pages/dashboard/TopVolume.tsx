@@ -24,9 +24,9 @@ const StyledTable = styled(Table)`
 `;
 
 const TopVolume = () => {
-  const { token }: any = useUserContextValue();
-  const { interval }: any = useIntervalContext();
-  const { market: { marketCode, currency } }: any = useMarketsContextValue();
+  const { token } = useUserContextValue();
+  const { interval } = useIntervalContext();
+  const { market: { marketCode, currency } } = useMarketsContextValue();
   return (
     <Query<any>
       query={TOP_VOLUME}

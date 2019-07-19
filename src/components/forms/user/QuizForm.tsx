@@ -102,7 +102,7 @@ class QuizForm extends React.PureComponent<IQuizFormProps> {
   }
 
   render() {
-    const { answers, setSelectedAnswer }: any = this.context;
+    const { answers, setSelectedAnswer } = this.context;
     const {
       question: propsQuestion,
       history, currentIndex, submitAnswers, isLoading, error: serverError, resetError,
