@@ -68,16 +68,64 @@ export const TOP_VOLUME = gql`
 `;
 
 export const TOP_LOSERS = gql`
-  query TopLosers(
+  query TopLosers (
     $token: String!, $interval: Interval!, $criteria: String!, $exchange: REITExchange!
   ) {
-    topLosers(token: $token, interval: $interval, criteria: $criteria, exchange: $exchange) {
+    topLosers (token: $token, interval: $interval, criteria: $criteria, exchange: $exchange) {
       reit {
         ${REIT_FIELDS}
       }
       priceChange
       priceChangeRatio
       marketCapChange
+    }
+  }
+`;
+
+export const DASHBOARD_PORTFOLIO = gql`
+  query PortfolioDashboard ($token: String!, $exchange: REITExchange) {
+    portfolio (token: $token, exchange: $exchange) {
+      totalValue
+      holdings {
+        currentValue
+        reit {
+          reitId
+          name
+          sector
+          stockCode
+          exchange
+          priceCurrency
+          financialCurrency
+          price
+        }
+      }
+    }
+  }
+`;
+
+export const DASHBOARD_WATCHLIST = gql`
+  query Watchlist ($token: String!, $exchange: REITExchange) {
+    account (token: $token) {
+      accountId
+      lastname
+      level
+    }
+    watchlist (token: $token, exchange: $exchange) {
+      reit {
+        reitId
+        name
+        sector
+        stockCode
+        exchange
+        priceCurrency
+        financialCurrency
+        price
+      }
+      score
+      valuation {
+        high
+        low
+      }
     }
   }
 `;

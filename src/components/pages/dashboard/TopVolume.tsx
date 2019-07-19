@@ -4,6 +4,7 @@ import { Query } from 'react-apollo';
 import { Card, Typography, Divider, Table } from 'antd';
 
 import DashboardSpinner from '../../spinners/DashboardSpinner';
+import EmptyState from '../../EmptyState';
 
 import { useMarketsContextValue } from '../../../contexts/MarketsContext';
 import { useUserContextValue } from '../../../contexts/UserContext';
@@ -48,6 +49,9 @@ const TopVolume = () => {
             <Divider className="my-3" />
             <DashboardSpinner isLoading={loading}>
               <StyledTable
+                locale={{
+                  emptyText: <EmptyState />,
+                }}
                 rowKey={(row: any) => row.name}
                 size="middle"
                 showHeader={false}
