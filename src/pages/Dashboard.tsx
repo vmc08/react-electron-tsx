@@ -9,35 +9,48 @@ import AppLayout from '../components/layout/AppLayout';
 
 const MarketCap = LoadableComponent({
   componentPathName: 'components/pages/dashboard/MarketCap',
-  loadingComponent: <Card className="mb-2 mb-sm-3" loading />,
+  loadingComponent: <Card loading />,
 });
 
 const HeatMap = LoadableComponent({
   componentPathName: 'components/pages/dashboard/HeatMap',
-  loadingComponent: <Card className="mb-2 mb-sm-3" loading />,
+  loadingComponent: <Card loading />,
 });
 
 const TopGainers = LoadableComponent({
   componentPathName: 'components/pages/dashboard/TopGainers',
-  loadingComponent: <Card className="mb-2 mb-sm-3" loading />,
+  loadingComponent: <Card loading />,
 });
 
 const TopVolume = LoadableComponent({
   componentPathName: 'components/pages/dashboard/TopVolume',
-  loadingComponent: <Card className="mb-2 mb-sm-3" loading />,
+  loadingComponent: <Card loading />,
 });
 
 const TopLosers = LoadableComponent({
   componentPathName: 'components/pages/dashboard/TopLosers',
-  loadingComponent: <Card className="mb-2 mb-sm-3" loading />,
+  loadingComponent: <Card loading />,
 });
 
-import Portfolio from '../components/pages/dashboard/Portfolio';
-import Watchlist from '../components/pages/dashboard/Watchlist';
+const Portfolio = LoadableComponent({
+  componentPathName: 'components/pages/dashboard/Portfolio',
+  loadingComponent: <Card loading />,
+});
+
+const Watchlist = LoadableComponent({
+  componentPathName: 'components/pages/dashboard/Watchlist',
+  loadingComponent: <Card loading />,
+});
+
+const Insights = LoadableComponent({
+  componentPathName: 'components/pages/dashboard/Insights',
+  loadingComponent: <Card loading />,
+});
 
 import { useIntervalContext } from '../contexts/IntervalContext';
 
 interface IDashboardProps {
+  token: string,
   requireAuth: boolean,
   authenticated: boolean,
 }
@@ -74,7 +87,7 @@ const IntervalMenu = () => {
 };
 
 const Dashboard = (props: IDashboardProps) => {
-  const { requireAuth, authenticated } = props;
+  const { requireAuth, authenticated, token } = props;
   return (
     <AppLayout requireAuth={requireAuth}>
       {authenticated ? (
@@ -103,7 +116,7 @@ const Dashboard = (props: IDashboardProps) => {
           </Row>
           <Row type="flex" gutter={16}>
             <Col xs={{ span: 24, order: 2 }} xl={{ span: 16, order: 1 }}>
-              Insights here
+              <Insights token={token} />
             </Col>
             <Col xs={{ span: 24, order: 1 }} xl={{ span: 8, order: 2 }}>
               <Row gutter={16}>

@@ -18,7 +18,7 @@ const DefaultLoader = (
 );
 
 const LoadableComponent = ({ componentPathName, loadingComponent }: ILoadableComponentProps) => {
-  return loadable(() => import(`../${componentPathName}`), {
+  return loadable<any>(() => import(`../${componentPathName}`), {
     fallback: loadingComponent || DefaultLoader,
   });
 };
