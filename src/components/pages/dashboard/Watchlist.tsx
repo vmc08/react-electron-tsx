@@ -35,7 +35,7 @@ const Watchlist = () => {
     >
       {({ data, loading, error }) => {
         const dataSource = loading ?
-          [] : data.watchlist.map(({ reit }: any) => ({
+          [] : data.watchlist.slice(0, 5).map(({ reit }: any) => ({
             name: reit.name,
             value: `${currency} ${formatCurrency(reit.price)}`,
           }));

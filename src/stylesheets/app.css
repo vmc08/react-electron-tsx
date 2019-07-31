@@ -36,7 +36,3 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-.ant-input-prefix {
-  background: transparent !important;
-}

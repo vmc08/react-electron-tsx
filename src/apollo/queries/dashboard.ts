@@ -134,22 +134,25 @@ export const DASHBOARD_INSIGHTS = gql`
   query Insights (
     $token: String, $stockCode: String,
     $search: String, $tags: [String!],
-    $limit: Int, $offset: Int, $exchange: REITExchange
+    $limit: Float, $offset: Float, $exchange: REITExchange
   ) {
     insights (
       token: $token, stockCode: $stockCode,
       search: $search, tags: $tags,
-      limit: $limit, offset: $offset, exchange: $exchange
+      exchange: $exchange
     ) {
-      insightId
-      title
-      description
-      content
-      link
-      avatar
-      stockCode
-      tags
-      publishDate
+      count
+      rows (limit: $limit, offset: $offset) {
+        insightId
+        title
+        description
+        content
+        link
+        avatar
+        stockCode
+        tags
+        publishDate
+      }
     }
   }
 `;

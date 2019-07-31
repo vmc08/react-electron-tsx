@@ -1,19 +1,26 @@
 import React, { ChangeEvent } from 'react';
-import { compose, graphql, withApollo } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Card, Typography, Menu, Input, Comment, Avatar, Tag, Alert } from 'antd';
+import { Card, Typography, Menu, Input, Comment, Tag, Alert, Skeleton } from 'antd';
+import {
+  InfiniteLoader, AutoSizer, List as RVList,
+  CellMeasurer, CellMeasurerCache,
+  IndexRange, ListRowProps,
+} from 'react-virtualized';
 
 import DashboardSpinner from '../../spinners/DashboardSpinner';
 import EmptyState from '../../EmptyState';
 
 import MarketsContext, { DEFAULT_MARKET } from '../../../contexts/MarketsContext';
 import { DASHBOARD_INSIGHTS } from '../../../apollo/queries/dashboard';
+import { dedup } from '../../../utils/arrayUtils';
 
 const { Title, Paragraph, Text } = Typography;
 const { Search } = Input;
 
 const DEFAULT_CATEGORY = 'news';
+const DEFAULT_OVERSCAN_ROWS = 3;
 
 interface IInsight {
   avatar: string,
@@ -28,6 +35,7 @@ interface IInsight {
 }
 
 interface IInsightsState {
+  rowCount: number,
   insights: IInsight[],
   selectedCategory: string,
   searchString: string | undefined,
@@ -45,6 +53,15 @@ interface IInsightsMenuProps {
 interface IInsightProps {
   client: any,
   token: string,
+  stockCode: string | undefined,
+}
+
+interface IInsightResults {
+  data: {
+    insights: {
+      count: number, rows: IInsight[],
+    },
+  },
 }
 
 const StyledMenu = styled(Menu)`
@@ -58,16 +75,9 @@ const StyledMenu = styled(Menu)`
 `;
 
 const StyledComment = styled(Comment)`
-  border-bottom: 1px solid #e8e8e8;
-  &:last-of-type {
-    border-bottom: 0;
-  }
   .ant-comment-inner {
-    .ant-comment-avatar {
-      .ant-avatar > img {
-        width: 100%;
-        height: 100%;
-      }
+    .ant-comment-content-author {
+      display: block;
     }
   }
 `;
@@ -91,57 +101,119 @@ const InsightsMenu = ({ selectedCategory, setSelectedCategory }: IInsightsMenuPr
   );
 };
 
-class Insights extends React.Component<IInsightProps, IInsightsState> {
+class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
+  rvListRef: any = null;
+  cache = new CellMeasurerCache({
+    fixedWidth: true,
+    defaultHeight: 150,
+    keyMapper: (index) => {
+      const { insights, selectedCategory } = this.state;
+      if (insights[index]) {
+        return `${selectedCategory}-${insights[index].insightId}`;
+      }
+    },
+  });
   constructor(props: IInsightProps) {
     super(props);
     this.state = {
+      rowCount: 100,
       insights: [],
       searchString: undefined,
       queryOffset: 0,
-      isLoading: true,
+      isLoading: false,
       selectedCategory: DEFAULT_CATEGORY,
       marketCode: DEFAULT_MARKET.marketCode,
       error: undefined,
     };
     this.onErrorClose = this.onErrorClose.bind(this);
-    this.fetchInsights = this.fetchInsights.bind(this);
     this.setSelectedCategory = this.setSelectedCategory.bind(this);
     this.onSearchStringChange = this.onSearchStringChange.bind(this);
+
+    this.fetchMoreInsights = this.fetchMoreInsights.bind(this);
+    this.renderItem = this.renderItem.bind(this);
+    this.isRowLoaded = this.isRowLoaded.bind(this);
+    this.resetListView = this.resetListView.bind(this);
   }
 
   async componentDidMount() {
     const { market: { marketCode } } = this.context;
-    this.setState({ marketCode }, () => {
-      this.fetchInsights();
+    this.setState({ marketCode });
+    window.addEventListener('resize', () => {
+      this.cache.clearAll();
     });
   }
 
-  componentDidUpdate() {
+  componentWillUnmount() {
+    window.removeEventListener('resize', () => {
+      this.cache.clearAll();
+    });
+  }
+
+  async componentDidUpdate() {
     const { market: { marketCode } } = this.context;
     const { marketCode: marketCodeState } = this.state;
     if (marketCodeState !== marketCode) {
-      this.setState({ marketCode }, this.fetchInsights);
+      this.resetListView({ marketCode, searchString: undefined });
     }
   }
 
-  async fetchInsights() {
-    const { selectedCategory, searchString, queryOffset, insights } = this.state;
-    const { token, client } = this.props;
-    const { market: { marketCode } } = this.context;
-    await this.setState({ isLoading: true });
+  setSelectedCategory(selectedCategory: string) {
+    if (selectedCategory !== this.state.selectedCategory) {
+      this.resetListView({ selectedCategory, searchString: undefined });
+    }
+  }
+
+  onSearchStringChange(e: ChangeEvent<HTMLInputElement>) {
+    const searchString = e.target.value || undefined;
+    this.setState({ searchString }, () => {
+      if (!searchString) {
+        this.resetListView({});
+      }
+    });
+  }
+
+  async resetListView(objectValues: any) {
+    await this.setState({
+      ...objectValues,
+      insights: [],
+      queryOffset: 0,
+      isLoading: true,
+    }, () => {
+      this.fetchMoreInsights({ startIndex: 0, stopIndex: 18 });
+    });
+    this.cache.clearAll();
+    if (this.rvListRef) {
+      this.rvListRef.scrollToRow(0);
+    }
+  }
+
+  async fetchMoreInsights({ startIndex, stopIndex }: IndexRange) {
+    const {
+      selectedCategory,
+      queryOffset: queryOffsetState,
+      insights, marketCode, searchString,
+    } = this.state;
+    const { token, client, stockCode } = this.props;
+    if ((stopIndex <= insights.length)) {
+      return;
+    }
     await client.query({
       query: DASHBOARD_INSIGHTS,
       variables: {
         token,
         exchange: marketCode,
-        limit: 4,
-        offset: queryOffset,
+        limit: stopIndex - startIndex + DEFAULT_OVERSCAN_ROWS,
+        offset: queryOffsetState,
         tags: selectedCategory === 'all' ? [] : [selectedCategory],
+        ...(searchString && { search: searchString }),
+        ...(stockCode && { stockCode }),
       },
-    }).then(({ data }: { data: { insights: IInsight[] } }) => {
+    }).then(({ data }: IInsightResults) => {
       this.setState({
-        insights: data.insights,
+        rowCount: data.insights.count,
+        insights: dedup(insights.concat(data.insights.rows)),
         isLoading: false,
+        queryOffset: queryOffsetState + (stopIndex - startIndex + DEFAULT_OVERSCAN_ROWS),
       });
     }).catch((error: any) => {
       const { message: errorMessage } = error.graphQLErrors[0];
@@ -149,15 +221,47 @@ class Insights extends React.Component<IInsightProps, IInsightsState> {
     });
   }
 
-  setSelectedCategory(selectedCategory: string) {
-    this.setState({ selectedCategory }, this.fetchInsights);
+  isRowLoaded({ index }: { index: number }) {
+    return !!this.state.insights[index];
   }
 
-  onSearchStringChange(e: ChangeEvent<HTMLInputElement>) {
-    const searchString = e.target.value;
-    this.setState({
-      searchString: searchString || undefined,
-    });
+  renderItem({ index, key, style, parent }: ListRowProps) {
+    const { insights } = this.state;
+    let content = (
+      <div style={style} className="p-3">
+        <Skeleton loading active avatar />
+      </div>
+    );
+    if (insights[index]) {
+      content = (
+        <StyledComment
+          style={style}
+          className="px-3"
+          author={<Text strong>{insights[index].title}</Text>}
+          avatar={insights[index].avatar}
+          content={<Paragraph type="secondary">{insights[index].description}</Paragraph>}
+          actions={[
+            <span>{moment(insights[index].publishDate).utc(false).fromNow()}</span>,
+            <div>
+              {insights[index].tags.map((tag: string, tagIdx: number) => {
+                return <Tag key={tagIdx} color="blue">{tag}</Tag>;
+              })}
+            </div>,
+          ]}
+        />
+      );
+    }
+    return (
+      <CellMeasurer
+        key={key}
+        cache={this.cache}
+        parent={parent}
+        columnIndex={0}
+        rowIndex={index}
+      >
+        {content}
+      </CellMeasurer>
+    );
   }
 
   onErrorClose() {
@@ -166,7 +270,10 @@ class Insights extends React.Component<IInsightProps, IInsightsState> {
 
   render() {
     const { setSelectedCategory, onSearchStringChange } = this;
-    const { selectedCategory, searchString, isLoading, insights, error: serverError } = this.state;
+    const {
+      selectedCategory, searchString, isLoading,
+      error: serverError, rowCount, insights,
+    } = this.state;
     return (
       <Card className="p-3" bodyStyle={{ padding: 0 }}>
         <Title level={4}>Insights</Title>
@@ -176,11 +283,15 @@ class Insights extends React.Component<IInsightProps, IInsightsState> {
         />
         <Search
           defaultValue={searchString}
+          value={searchString}
           onChange={onSearchStringChange}
           size="large"
           placeholder="Search insight"
           className="mb-3"
           allowClear
+          onSearch={() => {
+            this.resetListView({ searchString });
+          }}
         />
         {serverError && (
           <Alert
@@ -191,31 +302,37 @@ class Insights extends React.Component<IInsightProps, IInsightsState> {
           />
         )}
         <DashboardSpinner isLoading={isLoading}>
-          {insights.length ? (
-            <div>
-              {insights.map((insight: IInsight, idx: number) => (
-                <StyledComment
-                  className="px-3"
-                  key={idx}
-                  author={<Text strong>{insight.title}</Text>}
-                  avatar={<Avatar size="large" src={insight.avatar} />}
-                  content={<Paragraph ellipsis>{insight.description}</Paragraph>}
-                  datetime={<span>{moment(insight.publishDate).utc(false).fromNow()}</span>}
-                  actions={[
-                    <div>
-                      {insight.tags.map((tag: string, tagIdx: number) => {
-                        return <Tag key={tagIdx} color="blue">{tag}</Tag>;
-                      })}
-                    </div>,
-                  ]}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="py-3">
-              <EmptyState />
-            </div>
-          )}
+          <InfiniteLoader
+            isRowLoaded={this.isRowLoaded}
+            loadMoreRows={this.fetchMoreInsights}
+            rowCount={rowCount}
+          >
+            {({ onRowsRendered, registerChild }) => (
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <RVList
+                    ref={(el) => {
+                      this.rvListRef = el;
+                      registerChild(el);
+                    }}
+                    deferredMeasurementCache={this.cache}
+                    width={width}
+                    height={(insights.length === 0 && !isLoading) ? 175 : 505}
+                    rowHeight={this.cache.rowHeight}
+                    rowCount={rowCount}
+                    rowRenderer={this.renderItem}
+                    onRowsRendered={onRowsRendered}
+                    overscanRowCount={DEFAULT_OVERSCAN_ROWS}
+                    noRowsRenderer={() => (
+                      <div className="py-3">
+                        <EmptyState />
+                      </div>
+                    )}
+                  />
+                )}
+              </AutoSizer>
+            )}
+          </InfiniteLoader>
         </DashboardSpinner>
       </Card>
     );
