@@ -3,14 +3,12 @@ import { withApollo } from 'react-apollo';
 import styled from 'styled-components';
 import moment from 'moment';
 import { Card, Typography, Menu, Input, Comment, Tag, Alert, Skeleton } from 'antd';
-import {
-  InfiniteLoader, AutoSizer, List as RVList,
-  CellMeasurer, CellMeasurerCache,
-  IndexRange, ListRowProps,
-} from 'react-virtualized';
+import { CellMeasurer, IndexRange, ListRowProps } from 'react-virtualized';
 
 import DashboardSpinner from '../../spinners/DashboardSpinner';
-import EmptyState from '../../EmptyState';
+import AppInfiniteLoader, {
+  CELL_MEASURER_CACHE, DEFAULT_OVERSCAN_ROWS,
+} from '../../AppInfiniteLoader';
 
 import MarketsContext, { DEFAULT_MARKET } from '../../../contexts/MarketsContext';
 import { DASHBOARD_INSIGHTS } from '../../../apollo/queries/dashboard';
@@ -20,7 +18,6 @@ const { Title, Paragraph, Text } = Typography;
 const { Search } = Input;
 
 const DEFAULT_CATEGORY = 'news';
-const DEFAULT_OVERSCAN_ROWS = 3;
 
 interface IInsight {
   avatar: string,
@@ -103,16 +100,6 @@ const InsightsMenu = ({ selectedCategory, setSelectedCategory }: IInsightsMenuPr
 
 class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
   rvListRef: any = null;
-  cache = new CellMeasurerCache({
-    fixedWidth: true,
-    defaultHeight: 150,
-    keyMapper: (index) => {
-      const { insights, selectedCategory } = this.state;
-      if (insights[index]) {
-        return `${selectedCategory}-${insights[index].insightId}`;
-      }
-    },
-  });
   constructor(props: IInsightProps) {
     super(props);
     this.state = {
@@ -131,7 +118,6 @@ class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
 
     this.fetchMoreInsights = this.fetchMoreInsights.bind(this);
     this.renderItem = this.renderItem.bind(this);
-    this.isRowLoaded = this.isRowLoaded.bind(this);
     this.resetListView = this.resetListView.bind(this);
   }
 
@@ -139,13 +125,13 @@ class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
     const { market: { marketCode } } = this.context;
     this.setState({ marketCode });
     window.addEventListener('resize', () => {
-      this.cache.clearAll();
+      CELL_MEASURER_CACHE.clearAll();
     });
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', () => {
-      this.cache.clearAll();
+      CELL_MEASURER_CACHE.clearAll();
     });
   }
 
@@ -181,7 +167,7 @@ class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
     }, () => {
       this.fetchMoreInsights({ startIndex: 0, stopIndex: 18 });
     });
-    this.cache.clearAll();
+    CELL_MEASURER_CACHE.clearAll();
     if (this.rvListRef) {
       this.rvListRef.scrollToRow(0);
     }
@@ -221,10 +207,6 @@ class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
     });
   }
 
-  isRowLoaded({ index }: { index: number }) {
-    return !!this.state.insights[index];
-  }
-
   renderItem({ index, key, style, parent }: ListRowProps) {
     const { insights } = this.state;
     let content = (
@@ -254,7 +236,7 @@ class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
     return (
       <CellMeasurer
         key={key}
-        cache={this.cache}
+        cache={CELL_MEASURER_CACHE}
         parent={parent}
         columnIndex={0}
         rowIndex={index}
@@ -302,37 +284,13 @@ class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
           />
         )}
         <DashboardSpinner isLoading={isLoading}>
-          <InfiniteLoader
-            isRowLoaded={this.isRowLoaded}
-            loadMoreRows={this.fetchMoreInsights}
+          <AppInfiniteLoader
+            dataSource={insights}
+            isLoading={isLoading}
             rowCount={rowCount}
-          >
-            {({ onRowsRendered, registerChild }) => (
-              <AutoSizer disableHeight>
-                {({ width }) => (
-                  <RVList
-                    ref={(el) => {
-                      this.rvListRef = el;
-                      registerChild(el);
-                    }}
-                    deferredMeasurementCache={this.cache}
-                    width={width}
-                    height={(insights.length === 0 && !isLoading) ? 175 : 505}
-                    rowHeight={this.cache.rowHeight}
-                    rowCount={rowCount}
-                    rowRenderer={this.renderItem}
-                    onRowsRendered={onRowsRendered}
-                    overscanRowCount={DEFAULT_OVERSCAN_ROWS}
-                    noRowsRenderer={() => (
-                      <div className="py-3">
-                        <EmptyState />
-                      </div>
-                    )}
-                  />
-                )}
-              </AutoSizer>
-            )}
-          </InfiniteLoader>
+            fetchMore={this.fetchMoreInsights}
+            renderItem={this.renderItem}
+          />
         </DashboardSpinner>
       </Card>
     );
