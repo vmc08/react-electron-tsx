@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, RouteComponentProps } from 'react-router-dom';
+import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 import routes from './config/routes';
 import FourOhFour from './pages/FourOhFour';
 
@@ -32,6 +32,7 @@ const App = () => {
             render={(props: RouteComponentProps & any) => <Component {...props} {...rest} />}
           />
         ))}
+        <Redirect from="/" to="/dashboard"/>
         <Route component={FourOhFour} />
       </Switch>
     </AppProviders>

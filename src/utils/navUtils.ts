@@ -16,7 +16,7 @@ export interface INavRoute {
 }
 
 export const navRoutes = [{
-  path: '/',
+  path: '/dashboard',
   iconType: 'appstore',
   label: 'Dashboard',
 }, {

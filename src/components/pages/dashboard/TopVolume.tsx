@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
-import { Card, Typography, Divider, Table } from 'antd';
+import { Card, Typography, Divider, Table, Alert } from 'antd';
 
 import DashboardSpinner from '../../spinners/DashboardSpinner';
 import EmptyState from '../../EmptyState';
@@ -28,38 +28,50 @@ const TopVolume = () => {
   const { token } = useUserContextValue();
   const { interval } = useIntervalContext();
   const { market: { marketCode, currency } } = useMarketsContextValue();
+
+  let serverError: string | undefined;
+  let dataSource: any = [];
+  const columns = [
+    { title: 'Reit Name', dataIndex: 'name', key: 'name' },
+    { title: 'Value', dataIndex: 'value', key: 'value', className: 'text-right w-40' },
+  ];
+
   return (
     <Query<any>
       query={TOP_VOLUME}
       variables={{ token, exchange: marketCode, interval }}
     >
       {({ data, loading, error }) => {
-        const dataSource = loading ?
+        if (error) {
+          serverError = error.graphQLErrors[0].message;
+        } else {
+          dataSource = loading ?
           [] : data.topVolume.map(({ reit, volume }: any) => ({
             name: reit.name,
             value: `${currency} ${formatCurrency(volume)}`,
           }));
-        const columns = [
-          { title: 'Reit Name', dataIndex: 'name', key: 'name' },
-          { title: 'Value', dataIndex: 'value', key: 'value', className: 'text-right w-40' },
-        ];
+        }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
             <Title level={4}>Top Volume</Title>
             <Divider className="my-3" />
-            <DashboardSpinner isLoading={loading}>
-              <StyledTable
-                locale={{
-                  emptyText: <EmptyState />,
-                }}
-                rowKey={(row: any) => row.name}
-                size="middle"
-                showHeader={false}
-                pagination={false}
-                dataSource={dataSource}
-                columns={columns}
-              />
-            </DashboardSpinner>
+            {serverError ? (
+              <Alert message={serverError} type="error" />
+            ) : (
+              <DashboardSpinner isLoading={loading}>
+                <StyledTable
+                  locale={{
+                    emptyText: <EmptyState />,
+                  }}
+                  rowKey={(row: any) => row.name}
+                  size="middle"
+                  showHeader={false}
+                  pagination={false}
+                  dataSource={dataSource}
+                  columns={columns}
+                />
+              </DashboardSpinner>
+            )}
           </Card>
         );
       }}

@@ -35,7 +35,7 @@ Settings.preload();
 
 const routes = [
   {
-    component: RequireAuth(Register, false),
+    component: Register,
     path: '/register',
   },
   {
@@ -53,7 +53,7 @@ const routes = [
   {
     component: RequireAuth(Dashboard, false),
     exact: true,
-    path: '/',
+    path: '/dashboard',
   },
   {
     component: RequireAuth(Chart, false),

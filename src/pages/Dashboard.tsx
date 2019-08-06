@@ -1,53 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
-import { Row, Col, Menu, Card, Result, Button } from 'antd';
-
-import LoadableComponent from '../config/LoadableComponent';
+import { Row, Col, Menu, Result, Button } from 'antd';
 
 import AppLayout from '../components/layout/AppLayout';
 
-const MarketCap = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/MarketCap',
-  loadingComponent: <Card loading />,
-});
-
-const HeatMap = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/HeatMap',
-  loadingComponent: <Card loading />,
-});
-
-const TopGainers = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/TopGainers',
-  loadingComponent: <Card loading />,
-});
-
-const TopVolume = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/TopVolume',
-  loadingComponent: <Card loading />,
-});
-
-const TopLosers = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/TopLosers',
-  loadingComponent: <Card loading />,
-});
-
-const Portfolio = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/Portfolio',
-  loadingComponent: <Card loading />,
-});
-
-const Watchlist = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/Watchlist',
-  loadingComponent: <Card loading />,
-});
-
-const Insights = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/Insights',
-  loadingComponent: <Card loading />,
-});
-
 import { useIntervalContext } from '../contexts/IntervalContext';
+import LoadableComponent from '../config/LoadableComponent';
+
+const DashboardIndex = LoadableComponent({
+  componentPathName: 'components/pages/dashboard/DashboardIndex',
+});
+
+const FourOhFour = LoadableComponent({
+  componentPathName: 'pages/FourOhFour',
+});
 
 interface IDashboardProps {
   token: string,
@@ -96,41 +63,11 @@ const Dashboard = (props: IDashboardProps) => {
             <Col xs={24}>
               <IntervalMenu />
             </Col>
-            <Col className="pb-2 pb-sm-3" xs={24} xl={12}>
-              <MarketCap />
-            </Col>
-            <Col className="pb-2 pb-sm-3" xs={24} xl={12}>
-              <HeatMap />
-            </Col>
           </Row>
-          <Row type="flex" gutter={16}>
-            <Col className="pb-2 pb-sm-3" xs={24} xl={8}>
-              <TopGainers />
-            </Col>
-            <Col className="pb-2 pb-sm-3" xs={24} xl={8}>
-              <TopVolume />
-            </Col>
-            <Col className="pb-2 pb-sm-3" xs={24} xl={8}>
-              <TopLosers />
-            </Col>
-          </Row>
-          <Row type="flex" gutter={16}>
-            <Col xs={{ span: 24, order: 2 }} xl={{ span: 16, order: 1 }}>
-              <Insights token={token} />
-            </Col>
-            <Col xs={{ span: 24, order: 1 }} xl={{ span: 8, order: 2 }}>
-              <Row gutter={16}>
-                <Col className="mb-2 mb-sm-3">
-                  <Portfolio />
-                </Col>
-              </Row>
-              <Row gutter={16}>
-                <Col className="mb-2 mb-lg-0">
-                  <Watchlist />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
+          <Switch>
+            <Route path="/" component={() => <DashboardIndex token={token} />} />
+            <Route component={FourOhFour} />
+          </Switch>
         </>
       ) : (
         <div className="flex-center-contents">
