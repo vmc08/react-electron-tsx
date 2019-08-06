@@ -42,7 +42,7 @@ const Insights = LoadableComponent({
   loadingComponent: <Card loading />,
 });
 
-const DashboardIndex = (props: { token: string }) => (
+const Dashboard = (props: { token: string }) => (
   <>
     <Row type="flex" gutter={16}>
       <Col className="pb-2 pb-sm-3" xs={24} xl={12}>
@@ -83,4 +83,4 @@ const DashboardIndex = (props: { token: string }) => (
   </>
 );
 
-export default DashboardIndex;
+export default Dashboard;

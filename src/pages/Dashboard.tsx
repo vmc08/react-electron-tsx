@@ -9,7 +9,7 @@ import { useIntervalContext } from '../contexts/IntervalContext';
 import LoadableComponent from '../config/LoadableComponent';
 
 const DashboardIndex = LoadableComponent({
-  componentPathName: 'components/pages/dashboard/DashboardIndex',
+  componentPathName: 'components/pages/dashboard',
 });
 
 const FourOhFour = LoadableComponent({
