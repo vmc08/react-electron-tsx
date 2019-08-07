@@ -12,6 +12,10 @@ const DashboardIndex = LoadableComponent({
   componentPathName: 'components/pages/dashboard',
 });
 
+const DashboardHeatMap = LoadableComponent({
+  componentPathName: 'components/pages/dashboard/dashboard-heatmap',
+});
+
 const FourOhFour = LoadableComponent({
   componentPathName: 'pages/FourOhFour',
 });
@@ -65,7 +69,8 @@ const Dashboard = (props: IDashboardProps) => {
             </Col>
           </Row>
           <Switch>
-            <Route path="/" component={() => <DashboardIndex token={token} />} />
+            <Route exact path="/dashboard" component={() => <DashboardIndex token={token} />} />
+            <Route path="/dashboard/heatmap" component={() => <DashboardHeatMap />} />
             <Route component={FourOhFour} />
           </Switch>
         </>

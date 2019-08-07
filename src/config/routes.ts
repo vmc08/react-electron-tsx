@@ -52,7 +52,6 @@ const routes = [
   },
   {
     component: RequireAuth(Dashboard, false),
-    exact: true,
     path: '/dashboard',
   },
   {

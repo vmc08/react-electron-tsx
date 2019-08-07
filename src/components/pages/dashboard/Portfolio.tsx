@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
-import { Card, Typography, Divider, Table, Row, Col } from 'antd';
+import { Card, Typography, Divider, Table, Row, Col, Alert } from 'antd';
 
 import DashboardSpinner from '../../spinners/DashboardSpinner';
 import EmptyState from '../../EmptyState';
@@ -28,7 +28,15 @@ const StyledTable = styled(Table)`
 const Portfolio = () => {
   const { token } = useUserContextValue();
   const { market: { marketCode, currency } } = useMarketsContextValue();
+
   let portfolioTotal = 0;
+  let serverError: string | undefined;
+  let dataSource: any = [];
+  const columns = [
+    { title: 'Reit Name', dataIndex: 'name', key: 'name' },
+    { title: 'Value', dataIndex: 'value', key: 'value', className: 'text-right w-40' },
+  ];
+
   return (
     <Query<any>
       query={DASHBOARD_PORTFOLIO}
@@ -38,15 +46,15 @@ const Portfolio = () => {
         if (!loading && data.portfolio.holdings.length) {
           portfolioTotal = data.portfolio.totalValue;
         }
-        const dataSource = loading ?
-          [] : data.portfolio.holdings.slice(0, 5).map(({ currentValue, reit }: any) => ({
-            name: reit.name,
-            value: `${currency} ${formatCurrency(currentValue)}`,
-          }));
-        const columns = [
-          { title: 'Reit Name', dataIndex: 'name', key: 'name' },
-          { title: 'Value', dataIndex: 'value', key: 'value', className: 'text-right w-40' },
-        ];
+        if (error) {
+          serverError = error.graphQLErrors[0].message;
+        } else {
+          dataSource = loading ?
+            [] : data.portfolio.holdings.slice(0, 5).map(({ currentValue, reit }: any) => ({
+              name: reit.name,
+              value: `${currency} ${formatCurrency(currentValue)}`,
+            }));
+        }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
             <Row>
@@ -60,38 +68,42 @@ const Portfolio = () => {
               </Col>
             </Row>
             <Divider className="my-3" />
-            <DashboardSpinner isLoading={loading}>
-              {(!loading && !!dataSource.length) && (
-                <Row className="mb-3">
-                  <Col xs={12}>
-                    <Text strong className="ml-2" style={{ fontSize: 18 }}>
-                      Total
-                    </Text>
-                  </Col>
-                  <Col xs={12}>
-                    <Text strong className="float-right mr-2" style={{ fontSize: 18 }}>
-                      {formatCurrency(portfolioTotal)}
-                    </Text>
-                  </Col>
-                </Row>
-              )}
-              <StyledTable
-                locale={{
-                  emptyText: <EmptyState
-                    mainText="There are no items in your portfolio"
-                    subText="Buy some to get started"
-                    buttonText="Buy"
-                    buttonLink="/portfolio"
-                  />,
-                }}
-                rowKey={(row: any) => row.name}
-                size="middle"
-                showHeader={false}
-                pagination={false}
-                dataSource={dataSource}
-                columns={columns}
-              />
-            </DashboardSpinner>
+            {serverError ? (
+              <Alert message={serverError} type="error" />
+            ) : (
+              <DashboardSpinner isLoading={loading}>
+                {(!loading && !!dataSource.length) && (
+                  <Row className="mb-3">
+                    <Col xs={12}>
+                      <Text strong className="ml-2" style={{ fontSize: 18 }}>
+                        Total
+                      </Text>
+                    </Col>
+                    <Col xs={12}>
+                      <Text strong className="float-right mr-2" style={{ fontSize: 18 }}>
+                        {formatCurrency(portfolioTotal)}
+                      </Text>
+                    </Col>
+                  </Row>
+                )}
+                <StyledTable
+                  locale={{
+                    emptyText: <EmptyState
+                      mainText="There are no items in your portfolio"
+                      subText="Buy some to get started"
+                      buttonText="Buy"
+                      buttonLink="/portfolio"
+                    />,
+                  }}
+                  rowKey={(row: any) => row.name}
+                  size="middle"
+                  showHeader={false}
+                  pagination={false}
+                  dataSource={dataSource}
+                  columns={columns}
+                />
+              </DashboardSpinner>
+            )}
           </Card>
         );
       }}

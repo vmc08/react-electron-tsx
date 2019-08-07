@@ -24,15 +24,14 @@ const App = () => {
   return (
     <AppProviders>
       <Switch>
-        {routes.map(({ component: Component, exact, path, ...rest }) => (
+        {routes.map(({ component: Component, path, ...rest }) => (
           <Route
             key={path}
             path={path}
-            exact={exact}
             render={(props: RouteComponentProps & any) => <Component {...props} {...rest} />}
           />
         ))}
-        <Redirect from="/" to="/dashboard"/>
+        <Redirect exact from="/" to="/dashboard"/>
         <Route component={FourOhFour} />
       </Switch>
     </AppProviders>

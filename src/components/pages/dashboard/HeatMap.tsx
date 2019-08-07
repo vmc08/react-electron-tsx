@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
-import { Card, Typography, Divider, Row, Col, Progress } from 'antd';
+import { Card, Typography, Divider, Row, Col, Progress, Alert } from 'antd';
 
 import DashboardSpinner from '../../spinners/DashboardSpinner';
 
@@ -75,6 +75,7 @@ const HeatMap = () => {
   const { interval } = useIntervalContext();
   const { market: { marketCode } } = useMarketsContextValue();
 
+  let serverError: string | undefined;
   let dataSource: any[] = [];
 
   return (
@@ -85,6 +86,9 @@ const HeatMap = () => {
       {({ data, loading, error }) => {
         if (!loading) {
           dataSource = Object.entries(data);
+        }
+        if (error) {
+          serverError = error.graphQLErrors[0].message;
         }
         return (
           <Card
@@ -108,21 +112,25 @@ const HeatMap = () => {
               </Col>
             </Row>
             <Divider className="my-3" />
-            <DashboardSpinner isLoading={loading}>
-              {dataSource.map(([sourceKey, { histogram }]) => {
-                if (!histogram.length) {
-                  return null;
-                }
-                return (
-                  <div key={sourceKey}>
-                    <HeatMapBar
-                      data={histogram}
-                      title={sourceKey.toLowerCase().split('_').join(' ')}
-                    />
-                  </div>
-                );
-              })}
-            </DashboardSpinner>
+            {serverError ? (
+              <Alert message={serverError} type="error" />
+            ) : (
+              <DashboardSpinner isLoading={loading}>
+                {dataSource.map(([sourceKey, { histogram }]) => {
+                  if (!histogram.length) {
+                    return null;
+                  }
+                  return (
+                    <div key={sourceKey}>
+                      <HeatMapBar
+                        data={histogram}
+                        title={sourceKey.toLowerCase().split('_').join(' ')}
+                      />
+                    </div>
+                  );
+                })}
+              </DashboardSpinner>
+            )}
           </Card>
         );
       }}

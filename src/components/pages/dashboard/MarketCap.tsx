@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Card, Typography, Divider, Row, Col, Icon, Tooltip } from 'antd';
+import { Card, Typography, Divider, Row, Col, Icon, Tooltip, Alert } from 'antd';
 
 import DashboardSpinner from '../../spinners/DashboardSpinner';
 
@@ -22,6 +22,7 @@ const MarketCap = () => {
 
   let change = 0;
   let latestValue = 0;
+  let serverError: string | undefined;
   let dataSource: any[] = [];
 
   return (
@@ -37,50 +38,57 @@ const MarketCap = () => {
             label, value,
           })).reverse();
         }
+        if (error) {
+          serverError = error.graphQLErrors[0].message;
+        }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
             <Title level={4}>Market Cap</Title>
             <Divider className="my-3" />
-            <DashboardSpinner isLoading={loading}>
-              {!loading && (
-                <Row className="mb-3">
-                  <Col xs={12}>
-                    <Tooltip
-                      placement="bottomLeft"
-                      title={`${currency} ${latestValue.toLocaleString()}`}
-                    >
-                      <Text strong type="secondary" className="ml-2" style={{ fontSize: 18 }}>
-                        {currency} {formatCurrency(latestValue)}
+            {serverError ? (
+              <Alert message={serverError} type="error" />
+            ) : (
+              <DashboardSpinner isLoading={loading}>
+                {!loading && (
+                  <Row className="mb-3">
+                    <Col xs={12}>
+                      <Tooltip
+                        placement="bottomLeft"
+                        title={`${currency} ${latestValue.toLocaleString()}`}
+                      >
+                        <Text strong type="secondary" className="ml-2" style={{ fontSize: 18 }}>
+                          {currency} {formatCurrency(latestValue)}
+                        </Text>
+                      </Tooltip>
+                    </Col>
+                    <Col xs={12}>
+                      <Text
+                        strong
+                        className="float-right mr-2"
+                        style={{
+                          fontSize: 18,
+                          color: change > 0 ? '#52C41A' : change < 0 ? '#F5222D' : 'inherit',
+                        }}
+                      >
+                        <span>
+                          {change !== 0 && (
+                            <Icon type={change > 0 ? 'arrow-up' : 'arrow-down'} className="mr-1" />
+                          )}
+                          {truncateDecimals(change)}%
+                        </span>
                       </Text>
-                    </Tooltip>
-                  </Col>
-                  <Col xs={12}>
-                    <Text
-                      strong
-                      className="float-right mr-2"
-                      style={{
-                        fontSize: 18,
-                        color: change > 0 ? '#52C41A' : change < 0 ? '#F5222D' : 'inherit',
-                      }}
-                    >
-                      <span>
-                        {change !== 0 && (
-                          <Icon type={change > 0 ? 'arrow-up' : 'arrow-down'} className="mr-1" />
-                        )}
-                        {truncateDecimals(change)}%
-                      </span>
-                    </Text>
-                  </Col>
-                </Row>
-              )}
-              <AppAreaChart
-                change={change}
-                dataSource={dataSource}
-                height={200}
-                hideYLabels={true}
-                hideXLabels={true}
-              />
-            </DashboardSpinner>
+                    </Col>
+                  </Row>
+                )}
+                <AppAreaChart
+                  change={change}
+                  dataSource={dataSource}
+                  height={200}
+                  hideYLabels={true}
+                  hideXLabels={true}
+                />
+              </DashboardSpinner>
+            )}
           </Card>
         );
       }}
