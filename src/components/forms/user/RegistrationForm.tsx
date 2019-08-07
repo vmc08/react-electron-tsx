@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Mutation } from 'react-apollo';
+import { Mutation, withApollo, WithApolloClient } from 'react-apollo';
 import { Formik, Form, Field, FormikProps } from 'formik';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Form as AntdForm, Icon, Button, Alert, Row, Col } from 'antd';
@@ -9,11 +9,10 @@ import { SignupSchema } from './validations';
 import { AntInput } from '../../AntDesignFields';
 import { hasValidObjectValues } from '../../../utils/objectUtils';
 import { setAuthToken } from '../../../utils/userUtils';
-import { CREATE_ACCOUNT } from '../../../apollo/mutations/user';
+import { CREATE_ACCOUNT, SEND_ONBOARDING_CODE } from '../../../apollo/mutations/user';
 
 interface IRegistrationFormProps extends RouteComponentProps {
   affiliateId: string | null,
-  sendOnboardingCode: any,
 }
 
 interface IUser {
@@ -39,8 +38,10 @@ const StyledIcon = styled(Icon)`
   color: 'rgba(0, 0, 0, .25)';
 `;
 
-class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistrationFormState> {
-  constructor(props: IRegistrationFormProps) {
+class RegistrationForm extends React.Component<
+  WithApolloClient<IRegistrationFormProps>, IRegistrationFormState
+> {
+  constructor(props: WithApolloClient<IRegistrationFormProps>) {
     super(props);
     this.state = {
       isLoading: false,
@@ -57,7 +58,7 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
   }
 
   async onSubmit(values: IUser, createAccountMutation: any) {
-    const { history, affiliateId, sendOnboardingCode } = this.props;
+    const { history, affiliateId, client } = this.props;
     this.setState({ isLoading: true });
     await createAccountMutation({
       variables: {
@@ -69,7 +70,10 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
       const { createAccount } = data;
       const { token: userToken } = createAccount;
       setAuthToken(userToken);
-      await sendOnboardingCode({ variables: { token: userToken } });
+      await client.mutate({
+        mutation: SEND_ONBOARDING_CODE,
+        variables: { token: userToken },
+      });
       this.setState({ isLoading: false });
       history.replace('/register/verify-email');
     })
@@ -173,4 +177,6 @@ class RegistrationForm extends React.Component<IRegistrationFormProps, IRegistra
   }
 }
 
-export default withRouter(RegistrationForm);
+export default withRouter(
+  withApollo<WithApolloClient<IRegistrationFormProps>>(RegistrationForm),
+);

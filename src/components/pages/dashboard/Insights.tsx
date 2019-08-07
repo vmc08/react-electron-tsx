@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { withApollo } from 'react-apollo';
+import { withApollo, WithApolloClient } from 'react-apollo';
 import styled from 'styled-components';
 import moment from 'moment';
 import { Card, Typography, Menu, Input, Comment, Tag, Alert, Skeleton } from 'antd';
@@ -98,9 +98,9 @@ const InsightsMenu = ({ selectedCategory, setSelectedCategory }: IInsightsMenuPr
   );
 };
 
-class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
+class Insights extends React.PureComponent<WithApolloClient<IInsightProps>, IInsightsState> {
   rvListRef: any = null;
-  constructor(props: IInsightProps) {
+  constructor(props: WithApolloClient<IInsightProps>) {
     super(props);
     this.state = {
       rowCount: 100,
@@ -299,4 +299,4 @@ class Insights extends React.PureComponent<IInsightProps, IInsightsState> {
 
 Insights.contextType = MarketsContext;
 
-export default withApollo(Insights);
+export default withApollo<WithApolloClient<IInsightProps>>(Insights);

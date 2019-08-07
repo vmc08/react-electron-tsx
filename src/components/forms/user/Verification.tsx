@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik, Form, FormikProps } from 'formik';
-import { graphql, compose } from 'react-apollo';
+import { withApollo, WithApolloClient } from 'react-apollo';
 import styled from 'styled-components';
 import { Row, Col, Button, Alert, Typography, message } from 'antd';
 import ReactCodeInput from '@m3-moretv/react-code-input';
@@ -14,8 +14,6 @@ const { Paragraph } = Typography;
 
 interface IVerificationProps {
   userToken: string,
-  verifyOnboardingCode: any,
-  sendOnboardingCode: any,
 }
 
 interface IVerificationStates {
@@ -55,8 +53,10 @@ const StyledReactCodeInput = styled(ReactCodeInput)`
   }
 `;
 
-class Verification extends React.Component<IVerificationProps, IVerificationStates> {
-  constructor(props: IVerificationProps) {
+class Verification extends React.Component<
+  WithApolloClient<IVerificationProps>, IVerificationStates
+> {
+  constructor(props: WithApolloClient<IVerificationProps>) {
     super(props);
     this.state = {
       error: null,
@@ -72,9 +72,10 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
   }
 
   async onVerify({ code }: { code: string }) {
-    const { verifyOnboardingCode, userToken } = this.props;
+    const { client, userToken } = this.props;
     this.setState({ verifying: true });
-    await verifyOnboardingCode({
+    await client.mutate({
+      mutation: VERIFY_ONBOARDING_CODE,
       variables: { token: userToken, code },
       refetchQueries: [{
         query: ACCOUNT,
@@ -87,9 +88,10 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
   }
 
   async onCodeResend() {
-    const { sendOnboardingCode, userToken } = this.props;
+    const { client, userToken } = this.props;
     this.setState({ resending: true });
-    await sendOnboardingCode({
+    await client.mutate({
+      mutation: SEND_ONBOARDING_CODE,
       variables: { token: userToken },
     }).then(() => {
       this.setState({ resending: false });
@@ -180,7 +182,4 @@ class Verification extends React.Component<IVerificationProps, IVerificationStat
   }
 }
 
-export default compose(
-  graphql(SEND_ONBOARDING_CODE, { name: 'sendOnboardingCode' }),
-  graphql(VERIFY_ONBOARDING_CODE, { name: 'verifyOnboardingCode' }),
-)(Verification);
+export default withApollo<WithApolloClient<IVerificationProps>>(Verification);

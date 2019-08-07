@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Query, graphql, compose } from 'react-apollo';
+import { Query, graphql } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -13,10 +13,6 @@ import { AFFILIATE } from '../../../apollo/queries/affiliate';
 import { SEND_ONBOARDING_CODE } from '../../../apollo/mutations/user';
 
 const { Title, Paragraph } = Typography;
-
-interface IFreeAndTrialProps extends RouteComponentProps<{ affiliateId: string }> {
-  sendOnboardingCode: any,
-}
 
 interface IQueryVariables {
   affiliateId: string,
@@ -80,13 +76,13 @@ const StyledDiv = styled.div`
   padding: 24px 12px;
 `;
 
-class FreeAndTrial extends React.Component<IFreeAndTrialProps> {
-  constructor(props: IFreeAndTrialProps) {
+class FreeAndTrial extends React.Component<RouteComponentProps<{ affiliateId: string }>> {
+  constructor(props: RouteComponentProps<{ affiliateId: string }>) {
     super(props);
   }
 
   render() {
-    const { match: { params }, sendOnboardingCode } = this.props;
+    const { match: { params } } = this.props;
     const { affiliateId } = params;
     let affiliatePlan: string | ReactNode | undefined;
 
@@ -119,7 +115,6 @@ class FreeAndTrial extends React.Component<IFreeAndTrialProps> {
                       <Col xs={24} className="root-col">
                         <RegistrationForm
                           affiliateId={affiliateId}
-                          sendOnboardingCode={sendOnboardingCode}
                         />
                         <Paragraph>
                           By registering you agree with the<br/>
@@ -141,6 +136,4 @@ class FreeAndTrial extends React.Component<IFreeAndTrialProps> {
   }
 }
 
-export default compose(
-  graphql(SEND_ONBOARDING_CODE, { name: 'sendOnboardingCode' }),
-)(AccountVerifier(FreeAndTrial, true));
+export default AccountVerifier(FreeAndTrial, true);

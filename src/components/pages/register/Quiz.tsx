@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql, compose } from 'react-apollo';
+import { graphql, withApollo, WithApolloClient } from 'react-apollo';
 import styled from 'styled-components';
 import { Link, Switch, Route, Redirect } from 'react-router-dom';
 import { Row, Col, Typography, Button, message } from 'antd';
@@ -62,8 +62,8 @@ const StyledButton = styled(Button)`
   text-transform: uppercase;
 `;
 
-class Quiz extends React.PureComponent<IQuizProps, IQuizStates> {
-  constructor(props: IQuizProps) {
+class Quiz extends React.PureComponent<WithApolloClient<{}>, IQuizStates> {
+  constructor(props: WithApolloClient<{}>) {
     super(props);
     this.state = {
       isLoading: false,
@@ -75,18 +75,18 @@ class Quiz extends React.PureComponent<IQuizProps, IQuizStates> {
 
   async submitAnswers(answers: string[]) {
     const { token } = this.context;
-    const { assessOnboardingScore } = this.props;
+    const { client } = this.props;
     const input = answers.map((answer: string, order: number) => ({
       answer, order,
     }));
     this.setState({ isLoading: true });
-    await assessOnboardingScore({
+    await client.mutate({
+      mutation: ASSESS_ONBOARDING_SCORE,
       variables: { token, input },
       awaitRefetchQueries: true,
       refetchQueries: [{
         query: ACCOUNT,
         variables: { token },
-        fetchPolicy: 'network-only',
       }],
     }).then(({ data }: { data: { assessOnboardingScore: boolean } }) => {
       const { assessOnboardingScore: userOnboarded } = data;
@@ -168,8 +168,6 @@ class Quiz extends React.PureComponent<IQuizProps, IQuizStates> {
 
 Quiz.contextType = UserContext;
 
-const ComposedQuiz = compose(
-  graphql(ASSESS_ONBOARDING_SCORE, { name: 'assessOnboardingScore' }),
-)(Quiz);
-
-export default AccountVerifier(ComposedQuiz, true);
+export default AccountVerifier(
+  withApollo<WithApolloClient<{}>>(Quiz), true,
+);
