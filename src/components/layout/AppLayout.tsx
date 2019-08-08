@@ -4,13 +4,10 @@ import { Layout, Icon, Affix } from 'antd';
 import { useUserContextValue } from '../../contexts/UserContext';
 import { useSidenavContextValue } from '../../contexts/SidenavContext';
 import AccountVerifier from '../../HOC/AccountVerifier';
-
-const { Content } = Layout;
-
 import AppSideNav from './AppSidenav';
 import MarketsDropdown from './MarketsDropdown';
 
-const { Header } = Layout;
+const { Content, Header } = Layout;
 
 interface IAppLayoutProps {
   requireAuth: boolean,

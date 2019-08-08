@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 
-const DEFAULT_INTERVAL = 'W';
+const DEFAULT_INTERVAL = 'M';
 
 export interface IMarketsContext {
   setDashboardInterval: (interval: string) => void,
@@ -16,14 +16,14 @@ class IntervalProvider extends React.Component<{}, { interval: string }> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      interval: sessionStorage.getItem('dashboard_interval') || DEFAULT_INTERVAL,
+      interval: localStorage.getItem('dashboard_interval') || DEFAULT_INTERVAL,
     };
     this.setDashboardInterval = this.setDashboardInterval.bind(this);
   }
 
   setDashboardInterval(interval: string) {
     this.setState({ interval }, () => {
-      sessionStorage.setItem('dashboard_interval', interval);
+      localStorage.setItem('dashboard_interval', interval);
     });
   }
 

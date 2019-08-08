@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Query, graphql } from 'react-apollo';
+import { Query } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -10,7 +10,6 @@ import PageSpinner from '../../spinners/PageSpinner';
 import AccountVerifier from '../../../HOC/AccountVerifier';
 import logoLight from '../../../assets/images/logo-light.png';
 import { AFFILIATE } from '../../../apollo/queries/affiliate';
-import { SEND_ONBOARDING_CODE } from '../../../apollo/mutations/user';
 
 const { Title, Paragraph } = Typography;
 
@@ -76,64 +75,57 @@ const StyledDiv = styled.div`
   padding: 24px 12px;
 `;
 
-class FreeAndTrial extends React.Component<RouteComponentProps<{ affiliateId: string }>> {
-  constructor(props: RouteComponentProps<{ affiliateId: string }>) {
-    super(props);
-  }
+const FreeAndTrial = ({ match: { params } }: RouteComponentProps<{ affiliateId: string }>) => {
+  const { affiliateId } = params;
+  let affiliatePlan: string | ReactNode | undefined;
 
-  render() {
-    const { match: { params } } = this.props;
-    const { affiliateId } = params;
-    let affiliatePlan: string | ReactNode | undefined;
-
-    return (
-      <Query<IQueryData, IQueryVariables>
-        query={AFFILIATE}
-        variables={{ affiliateId }}
-        skip={!affiliateId}
-      >
-        {({ loading, data, error }) => {
-          if (error) {
-            return <Redirect to="/login?error=affiliateId" />;
-          }
-          if (data && !loading) {
-            const { affiliate: { plan } } = data;
-            affiliatePlan = <span style={{ textTransform: 'capitalize' }}>{plan} Trial</span>;
-          }
-          const titleText = (affiliateId && affiliatePlan) || loading ?
-            affiliatePlan : 'Start with your free REITScreener account';
-          return (
-            <PageSpinner loading={loading}>
-              <FreeAndTrialWrapper>
-                <StyledDiv>
-                  <StyledBrandLogo draggable={false} src={logoLight} alt="REITScreener" />
-                  <Card>
-                    <Row className="root-row" type="flex">
-                      <Col xs={24} className="root-col">
-                        <Title level={3}>{titleText}</Title>
-                      </Col>
-                      <Col xs={24} className="root-col">
-                        <RegistrationForm
-                          affiliateId={affiliateId}
-                        />
-                        <Paragraph>
-                          By registering you agree with the<br/>
-                          <Link to="/terms-and-conditions">Terms and Conditions</Link>
-                        </Paragraph>
-                        <Paragraph>
-                          Already have an account? <Link to="/login">Sign in</Link>
-                        </Paragraph>
-                      </Col>
-                    </Row>
-                  </Card>
-                </StyledDiv>
-              </FreeAndTrialWrapper>
-            </PageSpinner>
-          );
-        }}
-      </Query>
-    );
-  }
-}
+  return (
+    <Query<IQueryData, IQueryVariables>
+      query={AFFILIATE}
+      variables={{ affiliateId }}
+      skip={!affiliateId}
+    >
+      {({ loading, data, error }) => {
+        if (error) {
+          return <Redirect to="/login?error=affiliateId" />;
+        }
+        if (data && !loading) {
+          const { affiliate: { plan } } = data;
+          affiliatePlan = <span style={{ textTransform: 'capitalize' }}>{plan} Trial</span>;
+        }
+        const titleText = (affiliateId && affiliatePlan) || loading ?
+          affiliatePlan : 'Start with your free REITScreener account';
+        return (
+          <PageSpinner loading={loading}>
+            <FreeAndTrialWrapper>
+              <StyledDiv>
+                <StyledBrandLogo draggable={false} src={logoLight} alt="REITScreener" />
+                <Card>
+                  <Row className="root-row" type="flex">
+                    <Col xs={24} className="root-col">
+                      <Title level={3}>{titleText}</Title>
+                    </Col>
+                    <Col xs={24} className="root-col">
+                      <RegistrationForm
+                        affiliateId={affiliateId}
+                      />
+                      <Paragraph>
+                        By registering you agree with the<br/>
+                        <Link to="/terms-and-conditions">Terms and Conditions</Link>
+                      </Paragraph>
+                      <Paragraph>
+                        Already have an account? <Link to="/login">Sign in</Link>
+                      </Paragraph>
+                    </Col>
+                  </Row>
+                </Card>
+              </StyledDiv>
+            </FreeAndTrialWrapper>
+          </PageSpinner>
+        );
+      }}
+    </Query>
+  );
+};
 
 export default AccountVerifier(FreeAndTrial, true);

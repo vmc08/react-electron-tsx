@@ -138,6 +138,7 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
     deleteAuthToken();
     deleteSidenavState();
     setSelectedKeys({ itemKey: 'dashboard' });
+    localStorage.removeItem('dashboard_interval');
     history.replace('/login');
   }
 

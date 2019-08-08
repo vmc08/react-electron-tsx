@@ -95,7 +95,7 @@ class MarketsDropdown extends React.Component<{}, { visibility: boolean }> {
             onVisibleChange={this.handleVisibleChange}
             placement="bottomRight"
           >
-            <a className="ant-dropdown-link" href="#" title="Market">
+            <a className="ant-dropdown-link" href="#!" title="Market">
               <FlagIcon className="mr-2" size="lg" code={countryCode.toLowerCase()} />
               <span className="d-none d-sm-inline">{label}</span>
               <Icon className="ml-2" type="down" />

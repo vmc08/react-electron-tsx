@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql, withApollo, WithApolloClient } from 'react-apollo';
+import { withApollo, WithApolloClient } from 'react-apollo';
 import styled from 'styled-components';
 import { Link, Switch, Route, Redirect } from 'react-router-dom';
 import { Row, Col, Typography, Button, message } from 'antd';
@@ -13,10 +13,6 @@ import { ACCOUNT } from '../../../apollo/queries/user';
 import { ASSESS_ONBOARDING_SCORE } from '../../../apollo/mutations/user';
 
 const { Title } = Typography;
-
-interface IQuizProps {
-  assessOnboardingScore: any,
-}
 
 interface IQuizStates {
   isLoading: boolean,
@@ -131,7 +127,8 @@ class Quiz extends React.PureComponent<WithApolloClient<{}>, IQuizStates> {
                     <Title level={4} className="text-center">
                       Let’s get to know you better – it won’t take more than a minute&nbsp;
                       and it will help you (and us!) figure out where you are in your&nbsp;
-                      investing journey and what’s your ideal next step.👍
+                      investing journey and what’s your ideal next step.&nbsp;
+                      <span role="img" aria-label="thumbs-up">👍</span>
                     </Title>
                     <Link to="/register/quiz/1">
                       <StyledButton type="primary" size="large">

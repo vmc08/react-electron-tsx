@@ -163,36 +163,34 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
                     </span>
                   }
                 >
-                  {groups.map(({ title, items }: INavGroup) => {
-                    return (
-                      <ItemGroup title={title} key={`group-${slugify(title)}`}>
-                        {items.map((item: INavRoute) => {
-                          const {
-                            label: itemLabel,
-                            path: itemPath,
-                            externalLink: itemExternalLink,
-                          } = item;
-                          const itemKey = slugify(itemLabel);
-                          return (
-                            <Menu.Item
-                              key={itemKey}
-                              onClick={() => {
-                                if (itemExternalLink) {
-                                  window.open(itemExternalLink, '_blank');
-                                } else {
-                                  this.changeRoute({ itemKey, subMenuKey }, itemPath);
-                                }
-                              }}
-                            >
-                              <MenuItemWrapper collapsed={collapsed} label={itemLabel}>
-                                <span>{itemLabel}</span>
-                              </MenuItemWrapper>
-                            </Menu.Item>
-                          );
-                        })}
-                      </ItemGroup>
-                    );
-                  })}
+                  {groups.map(({ title, items }: INavGroup) => (
+                    <ItemGroup title={title} key={`group-${slugify(title)}`}>
+                      {items.map((item: INavRoute) => {
+                        const {
+                          label: itemLabel,
+                          path: itemPath,
+                          externalLink: itemExternalLink,
+                        } = item;
+                        const itemKey = slugify(itemLabel);
+                        return (
+                          <Menu.Item
+                            key={itemKey}
+                            onClick={() => {
+                              if (itemExternalLink) {
+                                window.open(itemExternalLink, '_blank');
+                              } else {
+                                this.changeRoute({ itemKey, subMenuKey }, itemPath);
+                              }
+                            }}
+                          >
+                            <MenuItemWrapper collapsed={collapsed} label={itemLabel}>
+                              <span>{itemLabel}</span>
+                            </MenuItemWrapper>
+                          </Menu.Item>
+                        );
+                      })}
+                    </ItemGroup>
+                  ))}
                 </SubMenu>
               );
             }

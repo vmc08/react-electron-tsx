@@ -85,11 +85,11 @@ export const getDefaultSelectedKeys = (navSource: INavRoute[]): ISelectedKeys =>
     subMenuKey: undefined,
   };
   const { pathname } = window.location;
-  navSource.map(({ path, label, groups }) => {
+  navSource.forEach(({ path, label, groups }) => {
     if (groups && groups.length > 0) {
       const subMenuKey = getSidenavState() ? null : `sub-${slugify(label)}`;
-      groups.map(({ items }) => {
-        items.map(({ label: itemLabel, path: itemPath }) => {
+      groups.forEach(({ items }) => {
+        items.forEach(({ label: itemLabel, path: itemPath }) => {
           const itemKey = slugify(itemLabel);
           if (itemPath === pathname) {
             defaultKeys = { itemKey, subMenuKey: subMenuKey || undefined };

@@ -84,10 +84,6 @@ const CustomRadioGroup = ({ options, selectAnswer, answer, isLoading }: ICustomR
 };
 
 class QuizForm extends React.PureComponent<IQuizFormProps> {
-  constructor(props: IQuizFormProps) {
-    super(props);
-  }
-
   componentDidMount() {
     const { history, currentIndex } = this.props;
     const { answers, setAnswers } = this.context;

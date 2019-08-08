@@ -32,7 +32,7 @@ export const NewPasswordSchema = Yup.object().shape({
     .required('Password can\'t be blank'),
   confirmPassword: Yup.string()
     .min(6, 'Must be at least 6 characters')
-    .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Password confirmation  can\'t be blank'),
 });
 
