@@ -2,6 +2,8 @@ import React from 'react';
 import { UserConsumer } from '../contexts/UserContext';
 import AppLayout from '../components/layout/AppLayout';
 
+import PriceIndex from '../components/pages/charts/PriceIndex';
+
 class Chart extends React.Component<{ requireAuth: boolean }> {
   render() {
     const { requireAuth } = this.props;
@@ -10,7 +12,7 @@ class Chart extends React.Component<{ requireAuth: boolean }> {
         <UserConsumer>
           {(value) => {
             return (
-              <div>Chart Page</div>
+              <PriceIndex />
             );
           }}
         </UserConsumer>

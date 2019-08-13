@@ -34,6 +34,7 @@
     "p-min-delay": "^3.1.0",
     "react": "^16.8.6",
     "react-apollo": "^3.0.0",
+    "react-async-script": "^1.1.1",
     "react-clear-cache": "^1.0.26",
     "react-dom": "^16.8.6",
     "react-flag-icon-css": "^1.0.25",

@@ -18,3 +18,20 @@ export const HEAT_COLORS = [
 export const SANS_SERIF_FONT = `
   -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
 `;
+
+export const TRADING_VIEW_DEFAULT_CONFIG = {
+  autosize: true,
+  timezone: 'Asia/Singapore',
+  library_path: '/assets/tradingview/charting_library/',
+  client_id: 'tradingview.com',
+  user_id: 'public_user_id',
+  locale: 'en',
+  disabled_features: ['use_localstorage_for_settings'],
+  enabled_features: ['study_templates'],
+  drawings_access: {
+    type: 'black',
+    tools: [{
+      name: 'Regression Trend',
+    }],
+  },
+};
