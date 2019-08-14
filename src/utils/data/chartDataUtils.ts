@@ -1,3 +1,10 @@
+interface IChartLabels {
+  [key: string]: {
+    label: string,
+    symbol: string,
+  },
+}
+
 export const CHART_COLORS = {
   GREEN: '#52C41A',
   BLUE: '#1890FF',
@@ -7,7 +14,7 @@ export const CHART_COLORS = {
   CYAN: '#13C2C2',
 };
 
-export const HEAT_COLORS = [
+export const HEATMAP_COLORS = [
   '#962328', // DARK_RED
   '#ED3F33', // LIGHT_RED
   '#868A8D', // GRAY
@@ -33,5 +40,20 @@ export const TRADING_VIEW_DEFAULT_CONFIG = {
     tools: [{
       name: 'Regression Trend',
     }],
+  },
+};
+
+export const CHART_LABELS: IChartLabels = {
+  SGX: {
+    label: 'FTSE ST Real Estate Investment',
+    symbol: 'FTSE',
+  },
+  HKEX: {
+    label: 'Hang Seng REIT Index',
+    symbol: 'HANGSENG',
+  },
+  MYX: {
+    label: 'MALAYSIA REIT Index',
+    symbol: 'FTSE',
   },
 };

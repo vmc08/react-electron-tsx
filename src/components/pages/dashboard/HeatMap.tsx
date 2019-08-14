@@ -10,7 +10,7 @@ import { useMarketsContextValue } from '../../../contexts/MarketsContext';
 import { useUserContextValue } from '../../../contexts/UserContext';
 import { useIntervalContext } from '../../../contexts/IntervalContext';
 import { HEAT_MAP } from '../../../apollo/queries/dashboard';
-import { HEAT_COLORS } from '../../../utils/data/chartDataUtils';
+import { HEATMAP_COLORS } from '../../../utils/data/chartDataUtils';
 import { truncateDecimals } from '../../../utils/numberUtils';
 
 const { Title, Text } = Typography;
@@ -52,7 +52,7 @@ const HeatMapBar = ({ title, data }: IHeatMapBar) => {
   data.forEach(({ level, value }) => {
     progressPercent = progressPercent + value * 100;
     const numberKey = `${truncateDecimals(progressPercent).toString()}`;
-    progressStrokeColors[`${numberKey}%`] = HEAT_COLORS[level + 2];
+    progressStrokeColors[`${numberKey}%`] = HEATMAP_COLORS[level + 2];
   });
 
   const derivedStrokeColor = Object.keys(progressStrokeColors).length > 1 ?

@@ -3,6 +3,7 @@ import { UserConsumer } from '../contexts/UserContext';
 import AppLayout from '../components/layout/AppLayout';
 
 import PriceIndex from '../components/pages/charts/PriceIndex';
+import FinancialTimesStockExchange from '../components/pages/charts/FinancialTimesStockExchange';
 
 class Chart extends React.Component<{ requireAuth: boolean }> {
   render() {
@@ -12,7 +13,10 @@ class Chart extends React.Component<{ requireAuth: boolean }> {
         <UserConsumer>
           {(value) => {
             return (
-              <PriceIndex />
+              <>
+                <PriceIndex />
+                <FinancialTimesStockExchange />
+              </>
             );
           }}
         </UserConsumer>

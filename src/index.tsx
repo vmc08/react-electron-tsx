@@ -4,7 +4,7 @@ import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-import ClearCache from 'react-clear-cache';
+// import ClearCache from 'react-clear-cache';
 
 import App from './App';
 import 'antd/dist/antd.css';
@@ -18,15 +18,20 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  <ClearCache auto>
-    {() => (
-      <ApolloProvider client={client}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ApolloProvider>
-    )}
-  </ClearCache>,
+  // <ClearCache auto>
+  //   {() => (
+  //     <ApolloProvider client={client}>
+  //       <BrowserRouter>
+  //         <App />
+  //       </BrowserRouter>
+  //     </ApolloProvider>
+  //   )}
+  // </ClearCache>,
+  <ApolloProvider client={client}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </ApolloProvider>,
   document.getElementById('root'),
 );
 

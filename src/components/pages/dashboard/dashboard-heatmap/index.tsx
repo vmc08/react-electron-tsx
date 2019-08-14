@@ -8,7 +8,7 @@ import { useMarketsContextValue } from '../../../../contexts/MarketsContext';
 import { useUserContextValue } from '../../../../contexts/UserContext';
 import { useIntervalContext } from '../../../../contexts/IntervalContext';
 import { truncateDecimals } from '../../../../utils/numberUtils';
-import { HEAT_COLORS } from '../../../../utils/data/chartDataUtils';
+import { HEATMAP_COLORS } from '../../../../utils/data/chartDataUtils';
 
 import DashboardSpinner from '../../../spinners/DashboardSpinner';
 
@@ -40,7 +40,7 @@ const StyledDiv = styled.div`
 const HeatMapCard = ({ reit, level, priceChange }: IHeatmapDetail, innerIdx: number) => (
   <Col xs={24} md={4} className="my-1" key={reit.reitId}>
     <Card
-      style={{ backgroundColor: HEAT_COLORS[level + 2] }}
+      style={{ backgroundColor: HEATMAP_COLORS[level + 2] }}
       key={innerIdx}
       className="text-center"
     >
