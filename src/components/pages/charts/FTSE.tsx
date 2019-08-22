@@ -3,21 +3,23 @@ import { Card, Typography, Divider } from 'antd';
 
 import TradingView from '../../TradingView';
 import { useMarketsContextValue } from '../../../contexts/MarketsContext';
+import { CHART_LABELS } from '../../../utils/data/chartDataUtils';
 
 const { Title } = Typography;
 
-const PriceIndex = () => {
+const FTSE = () => {
   const { market: { marketCode } } = useMarketsContextValue();
+  const { symbol, label } = CHART_LABELS[marketCode];
   return (
     <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-      <Title level={4}>Market Cap Weighted Price Index of REITs</Title>
+      <Title level={4}>{label}</Title>
       <Divider className="my-3" />
       <TradingView
-        id="market-cap-price-index"
-        symbol={`RSI.${marketCode}`}
+        id="ftse-price-index"
+        symbol={`${symbol}.${marketCode}`}
       />
     </Card>
   );
 };
 
-export default PriceIndex;
+export default FTSE;

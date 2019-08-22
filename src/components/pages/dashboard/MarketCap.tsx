@@ -9,9 +9,8 @@ import { useUserContextValue } from '../../../contexts/UserContext';
 import { useIntervalContext } from '../../../contexts/IntervalContext';
 import { MARKET_CAP } from '../../../apollo/queries/dashboard';
 
-import AppAreaChart from '../../charts/AppAreaChart';
-import { formatCurrency } from '../../../utils/numberUtils';
-import { truncateDecimals } from '../../../utils/numberUtils';
+import AppDynamicChart from '../../charts/AppDynamicChart';
+import { truncateDecimals, formatCurrency } from '../../../utils/numberUtils';
 
 const { Title, Text } = Typography;
 
@@ -36,6 +35,8 @@ const MarketCap = () => {
           latestValue = marketCap.latest;
           dataSource = marketCap.chart.map(({ label, value }: {label: string, value: number}) => ({
             label, value,
+            tooltipLabel: label,
+            tooltipValue: <span>{currency} {formatCurrency(value)}</span>,
           })).reverse();
         }
         if (error) {
@@ -80,12 +81,12 @@ const MarketCap = () => {
                     </Col>
                   </Row>
                 )}
-                <AppAreaChart
+                <AppDynamicChart
                   change={change}
                   dataSource={dataSource}
                   height={200}
-                  hideYLabels={true}
-                  hideXLabels={true}
+                  hideYLabels
+                  hideXLabels
                 />
               </DashboardSpinner>
             )}

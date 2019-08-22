@@ -16,14 +16,14 @@ export default <P extends object>(
       const { account, token } = this.context;
       const { pathname } = window.location;
       if (account && token) {
-        const { scored, verified } = account;
-        if ((!verified && !scored) && pathname !== verificationPath) {
+        const { onboarded, verified } = account;
+        if ((!verified && !onboarded) && pathname !== verificationPath) {
           return <Redirect to={verificationPath} />;
         }
-        if ((verified && !scored) && !pathname.includes(quizPath)) {
+        if ((verified && !onboarded) && !pathname.includes(quizPath)) {
           return <Redirect to={quizPath} />;
         }
-        if (blockAuthenticatedUser && scored && verified && pathname !== welcomePath) {
+        if (blockAuthenticatedUser && onboarded && verified && pathname !== welcomePath) {
           return <Redirect to={welcomePath} />;
         }
       }

@@ -12,6 +12,8 @@ export const CHART_COLORS = {
   RED: '#F5222D',
   YELLOW: '#FADB14',
   CYAN: '#13C2C2',
+  LIGHT_GREEN: '#D3F261',
+  DARK_GREEN: '#A0D911',
 };
 
 export const HEATMAP_COLORS = [
@@ -30,8 +32,6 @@ export const TRADING_VIEW_DEFAULT_CONFIG = {
   autosize: true,
   timezone: 'Asia/Singapore',
   library_path: '/assets/tradingview/charting_library/',
-  client_id: 'tradingview.com',
-  user_id: 'public_user_id',
   locale: 'en',
   disabled_features: ['use_localstorage_for_settings'],
   enabled_features: ['study_templates'],

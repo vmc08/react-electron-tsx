@@ -12,7 +12,7 @@ export const ACCOUNT = gql`
       city
       country
       verified
-      scored
+      onboarded
       assessed
       level
       score

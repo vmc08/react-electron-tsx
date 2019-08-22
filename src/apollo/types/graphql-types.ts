@@ -7,5 +7,4 @@ export interface IAccount {
   level: number,
   verified: boolean,
   onboarded: boolean,
-  scored: boolean,
 }

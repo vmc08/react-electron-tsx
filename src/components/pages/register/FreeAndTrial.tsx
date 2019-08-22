@@ -9,7 +9,7 @@ import RegistrationForm from '../../forms/user/RegistrationForm';
 import PageSpinner from '../../spinners/PageSpinner';
 import AccountVerifier from '../../../HOC/AccountVerifier';
 import logoLight from '../../../assets/images/logo-light.png';
-import { AFFILIATE } from '../../../apollo/queries/affiliate';
+import { AFFILIATE } from '../../../apollo/queries/register';
 
 const { Title, Paragraph } = Typography;
 
