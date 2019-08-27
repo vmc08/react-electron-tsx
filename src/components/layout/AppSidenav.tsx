@@ -123,7 +123,7 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
 
   render() {
     const { collapsedWidth } = this.state;
-    const { collapsed, selectedKeys, setSelectedKeys } = this.context;
+    const { collapsed, selectedKeys } = this.context;
     const { itemKey: itemKeyContext, subMenuKey: subMenuKeyContext } = selectedKeys;
     const brandLogo = collapsed ? logoCollapsed : logoLight;
     return (
@@ -216,7 +216,6 @@ class AppSidenav extends React.PureComponent<RouteComponentProps, { collapsedWid
         <AppUserMenu
           collapsed={collapsed}
           changeRoute={this.changeRoute}
-          setSelectedKeys={setSelectedKeys}
         />
       </StyledSider>
     );

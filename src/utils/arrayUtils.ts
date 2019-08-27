@@ -6,3 +6,27 @@ export const dedup = (arraySource: any[]) => {
   });
   return uniqueArray;
 };
+
+export const mergeObjectArrayValues = (objectSource: any) => {
+  const objectKeys = Object.keys(objectSource);
+  let mergedResult: any = [];
+  objectKeys.forEach((key) => {
+    if (key === '__typename') {
+      return;
+    }
+    // replace value key with parent key name
+    const reMappedValues = objectSource[key].map(({ label, value }: any) => ({
+      label,
+      [key]: value,
+    }));
+    if (mergedResult.length) {
+      mergedResult = mergedResult.map((item: any) => ({
+        ...item,
+        ...reMappedValues.find((innerItem: any) => innerItem.label === item.label),
+      }));
+    } else {
+      mergedResult = reMappedValues;
+    }
+  });
+  return mergedResult;
+};

@@ -2,11 +2,8 @@ import React from 'react';
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Menu, Icon, Button, Dropdown } from 'antd';
-import { ISelectedKeys } from '../../contexts/SidenavContext';
 import UserContext from '../../contexts/UserContext';
-import { deleteAuthToken } from '../../utils/userUtils';
 import {
-  deleteSidenavState,
   userRoutes,
   INavRoute,
   getDefaultSelectedKeys,
@@ -19,7 +16,6 @@ const { Item } = Menu;
 interface IAppUserMenuProps extends RouteComponentProps {
   collapsed: boolean,
   changeRoute: (selectedKeys: { itemKey: string }, path?: string) => void,
-  setSelectedKeys: (selectedKeys: ISelectedKeys) => {}
 }
 
 interface IDropdownMenus {
@@ -134,11 +130,9 @@ class AppUserMenu extends React.PureComponent<IAppUserMenuProps, {}> {
   }
 
   logoutSession() {
-    const { history, setSelectedKeys } = this.props;
-    deleteAuthToken();
-    deleteSidenavState();
-    setSelectedKeys({ itemKey: 'dashboard' });
-    localStorage.removeItem('dashboard_interval');
+    const { history } = this.props;
+    localStorage.clear();
+    sessionStorage.clear();
     history.replace('/login');
   }
 

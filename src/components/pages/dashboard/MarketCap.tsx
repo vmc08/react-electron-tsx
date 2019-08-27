@@ -9,7 +9,7 @@ import { useUserContextValue } from '../../../contexts/UserContext';
 import { useIntervalContext } from '../../../contexts/IntervalContext';
 import { MARKET_CAP } from '../../../apollo/queries/dashboard';
 
-import AppDynamicChart from '../../charts/AppDynamicChart';
+import AppDynamicChart from '../../AppDynamicChart';
 import { truncateDecimals, formatCurrency } from '../../../utils/numberUtils';
 
 const { Title, Text } = Typography;
@@ -85,6 +85,7 @@ const MarketCap = () => {
                   change={change}
                   dataSource={dataSource}
                   height={200}
+                  leftYAxis={{ ticks: dataSource.map((source) => source.value) }}
                   hideYLabels
                   hideXLabels
                 />

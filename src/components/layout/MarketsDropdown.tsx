@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown, Menu, Icon, Tooltip } from 'antd';
 
 import FlagIcon from '../FlagIcon';
 
 import { MARKETS } from '../../utils/data/appDataUtils';
-import MarketsContext, { IMarket, DEFAULT_MARKET } from '../../contexts/MarketsContext';
+import { CHART_INDICATORS, CHART_SECTORS } from '../../utils/data/chartDataUtils';
+
 import { UserConsumer } from '../../contexts/UserContext';
+import { useChartFilterContext } from '../../contexts/ChartFilterContext';
+import { useMarketsContextValue, IMarket, DEFAULT_MARKET } from '../../contexts/MarketsContext';
 
 interface ITooltipWrapper {
   children: any,
@@ -65,48 +68,48 @@ const MarketsMenu = ({ market, setMarket, account }: any) => (
   </Menu>
 );
 
-class MarketsDropdown extends React.Component<{}, { visibility: boolean }> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      visibility: false,
-    };
-    this.handleVisibleChange = this.handleVisibleChange.bind(this);
-  }
+const MarketsDropdown = () => {
+  const { market, setMarket } = useMarketsContextValue();
+  const { setChartIndicator, setChartSector } = useChartFilterContext();
 
-  handleVisibleChange(visibility: boolean) {
-    this.setState({ visibility });
-  }
+  const [visibility, setVisibility] = useState(false);
+  const [marketCode, setMarketCode] = useState(market.marketCode);
 
-  render() {
-    const { visibility } = this.state;
-    const { market, setMarket } = this.context;
-    const { label, countryCode }: IMarket =
-      MARKETS.find((m) => m.marketCode === market.marketCode) || DEFAULT_MARKET;
-    return (
-      <UserConsumer>
-        {({ account }: any) => (
-          <Dropdown
-            className="float-right mx-2"
-            overlayStyle={{ position: 'fixed' }}
-            overlay={MarketsMenu({ market, setMarket, account })}
-            trigger={['click']}
-            visible={visibility}
-            onVisibleChange={this.handleVisibleChange}
-            placement="bottomRight"
-          >
-            <a className="ant-dropdown-link" href="#!" title="Market">
-              <FlagIcon className="mr-2" size="lg" code={countryCode.toLowerCase()} />
-              <span className="d-none d-sm-inline">{label}</span>
-              <Icon className="ml-2" type="down" />
-            </a>
-          </Dropdown>
-        )}
-      </UserConsumer>
-    );
-  }
-}
+  useEffect(() => {
+    if (market.marketCode !==  marketCode) {
+      setMarketCode(market.marketCode);
+      if (market.marketCode === 'MYX') {
+        setChartIndicator(CHART_INDICATORS[0]);
+      } else {
+        setChartSector(CHART_SECTORS[market.marketCode][0]);
+      }
+    }
+  }, [market.marketCode, marketCode, setChartIndicator, setChartSector]);
 
-MarketsDropdown.contextType = MarketsContext;
+  const { label, countryCode }: IMarket =
+    MARKETS.find((m) => m.marketCode === marketCode) || DEFAULT_MARKET;
+
+  return (
+    <UserConsumer>
+      {({ account }: any) => (
+        <Dropdown
+          className="float-right mx-2"
+          overlayStyle={{ position: 'fixed' }}
+          overlay={MarketsMenu({ market, setMarket, account })}
+          trigger={['click']}
+          visible={visibility}
+          onVisibleChange={setVisibility}
+          placement="bottomRight"
+        >
+          <a className="ant-dropdown-link" href="#!" title="Market">
+            <FlagIcon className="mr-2" size="lg" code={countryCode.toLowerCase()} />
+            <span className="d-none d-sm-inline">{label}</span>
+            <Icon className="ml-2" type="down" />
+          </a>
+        </Dropdown>
+      )}
+    </UserConsumer>
+  );
+};
 
 export default MarketsDropdown;

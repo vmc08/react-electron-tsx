@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card, Typography, Divider } from 'antd';
 
-import TradingView from '../../TradingView';
-import { useMarketsContextValue } from '../../../contexts/MarketsContext';
-import { CHART_LABELS } from '../../../utils/data/chartDataUtils';
+import TradingView from '../../../../TradingView';
+import { useMarketsContextValue } from '../../../../../contexts/MarketsContext';
+import { CHART_LABELS } from '../../../../../utils/data/chartDataUtils';
 
 const { Title } = Typography;
 

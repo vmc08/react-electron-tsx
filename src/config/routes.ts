@@ -6,7 +6,7 @@ const NewPassword = LoadableComponent({ componentPathName: 'pages/NewPassword' }
 const PasswordReset = LoadableComponent({ componentPathName: 'pages/PasswordReset' });
 const Login = LoadableComponent({ componentPathName: 'pages/Login' });
 const Dashboard = LoadableComponent({ componentPathName: 'pages/Dashboard' });
-const Chart = LoadableComponent({ componentPathName: 'pages/Chart' });
+const Charts = LoadableComponent({ componentPathName: 'pages/Charts' });
 const Reits = LoadableComponent({ componentPathName: 'pages/Reits' });
 const Portfolio = LoadableComponent({ componentPathName: 'pages/Portfolio' });
 const Watchlist = LoadableComponent({ componentPathName: 'pages/Watchlist' });
@@ -22,7 +22,7 @@ NewPassword.preload();
 PasswordReset.preload();
 Login.preload();
 Dashboard.preload();
-Chart.preload();
+Charts.preload();
 Reits.preload();
 Portfolio.preload();
 Watchlist.preload();
@@ -55,8 +55,8 @@ const routes = [
     path: '/dashboard',
   },
   {
-    component: RequireAuth(Chart, false),
-    path: '/chart',
+    component: RequireAuth(Charts, false),
+    path: '/charts',
   },
   {
     component: RequireAuth(Reits, false),

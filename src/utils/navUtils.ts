@@ -20,9 +20,9 @@ export const navRoutes = [{
   iconType: 'appstore',
   label: 'Dashboard',
 }, {
-  path: '/chart',
+  path: '/charts',
   iconType: 'line-chart',
-  label: 'Chart',
+  label: 'Charts',
 }, {
   path: '/reits',
   iconType: 'bank',

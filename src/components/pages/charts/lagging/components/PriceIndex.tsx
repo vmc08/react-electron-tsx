@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, Typography, Divider } from 'antd';
 
-import TradingView from '../../TradingView';
-import { useMarketsContextValue } from '../../../contexts/MarketsContext';
+import TradingView from '../../../../TradingView';
+import { useMarketsContextValue } from '../../../../../contexts/MarketsContext';
 
 const { Title } = Typography;
 

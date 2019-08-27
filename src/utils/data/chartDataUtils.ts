@@ -5,7 +5,14 @@ interface IChartLabels {
   },
 }
 
-export const CHART_COLORS = {
+interface IChartSector {
+  [key: string]: Array<{
+    label: string,
+    value: string,
+  }>
+}
+
+export const CHART_COLORS: { [key: string]: string } = {
   GREEN: '#52C41A',
   BLUE: '#1890FF',
   ORANGE: '#FA8C16',
@@ -52,8 +59,44 @@ export const CHART_LABELS: IChartLabels = {
     label: 'Hang Seng REIT Index',
     symbol: 'HANGSENG',
   },
-  MYX: {
-    label: 'MALAYSIA REIT Index',
-    symbol: 'FTSE',
-  },
+};
+
+export const CHART_INDICATORS = [{
+  value: 'lagging',
+  label: 'Lagging',
+}, {
+  value: 'leading',
+  label: 'Leading',
+}];
+
+export const CHART_SECTORS: IChartSector = {
+  SGX: [{
+    label: 'Retail',
+    value: 'RSIR',
+  }, {
+    label: 'Hospitality',
+    value: 'RSIH',
+  }, {
+    label: 'Industrial',
+    value: 'RSII',
+  }, {
+    label: 'Commercial',
+    value: 'RSIC',
+  }, {
+    label: 'Residential',
+    value: 'RSIRE',
+  }],
+  HKEX: [{
+    label: 'Domestic',
+    value: 'HKRSID',
+  }, {
+    label: 'Office',
+    value: 'HKRSIO',
+  }, {
+    label: 'Retail',
+    value: 'HKRSIR',
+  }, {
+    label: 'Flatted Factories',
+    value: 'HKRSIFF',
+  }],
 };

@@ -7,13 +7,16 @@ import { SidenavProvider } from './contexts/SidenavContext';
 import { QuizProvider } from './contexts/QuizContext';
 import { IntervalProvider } from './contexts/IntervalContext';
 import { MarketsProvider } from './contexts/MarketsContext';
+import { ChartFilterProvider } from './contexts/ChartFilterContext';
 
 const AppProviders = ({ children }: { children: any }) => (
   <SidenavProvider>
     <QuizProvider>
       <IntervalProvider>
         <MarketsProvider>
-          {children}
+          <ChartFilterProvider>
+            {children}
+          </ChartFilterProvider>
         </MarketsProvider>
       </IntervalProvider>
     </QuizProvider>

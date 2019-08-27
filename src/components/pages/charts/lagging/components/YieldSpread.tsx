@@ -3,18 +3,18 @@ import { Query } from 'react-apollo';
 import moment from 'moment';
 import { Card, Typography, Divider, Alert } from 'antd';
 
-import DashboardSpinner from '../../spinners/DashboardSpinner';
-import AppDynamicChart from '../../charts/AppDynamicChart';
+import DashboardSpinner from '../../../../spinners/DashboardSpinner';
+import AppDynamicChart from '../../../../AppDynamicChart';
 
-import { useUserContextValue } from '../../../contexts/UserContext';
-import { useMarketsContextValue } from '../../../contexts/MarketsContext';
-import { truncateDecimals } from '../../../utils/numberUtils';
-import { CHART_COLORS } from '../../../utils/data/chartDataUtils';
-import { MARKET_CAP_NPI } from '../../../apollo/queries/chart';
+import { useUserContextValue } from '../../../../../contexts/UserContext';
+import { useMarketsContextValue } from '../../../../../contexts/MarketsContext';
+import { truncateDecimals } from '../../../../../utils/numberUtils';
+import { CHART_COLORS } from '../../../../../utils/data/chartDataUtils';
+import { YIELD_SPREAD } from '../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const MarketCapNPI = () => {
+const YieldSpread = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
@@ -29,22 +29,22 @@ const MarketCapNPI = () => {
 
   return (
     <Query<any>
-      query={MARKET_CAP_NPI}
+      query={YIELD_SPREAD}
       variables={{
         token,
         exchange: marketCode,
         timeRange: '1y',
       }}
     >
-      {({ data: { pricePerNAVPerUnitIndex }, loading, error }) => {
+      {({ data: { yieldSpread }, loading, error }) => {
         if (!loading) {
-          const { chart, ...rest } = pricePerNAVPerUnitIndex;
+          const { chart, ...rest } = yieldSpread;
           lineReferenceValues = rest;
           dataSource = chart.map(({ label, value }: { label: string, value: number }) => ({
             label: moment(label).format('MMM YYYY'),
             tooltipLabel: moment(label).format('MMM DD, YYYY'),
             value,
-            tooltipValue: truncateDecimals(value),
+            tooltipValue: <span>{truncateDecimals(value * 100)}%</span>,
           })).reverse();
         }
         if (error) {
@@ -53,7 +53,7 @@ const MarketCapNPI = () => {
         const { minusSTDDEV, minus2STDDEV, plusSTDDEV, plus2STDDEV } = lineReferenceValues;
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Market Cap Weighted Price/NAV per Unit Index of REITs</Title>
+            <Title level={4}>Yield Spread (%)</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -62,10 +62,13 @@ const MarketCapNPI = () => {
                 <AppDynamicChart
                   height={570}
                   dataSource={dataSource}
-                  yTickLabelFormatter={(value) => truncateDecimals(value)}
-                  yLabel="Price/NAV per Unit"
-                  xLabel="Price/NAV per Unit"
+                  yTickLabelFormatter={(value) => `${truncateDecimals(value * 100)}%`}
                   xTickInterval={20}
+                  leftYAxis={{
+                    label: 'Yield Spread (%)',
+                    ticks: dataSource.map((source) => source.value),
+                  }}
+                  legendPayloadAsReferenceLines
                   legendPayload={[
                     {
                       id: 0,
@@ -75,27 +78,27 @@ const MarketCapNPI = () => {
                     },
                     {
                       id: minusSTDDEV,
-                      value: `Yield Spread (%)-1StdDev (${truncateDecimals(minusSTDDEV)})`,
-                      type: 'square',
-                      color: CHART_COLORS.LIGHT_GREEN,
-                    },
-                    {
-                      id: minus2STDDEV,
-                      value: `Yield Spread (%)-2StdDev (${truncateDecimals(minus2STDDEV)})`,
-                      type: 'square',
-                      color: CHART_COLORS.DARK_GREEN,
-                    },
-                    {
-                      id: plusSTDDEV,
-                      value: `Yield Spread (%)+1StdDev (${truncateDecimals(plusSTDDEV)})`,
+                      value: `Yield Spread (%)-1StdDev (${truncateDecimals(minusSTDDEV * 100)}%)`,
                       type: 'square',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
-                      id: plus2STDDEV,
-                      value: `Yield Spread (%)+2StdDev (${truncateDecimals(plus2STDDEV)})`,
+                      id: minus2STDDEV,
+                      value: `Yield Spread (%)-2StdDev (${truncateDecimals(minus2STDDEV * 100)}%)`,
                       type: 'square',
                       color: CHART_COLORS.RED,
+                    },
+                    {
+                      id: plusSTDDEV,
+                      value: `Yield Spread (%)+1StdDev (${truncateDecimals(plusSTDDEV * 100)}%)`,
+                      type: 'square',
+                      color: CHART_COLORS.LIGHT_GREEN,
+                    },
+                    {
+                      id: plus2STDDEV,
+                      value: `Yield Spread (%)+2StdDev (${truncateDecimals(plus2STDDEV * 100)}%)`,
+                      type: 'square',
+                      color: CHART_COLORS.DARK_GREEN,
                     },
                   ]}
                 />
@@ -108,4 +111,4 @@ const MarketCapNPI = () => {
   );
 };
 
-export default MarketCapNPI;
+export default YieldSpread;
