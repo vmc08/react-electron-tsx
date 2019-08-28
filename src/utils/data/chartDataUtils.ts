@@ -41,7 +41,6 @@ export const TRADING_VIEW_DEFAULT_CONFIG = {
   library_path: '/assets/tradingview/charting_library/',
   locale: 'en',
   disabled_features: ['use_localstorage_for_settings'],
-  enabled_features: ['study_templates'],
   drawings_access: {
     type: 'black',
     tools: [{
