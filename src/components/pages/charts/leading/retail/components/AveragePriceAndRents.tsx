@@ -7,24 +7,25 @@ import AppDynamicChart from '../../../../../AppDynamicChart';
 
 import { useUserContextValue } from '../../../../../../contexts/UserContext';
 import { useMarketsContextValue } from '../../../../../../contexts/MarketsContext';
-import { truncateDecimals } from '../../../../../../utils/numberUtils';
+import { formatCurrency } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_MEDIAN_RENTALS } from '../../../../../../apollo/queries/chart';
+import { LEADING_RETAIL_AVERAGE_AND_RENTS_BY_AREA } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const MedianRentals = () => {
+const AveragePriceAndRents = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
   let serverError: string | undefined;
   let dataSource: any[] = [];
-  const mergedTicks: number[] = [];
+  const mergedLeftTicks: number[] = [];
+  const mergedRightTicks: number[] = [];
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_MEDIAN_RENTALS}
+      query={LEADING_RETAIL_AVERAGE_AND_RENTS_BY_AREA}
       variables={{
         token,
         exchange: marketCode,
@@ -34,26 +35,32 @@ const MedianRentals = () => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
             const {
-              medianRentalsCategory1ContractDate,
-              medianRentalsCategory1LeaseCommencement,
-              medianRentalsCategory2ContractDate,
-              medianRentalsCategory2LeaseCommencement,
+              averagePricesHongKong,
+              averagePricesKowloon,
+              averagePricesNT,
+              averageRentsHongKong,
+              averageRentsKowloon,
+              averageRentsNT,
             } = item;
-            mergedTicks.push(
-              medianRentalsCategory1ContractDate,
-              medianRentalsCategory1LeaseCommencement,
-              medianRentalsCategory2ContractDate,
-              medianRentalsCategory2LeaseCommencement,
+            mergedLeftTicks.push(
+              averagePricesHongKong,
+              averagePricesKowloon,
+              averagePricesNT,
+            );
+            mergedRightTicks.push(
+              averageRentsHongKong,
+              averageRentsKowloon,
+              averageRentsNT,
             );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipMedianRentalsCategory1ContractDate: medianRentalsCategory1ContractDate,
-              tooltipMedianRentalsCategory1LeaseCommencement:
-                medianRentalsCategory1LeaseCommencement,
-              tooltipMedianRentalsCategory2ContractDate: medianRentalsCategory2ContractDate,
-              tooltipMedianRentalsCategory2LeaseCommencement:
-                medianRentalsCategory2LeaseCommencement,
+              tooltipAveragePricesHongKong: formatCurrency(averagePricesHongKong),
+              tooltipAveragePricesKowloon: formatCurrency(averagePricesKowloon),
+              tooltipAveragePricesNT: formatCurrency(averagePricesNT),
+              tooltipAverageRentsHongKong: formatCurrency(averageRentsHongKong),
+              tooltipAverageRentsKowloon: formatCurrency(averageRentsKowloon),
+              tooltipAverageRentsNT: formatCurrency(averageRentsNT),
             };
           }).reverse();
         }
@@ -62,7 +69,7 @@ const MedianRentals = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Median Rentals - Office Space by Location</Title>
+            <Title level={4}>Average Prices and Rents by Area</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -71,54 +78,81 @@ const MedianRentals = () => {
                 <AppDynamicChart
                   height={570}
                   dataSource={dataSource}
-                  xTickInterval={4}
-                  yTickLabelFormatter={(value) => truncateDecimals(value)}
+                  xTickInterval={40}
+                  yTickLabelFormatter={(value) => formatCurrency(value)}
                   leftYAxis={{
-                    label: 'Median Rentals ($ psf pm)',
-                    ticks: mergedTicks.filter((v) => v),
+                    label: 'Average Price',
+                    ticks: mergedLeftTicks.filter((v) => v),
+                  }}
+                  rightYAxis={{
+                    label: 'Average Rents',
+                    ticks: mergedRightTicks.filter((v) => v),
                   }}
                   chartLines={[
                     {
-                      key: 'medianRentalsCategory1ContractDate',
+                      key: 'averagePricesHongKong',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      key: 'medianRentalsCategory1LeaseCommencement',
+                      key: 'averagePricesKowloon',
                       color: CHART_COLORS.BLUE,
                     },
                     {
-                      key: 'medianRentalsCategory2LeaseCommencement',
+                      key: 'averagePricesNT',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
-                      key: 'medianRentalsCategory2ContractDate',
+                      key: 'averageRentsHongKong',
+                      color: CHART_COLORS.YELLOW,
+                      yAxisId: 'right',
+                    },
+                    {
+                      key: 'averageRentsKowloon',
                       color: CHART_COLORS.RED,
+                      yAxisId: 'right',
+                    },
+                    {
+                      key: 'averageRentsNT',
+                      color: CHART_COLORS.CYAN,
+                      yAxisId: 'right',
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Category 1-Median Rentals (Lease Commencement)',
+                      value: 'Average Prices (Hong Kong)',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
                       id: 2,
-                      value: 'Category 1-Median Rentals (Contract Date)',
+                      value: 'Average Prices (Kowloon)',
                       type: 'line',
                       color: CHART_COLORS.BLUE,
                     },
                     {
                       id: 3,
-                      value: 'Category 2-Median Rentals (Lease Commencement)',
+                      value: 'Average Prices (N.T.)',
                       type: 'line',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
                       id: 4,
-                      value: 'Category 2-Median Rentals (Contract Date)',
+                      value: 'Average Rents (Hong Kong)',
+                      type: 'line',
+                      color: CHART_COLORS.YELLOW,
+                    },
+                    {
+                      id: 5,
+                      value: 'Average Rents (Kowloon)',
                       type: 'line',
                       color: CHART_COLORS.RED,
+                    },
+                    {
+                      id: 6,
+                      value: 'Average Rents (N.T.)',
+                      type: 'line',
+                      color: CHART_COLORS.CYAN,
                     },
                   ]}
                 />
@@ -131,4 +165,4 @@ const MedianRentals = () => {
   );
 };
 
-export default MedianRentals;
+export default AveragePriceAndRents;

@@ -10,21 +10,21 @@ import { useMarketsContextValue } from '../../../../../../contexts/MarketsContex
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_PRICE_VS_RENTAL } from '../../../../../../apollo/queries/chart';
+import { LEADING_RESIDENTIAL_VACANCY_RATES } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const PriceRentalIndex = () => {
+const VacancyRates = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
   let serverError: string | undefined;
   let dataSource: any[] = [];
-  const mergedTicks: number[] = [];
+  const mergedTicks: any[] = [];
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_PRICE_VS_RENTAL}
+      query={LEADING_RESIDENTIAL_VACANCY_RATES}
       variables={{
         token,
         exchange: marketCode,
@@ -33,12 +33,22 @@ const PriceRentalIndex = () => {
       {({ data: { leadingCharts }, loading, error }) => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
-            mergedTicks.push(item.priceIndex, item.rentalIndex);
+            const {
+              vacancyRatesCCR,
+              vacancyRatesOCR,
+              vacancyRatesRCR,
+            } = item;
+            mergedTicks.push(
+              vacancyRatesCCR,
+              vacancyRatesOCR,
+              vacancyRatesRCR,
+            );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipPriceIndex: truncateDecimals(item.priceIndex),
-              tooltipRentalIndex: truncateDecimals(item.rentalIndex),
+              tooltipVacancyRatesCCR: `${truncateDecimals(vacancyRatesCCR * 100)}%`,
+              tooltipVacancyRatesOCR: `${truncateDecimals(vacancyRatesOCR * 100)}%`,
+              tooltipVacancyRatesRCR: `${truncateDecimals(vacancyRatesRCR * 100)}%`,
             };
           }).reverse();
         }
@@ -47,7 +57,7 @@ const PriceRentalIndex = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Price vs Rental Index - Office Space</Title>
+            <Title level={4}>Vacancy Rates - Private Residential Properties by Location</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -57,38 +67,43 @@ const PriceRentalIndex = () => {
                   height={570}
                   dataSource={dataSource}
                   xTickInterval={4}
-                  yTickLabelFormatter={(value) => truncateDecimals(value)}
+                  yTickLabelFormatter={(value) => `${truncateDecimals(value * 100)}%`}
                   leftYAxis={{
-                    label: 'Prince Index',
-                    ticks: mergedTicks.filter((v) => v),
-                  }}
-                  rightYAxis={{
-                    label: 'Rental Index',
+                    label: 'Vacancy Rates (%)',
                     ticks: mergedTicks.filter((v) => v),
                   }}
                   chartLines={[
                     {
-                      key: 'priceIndex',
+                      key: 'vacancyRatesCCR',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      key: 'rentalIndex',
+                      key: 'vacancyRatesOCR',
+                      color: CHART_COLORS.ORANGE,
+                    },
+                    {
+                      key: 'vacancyRatesRCR',
                       color: CHART_COLORS.BLUE,
-                      yAxisId: 'right',
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Price Index',
+                      value: 'CCR',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
                       id: 2,
-                      value: 'Rental Index',
+                      value: 'RCR',
                       type: 'line',
                       color: CHART_COLORS.BLUE,
+                    },
+                    {
+                      id: 3,
+                      value: 'OCR',
+                      type: 'line',
+                      color: CHART_COLORS.ORANGE,
                     },
                   ]}
                 />
@@ -101,4 +116,4 @@ const PriceRentalIndex = () => {
   );
 };
 
-export default PriceRentalIndex;
+export default VacancyRates;

@@ -10,21 +10,22 @@ import { useMarketsContextValue } from '../../../../../../contexts/MarketsContex
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_PRICE_VS_RENTAL } from '../../../../../../apollo/queries/chart';
+import {
+  LEADING_OFFICES_PRICE_AND_RENTAL_INDEX_TERRITORY_WIDE,
+} from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const PriceRentalIndex = () => {
+const PriceRentalIndexTeritoryWide = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
   let serverError: string | undefined;
   let dataSource: any[] = [];
-  const mergedTicks: number[] = [];
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_PRICE_VS_RENTAL}
+      query={LEADING_OFFICES_PRICE_AND_RENTAL_INDEX_TERRITORY_WIDE}
       variables={{
         token,
         exchange: marketCode,
@@ -33,7 +34,6 @@ const PriceRentalIndex = () => {
       {({ data: { leadingCharts }, loading, error }) => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
-            mergedTicks.push(item.priceIndex, item.rentalIndex);
             return {
               ...item,
               tooltipLabel: item.label,
@@ -47,7 +47,7 @@ const PriceRentalIndex = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Price vs Rental Index - Office Space</Title>
+            <Title level={4}>Price and Rental Index Territory-wide</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -56,15 +56,15 @@ const PriceRentalIndex = () => {
                 <AppDynamicChart
                   height={570}
                   dataSource={dataSource}
-                  xTickInterval={4}
+                  xTickInterval={40}
                   yTickLabelFormatter={(value) => truncateDecimals(value)}
                   leftYAxis={{
                     label: 'Prince Index',
-                    ticks: mergedTicks.filter((v) => v),
+                    ticks: dataSource.map((v) => v.priceIndex),
                   }}
                   rightYAxis={{
                     label: 'Rental Index',
-                    ticks: mergedTicks.filter((v) => v),
+                    ticks: dataSource.map((v) => v.rentalIndex),
                   }}
                   chartLines={[
                     {
@@ -80,13 +80,13 @@ const PriceRentalIndex = () => {
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Price Index',
+                      value: 'Retail Price Index',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
                       id: 2,
-                      value: 'Rental Index',
+                      value: 'Retail Rental Index',
                       type: 'line',
                       color: CHART_COLORS.BLUE,
                     },
@@ -101,4 +101,4 @@ const PriceRentalIndex = () => {
   );
 };
 
-export default PriceRentalIndex;
+export default PriceRentalIndexTeritoryWide;

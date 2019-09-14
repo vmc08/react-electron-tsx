@@ -1,11 +1,11 @@
-export const truncateDecimals = (actualValue: number, decimalPlaces = 2) => {
+export const truncateDecimals = (actualValue = 0, decimalPlaces = 2) => {
   const calculatedDecimal = Math.pow(10, decimalPlaces);
   const initialValue = Math.trunc(actualValue * calculatedDecimal) / calculatedDecimal;
   return initialValue.toFixed(decimalPlaces);
 };
 
 export const formatCurrency = (actualValue: number) => {
-  if (actualValue >= 1e3) {
+  if (actualValue >= 1e3 || actualValue <= -1e3) {
     const units = ['k', 'M', 'B', 'T'];
     const unit = Math.floor(((actualValue).toFixed(0).length - 1) / 3) * 3;
     const minifiedNumb = parseFloat(`1e${unit}`);
@@ -13,5 +13,5 @@ export const formatCurrency = (actualValue: number) => {
     const unitname = units[Math.floor(unit / 3) - 1];
     return `${num}${unitname}`;
   }
-  return actualValue.toLocaleString();
+  return truncateDecimals(actualValue).toLocaleString();
 };

@@ -7,14 +7,16 @@ import AppDynamicChart from '../../../../../AppDynamicChart';
 
 import { useUserContextValue } from '../../../../../../contexts/UserContext';
 import { useMarketsContextValue } from '../../../../../../contexts/MarketsContext';
-import { truncateDecimals } from '../../../../../../utils/numberUtils';
+import { formatCurrency } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_PRICE_VS_RENTAL } from '../../../../../../apollo/queries/chart';
+import {
+  LEADING_OFFICES_PRICE_INDEX_TERRITORY_WIDE_BY_GRADE,
+} from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const PriceRentalIndex = () => {
+const PriceIndexTerritoryWide = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
@@ -24,7 +26,7 @@ const PriceRentalIndex = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_PRICE_VS_RENTAL}
+      query={LEADING_OFFICES_PRICE_INDEX_TERRITORY_WIDE_BY_GRADE}
       variables={{
         token,
         exchange: marketCode,
@@ -33,12 +35,25 @@ const PriceRentalIndex = () => {
       {({ data: { leadingCharts }, loading, error }) => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
-            mergedTicks.push(item.priceIndex, item.rentalIndex);
+            const {
+              priceIndexGradeA,
+              priceIndexGradeB,
+              priceIndexGradeC,
+              priceIndexOverall,
+            } = item;
+            mergedTicks.push(
+              priceIndexGradeA,
+              priceIndexGradeB,
+              priceIndexGradeC,
+              priceIndexOverall,
+            );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipPriceIndex: truncateDecimals(item.priceIndex),
-              tooltipRentalIndex: truncateDecimals(item.rentalIndex),
+              tooltipPriceIndexGradeA: formatCurrency(priceIndexGradeA),
+              tooltipPriceIndexGradeB: formatCurrency(priceIndexGradeB),
+              tooltipPriceIndexGradeC: formatCurrency(priceIndexGradeC),
+              tooltipPriceIndexOverall: formatCurrency(priceIndexOverall),
             };
           }).reverse();
         }
@@ -47,7 +62,7 @@ const PriceRentalIndex = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Price vs Rental Index - Office Space</Title>
+            <Title level={4}>Price Index Territory-wide by Grades</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -56,39 +71,54 @@ const PriceRentalIndex = () => {
                 <AppDynamicChart
                   height={570}
                   dataSource={dataSource}
-                  xTickInterval={4}
-                  yTickLabelFormatter={(value) => truncateDecimals(value)}
+                  xTickInterval={40}
+                  yTickLabelFormatter={(value) => formatCurrency(value)}
                   leftYAxis={{
-                    label: 'Prince Index',
-                    ticks: mergedTicks.filter((v) => v),
-                  }}
-                  rightYAxis={{
-                    label: 'Rental Index',
+                    label: 'Price Index',
                     ticks: mergedTicks.filter((v) => v),
                   }}
                   chartLines={[
                     {
-                      key: 'priceIndex',
+                      key: 'priceIndexGradeA',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      key: 'rentalIndex',
+                      key: 'priceIndexGradeB',
                       color: CHART_COLORS.BLUE,
-                      yAxisId: 'right',
+                    },
+                    {
+                      key: 'priceIndexGradeC',
+                      color: CHART_COLORS.ORANGE,
+                    },
+                    {
+                      key: 'priceIndexOverall',
+                      color: CHART_COLORS.RED,
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Price Index',
+                      value: 'Grade A',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
                       id: 2,
-                      value: 'Rental Index',
+                      value: 'Grade B',
                       type: 'line',
                       color: CHART_COLORS.BLUE,
+                    },
+                    {
+                      id: 3,
+                      value: 'Grade C',
+                      type: 'line',
+                      color: CHART_COLORS.ORANGE,
+                    },
+                    {
+                      id: 4,
+                      value: 'Price Index (Overall)',
+                      type: 'line',
+                      color: CHART_COLORS.RED,
                     },
                   ]}
                 />
@@ -101,4 +131,4 @@ const PriceRentalIndex = () => {
   );
 };
 
-export default PriceRentalIndex;
+export default PriceIndexTerritoryWide;

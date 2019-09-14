@@ -88,6 +88,7 @@ const MarketCap = () => {
                   leftYAxis={{ ticks: dataSource.map((source) => source.value) }}
                   hideYLabels
                   hideXLabels
+                  chartLinesFillOpacity
                 />
               </DashboardSpinner>
             )}

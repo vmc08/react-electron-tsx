@@ -46,7 +46,7 @@ const MarketsMenu = ({ market, setMarket, account }: any) => (
           key={marketCode}
           className="px-3 py-2"
           onClick={() => setMarket(marketCode)}
-          disabled={disabled}
+          disabled={disabled || !account}
         >
           <TooptipWrapper label={tooltipMessage}>
             {disabled ? (

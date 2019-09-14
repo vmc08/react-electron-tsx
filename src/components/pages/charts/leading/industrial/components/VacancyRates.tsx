@@ -10,7 +10,7 @@ import { useMarketsContextValue } from '../../../../../../contexts/MarketsContex
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_VACANCY_RATES } from '../../../../../../apollo/queries/chart';
+import { LEADING_INDUSTRIAL_VACANCY_RATES } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
@@ -20,11 +20,11 @@ const VacancyRates = () => {
 
   let serverError: string | undefined;
   let dataSource: any[] = [];
-  const mergedTicks: number[] = [];
+  const mergedTicks: any[] = [];
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_VACANCY_RATES}
+      query={LEADING_INDUSTRIAL_VACANCY_RATES}
       variables={{
         token,
         exchange: marketCode,
@@ -33,13 +33,33 @@ const VacancyRates = () => {
       {({ data: { leadingCharts }, loading, error }) => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
-            const { vacancyRatesCategory1, vacancyRatesCategory2 } = item;
-            mergedTicks.push(vacancyRatesCategory1, vacancyRatesCategory2);
+            const {
+              vacancyRatesAll,
+              vacancyRatesMultipleUserFactory,
+              vacancyRatesSingleUserFactory,
+              vacancyRatesBusinessPark,
+              vacancyRatesWarehouse,
+            } = item;
+            mergedTicks.push(
+              vacancyRatesAll,
+              vacancyRatesMultipleUserFactory,
+              vacancyRatesSingleUserFactory,
+              vacancyRatesBusinessPark,
+              vacancyRatesWarehouse,
+            );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipVacancyRatesCategory1: `${truncateDecimals(vacancyRatesCategory1 * 100)}%`,
-              tooltipVacancyRatesCategory2: `${truncateDecimals(vacancyRatesCategory2 * 100)}%`,
+              tooltipVacancyRatesAll:
+                `${truncateDecimals(vacancyRatesAll * 100)}%`,
+              tooltipVacancyRatesMultipleUserFactory:
+                `${truncateDecimals(vacancyRatesMultipleUserFactory * 100)}%`,
+              tooltipVacancyRatesSingleUserFactory:
+                `${truncateDecimals(vacancyRatesSingleUserFactory * 100)}%`,
+              tooltipVacancyRatesBusinessPark:
+              `${truncateDecimals(vacancyRatesBusinessPark * 100)}%`,
+              tooltipVacancyRatesWarehouse:
+              `${truncateDecimals(vacancyRatesWarehouse * 100)}%`,
             };
           }).reverse();
         }
@@ -48,7 +68,7 @@ const VacancyRates = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Vacancy Rates - Office Space by Location</Title>
+            <Title level={4}>Vacancy Rates</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -65,24 +85,54 @@ const VacancyRates = () => {
                   }}
                   chartLines={[
                     {
-                      key: 'vacancyRatesCategory1',
-                      color: CHART_COLORS.GREEN,
+                      key: 'vacancyRatesAll',
+                      color: CHART_COLORS.RED,
                     },
                     {
-                      key: 'vacancyRatesCategory2',
+                      key: 'vacancyRatesMultipleUserFactory',
+                      color: CHART_COLORS.ORANGE,
+                    },
+                    {
+                      key: 'vacancyRatesBusinessPark',
+                      color: CHART_COLORS.YELLOW,
+                    },
+                    {
+                      key: 'vacancyRatesWarehouse',
                       color: CHART_COLORS.BLUE,
+                    },
+                    {
+                      key: 'vacancyRatesSingleUserFactory',
+                      color: CHART_COLORS.GREEN,
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Category 1',
+                      value: 'All Industrial',
+                      type: 'line',
+                      color: CHART_COLORS.RED,
+                    },
+                    {
+                      id: 2,
+                      value: 'Multiple-User Factory Space',
+                      type: 'line',
+                      color: CHART_COLORS.ORANGE,
+                    },
+                    {
+                      id: 3,
+                      value: 'Single-User Factory Space',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      id: 2,
-                      value: 'Category 2',
+                      id: 4,
+                      value: 'Business Park Space',
+                      type: 'line',
+                      color: CHART_COLORS.YELLOW,
+                    },
+                    {
+                      id: 5,
+                      value: 'Warehouse Space',
                       type: 'line',
                       color: CHART_COLORS.BLUE,
                     },

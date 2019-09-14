@@ -7,14 +7,16 @@ import AppDynamicChart from '../../../../../AppDynamicChart';
 
 import { useUserContextValue } from '../../../../../../contexts/UserContext';
 import { useMarketsContextValue } from '../../../../../../contexts/MarketsContext';
-import { truncateDecimals } from '../../../../../../utils/numberUtils';
+import { formatCurrency } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_MEDIAN_RENTALS } from '../../../../../../apollo/queries/chart';
+import {
+  LEADING_HOSPITALITY_HOTEL_ROOM_NIGHT_TRENDS,
+} from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const MedianRentals = () => {
+const HotelRoomTrends = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
@@ -24,7 +26,7 @@ const MedianRentals = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_MEDIAN_RENTALS}
+      query={LEADING_HOSPITALITY_HOTEL_ROOM_NIGHT_TRENDS}
       variables={{
         token,
         exchange: marketCode,
@@ -34,26 +36,28 @@ const MedianRentals = () => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
             const {
-              medianRentalsCategory1ContractDate,
-              medianRentalsCategory1LeaseCommencement,
-              medianRentalsCategory2ContractDate,
-              medianRentalsCategory2LeaseCommencement,
+              hotelRoomNightTrendsAvailableRoomNights,
+              hotelRoomNightTrendsGrossLettings,
+              hotelRoomNightTrendsPaidLettings,
+              totalVisitorArrivals,
             } = item;
             mergedTicks.push(
-              medianRentalsCategory1ContractDate,
-              medianRentalsCategory1LeaseCommencement,
-              medianRentalsCategory2ContractDate,
-              medianRentalsCategory2LeaseCommencement,
+              hotelRoomNightTrendsAvailableRoomNights,
+              hotelRoomNightTrendsGrossLettings,
+              hotelRoomNightTrendsPaidLettings,
+              totalVisitorArrivals,
             );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipMedianRentalsCategory1ContractDate: medianRentalsCategory1ContractDate,
-              tooltipMedianRentalsCategory1LeaseCommencement:
-                medianRentalsCategory1LeaseCommencement,
-              tooltipMedianRentalsCategory2ContractDate: medianRentalsCategory2ContractDate,
-              tooltipMedianRentalsCategory2LeaseCommencement:
-                medianRentalsCategory2LeaseCommencement,
+              tooltipHotelRoomNightTrendsAvailableRoomNights:
+                formatCurrency(hotelRoomNightTrendsAvailableRoomNights),
+              tooltipHotelRoomNightTrendsGrossLettings:
+                formatCurrency(hotelRoomNightTrendsGrossLettings),
+              tooltipHotelRoomNightTrendsPaidLettings:
+                formatCurrency(hotelRoomNightTrendsPaidLettings),
+              tooltipTotalVisitorArrivals:
+                formatCurrency(totalVisitorArrivals),
             };
           }).reverse();
         }
@@ -62,7 +66,7 @@ const MedianRentals = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Median Rentals - Office Space by Location</Title>
+            <Title level={4}>Singapore Hotel Room Night Trends</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -72,53 +76,58 @@ const MedianRentals = () => {
                   height={570}
                   dataSource={dataSource}
                   xTickInterval={4}
-                  yTickLabelFormatter={(value) => truncateDecimals(value)}
+                  yTickLabelFormatter={(value) => formatCurrency(value)}
                   leftYAxis={{
-                    label: 'Median Rentals ($ psf pm)',
+                    label: 'Room Night Trends (\'000)',
+                    ticks: mergedTicks.filter((v) => v),
+                  }}
+                  rightYAxis={{
+                    label: 'Total International Visitor Arrivals (\'mil)',
                     ticks: mergedTicks.filter((v) => v),
                   }}
                   chartLines={[
                     {
-                      key: 'medianRentalsCategory1ContractDate',
-                      color: CHART_COLORS.GREEN,
+                      key: 'hotelRoomNightTrendsAvailableRoomNights',
+                      color: CHART_COLORS.RED,
                     },
                     {
-                      key: 'medianRentalsCategory1LeaseCommencement',
-                      color: CHART_COLORS.BLUE,
-                    },
-                    {
-                      key: 'medianRentalsCategory2LeaseCommencement',
+                      key: 'hotelRoomNightTrendsGrossLettings',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
-                      key: 'medianRentalsCategory2ContractDate',
-                      color: CHART_COLORS.RED,
+                      key: 'hotelRoomNightTrendsPaidLettings',
+                      color: CHART_COLORS.GREEN,
+                    },
+                    {
+                      key: 'totalVisitorArrivals',
+                      color: CHART_COLORS.YELLOW,
+                      yAxisId: 'right',
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Category 1-Median Rentals (Lease Commencement)',
+                      value: 'Available Room Nights',
+                      type: 'line',
+                      color: CHART_COLORS.RED,
+                    },
+                    {
+                      id: 2,
+                      value: 'Paid Lettings',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      id: 2,
-                      value: 'Category 1-Median Rentals (Contract Date)',
-                      type: 'line',
-                      color: CHART_COLORS.BLUE,
-                    },
-                    {
                       id: 3,
-                      value: 'Category 2-Median Rentals (Lease Commencement)',
+                      value: 'Gross Lettings (Room Nights)',
                       type: 'line',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
                       id: 4,
-                      value: 'Category 2-Median Rentals (Contract Date)',
+                      value: 'Total International Visitor Arrivals',
                       type: 'line',
-                      color: CHART_COLORS.RED,
+                      color: CHART_COLORS.YELLOW,
                     },
                   ]}
                 />
@@ -131,4 +140,4 @@ const MedianRentals = () => {
   );
 };
 
-export default MedianRentals;
+export default HotelRoomTrends;

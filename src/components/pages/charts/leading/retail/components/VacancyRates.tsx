@@ -10,11 +10,11 @@ import { useMarketsContextValue } from '../../../../../../contexts/MarketsContex
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_PRICE_VS_RENTAL } from '../../../../../../apollo/queries/chart';
+import { LEADING_RETAIL_VACANCY_RATES } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const PriceRentalIndex = () => {
+const VacancyRates = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
@@ -24,7 +24,7 @@ const PriceRentalIndex = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_PRICE_VS_RENTAL}
+      query={LEADING_RETAIL_VACANCY_RATES}
       variables={{
         token,
         exchange: marketCode,
@@ -33,12 +33,24 @@ const PriceRentalIndex = () => {
       {({ data: { leadingCharts }, loading, error }) => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
-            mergedTicks.push(item.priceIndex, item.rentalIndex);
+            const {
+              vacancyRatesOrchardArea,
+              vacancyRatesOutsideCentralArea,
+              vacancyRatesOutsideOrchardArea,
+            } = item;
+            mergedTicks.push(
+              vacancyRatesOrchardArea,
+              vacancyRatesOutsideCentralArea,
+              vacancyRatesOutsideOrchardArea,
+            );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipPriceIndex: truncateDecimals(item.priceIndex),
-              tooltipRentalIndex: truncateDecimals(item.rentalIndex),
+              tooltipVacancyRatesOrchardArea: `${truncateDecimals(vacancyRatesOrchardArea * 100)}%`,
+              tooltipVacancyRatesOutsideCentralArea:
+                `${truncateDecimals(vacancyRatesOutsideCentralArea * 100)}%`,
+              tooltipVacancyRatesOutsideOrchardArea:
+              `${truncateDecimals(vacancyRatesOutsideOrchardArea * 100)}%`,
             };
           }).reverse();
         }
@@ -47,7 +59,7 @@ const PriceRentalIndex = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Price vs Rental Index - Office Space</Title>
+            <Title level={4}>Vacancy Rates - Retail Space by Location</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -57,38 +69,43 @@ const PriceRentalIndex = () => {
                   height={570}
                   dataSource={dataSource}
                   xTickInterval={4}
-                  yTickLabelFormatter={(value) => truncateDecimals(value)}
+                  yTickLabelFormatter={(value) => `${truncateDecimals(value * 100)}%`}
                   leftYAxis={{
-                    label: 'Prince Index',
-                    ticks: mergedTicks.filter((v) => v),
-                  }}
-                  rightYAxis={{
-                    label: 'Rental Index',
+                    label: 'Vacancy Rates (%)',
                     ticks: mergedTicks.filter((v) => v),
                   }}
                   chartLines={[
                     {
-                      key: 'priceIndex',
+                      key: 'vacancyRatesOrchardArea',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      key: 'rentalIndex',
+                      key: 'vacancyRatesOutsideCentralArea',
+                      color: CHART_COLORS.ORANGE,
+                    },
+                    {
+                      key: 'vacancyRatesOutsideOrchardArea',
                       color: CHART_COLORS.BLUE,
-                      yAxisId: 'right',
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Price Index',
+                      value: 'Orchard Area',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
                       id: 2,
-                      value: 'Rental Index',
+                      value: 'Outside Orchard Area',
                       type: 'line',
                       color: CHART_COLORS.BLUE,
+                    },
+                    {
+                      id: 3,
+                      value: 'Outside Central Area',
+                      type: 'line',
+                      color: CHART_COLORS.ORANGE,
                     },
                   ]}
                 />
@@ -101,4 +118,4 @@ const PriceRentalIndex = () => {
   );
 };
 
-export default PriceRentalIndex;
+export default VacancyRates;

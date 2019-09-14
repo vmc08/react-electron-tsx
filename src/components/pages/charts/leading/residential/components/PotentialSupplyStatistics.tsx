@@ -9,7 +9,7 @@ import { useUserContextValue } from '../../../../../../contexts/UserContext';
 import { useMarketsContextValue } from '../../../../../../contexts/MarketsContext';
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_POTENTIAL_SUPPLY } from '../../../../../../apollo/queries/chart';
+import { LEADING_RESIDENTIAL_POTENTIAL_SUPPLY } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
@@ -23,7 +23,7 @@ const PotentialSupplyStatistics = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_POTENTIAL_SUPPLY}
+      query={LEADING_RESIDENTIAL_POTENTIAL_SUPPLY}
       variables={{
         token,
         exchange: marketCode,
@@ -32,7 +32,14 @@ const PotentialSupplyStatistics = () => {
       {({ data: { leadingCharts }, loading, error }) => {
         if (!loading) {
           [
-            { tooltipLabel: 'Office Space (\'000 sqm)', key: 'potentialSupply' },
+            {
+              tooltipLabel: 'Private Residential Units (No. of Units)',
+              key: 'privateResidentialUnits',
+            },
+            {
+              tooltipLabel: 'Executive Condominiums (No. of Units)',
+              key: 'executiveCondominiums',
+            },
           ].forEach(({ tooltipLabel, key }) => {
             const reMappedObj = leadingCharts[key].reverse()
               .reduce((obj: {}, currentItem: { label: string, value: number}) => {
@@ -55,7 +62,7 @@ const PotentialSupplyStatistics = () => {
           }) : [];
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Potential Supply Statistics - Office Space</Title>
+            <Title level={4}>Potential Supply Statistics - Residential</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -67,14 +74,14 @@ const PotentialSupplyStatistics = () => {
                   dataSource={[...dataSource]}
                   yTickLabelFormatter={(value) => truncateDecimals(value)}
                   leftYAxis={{
-                    label: 'Potential Supply Statistics (\'000 sqm)',
+                    label: 'Potential Supply Statistics (No. of Units)',
                     ticks: mergedTicks.filter((v) => v),
                   }}
                   chartLines={filteredKeys.map((key, idx) => {
                     const chartColors = Object.keys(CHART_COLORS);
                     return {
                       key,
-                      color: CHART_COLORS[chartColors[idx]],
+                      color: CHART_COLORS[chartColors[5 - idx]],
                     };
                   })}
                   legendPayload={filteredKeys.map((key, idx) => {
@@ -83,7 +90,7 @@ const PotentialSupplyStatistics = () => {
                       id: idx + 1,
                       type: 'square',
                       value: key,
-                      color: CHART_COLORS[chartColors[idx]],
+                      color: CHART_COLORS[chartColors[5 - idx]],
                     };
                   })}
                 />

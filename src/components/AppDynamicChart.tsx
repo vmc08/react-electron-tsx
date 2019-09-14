@@ -31,6 +31,7 @@ interface IAppDynamicChart {
   legendPayload?: LegendPayload[],
   legendPayloadAsReferenceLines?: boolean,
   chartLines?: Array<{ key: string, color: string, yAxisId?: string }>,
+  chartLinesFillOpacity?: boolean,
 }
 
 interface ICustomDot {
@@ -40,28 +41,33 @@ interface ICustomDot {
   stroke: string,
 }
 
-const CustomDot = ({ cx = 0, cy = 0, fill, stroke }: ICustomDot) => (
-  <>
-    <circle
-      strokeWidth={1}
-      fill={stroke}
-      cx={cx}
-      cy={cy}
-      r={6}
-      stroke="transparent"
-    />
-    <circle
-      fill={fill}
-      fillOpacity={0.1}
-      cx={cx}
-      cy={cy}
-      r={11}
-      stroke={stroke}
-      strokeWidth={1}
-      strokeDasharray={2}
-    />
-  </>
-);
+const CustomDot = ({ cx = 0, cy = 0, fill, stroke }: ICustomDot) => {
+  if (!cx || !cy) {
+    return null;
+  }
+  return (
+    <>
+      <circle
+        strokeWidth={1}
+        fill={stroke}
+        cx={cx}
+        cy={cy}
+        r={6}
+        stroke="transparent"
+      />
+      <circle
+        fill={fill}
+        fillOpacity={0.1}
+        cx={cx}
+        cy={cy}
+        r={11}
+        stroke={stroke}
+        strokeWidth={1}
+        strokeDasharray={2}
+      />
+    </>
+  );
+};
 
 const CustomTooltip = ({ payload }: TooltipProps) => {
   if ((payload && !payload.length) || !payload) {
@@ -99,6 +105,7 @@ const AppDynamicChart = ({
   hideXLabels = false, hideYLabels = false,
   leftYAxis, rightYAxis,
   topXAxis, bottomXAxis,
+  chartLinesFillOpacity = false,
 }: IAppDynamicChart) => {
 
   const deriveTickValues = (tickSource: number[]) => {
@@ -110,7 +117,7 @@ const AppDynamicChart = ({
     }
     const pointValues = dataSource.length ?
       [Math.min(...cloneTickSource), Math.max(...cloneTickSource)] : [];
-    return generateTicks(pointValues);
+    return generateTicks(pointValues, (chartType !== 'area'));
   };
 
   const defaultAxisLabelStyle = {
@@ -126,9 +133,9 @@ const AppDynamicChart = ({
       <ParentChart
         data={dataSource}
         margin={{
-          left: (leftYAxis && leftYAxis.label) && !hideYLabels ? 40 : 0,
-          right: (rightYAxis && rightYAxis.label) && !hideYLabels ? 40 : 0,
-          top: (topXAxis && topXAxis.label) && !hideXLabels ? 40 : hideXLabels ? 0 : 5,
+          left: (leftYAxis && leftYAxis.label) && !hideYLabels ? 40 : 5,
+          right: (rightYAxis && rightYAxis.label) && !hideYLabels ? 40 : 5,
+          top: (topXAxis && topXAxis.label) && !hideXLabels ? 40 : hideXLabels ? 0 : 10,
           bottom: (bottomXAxis && bottomXAxis.label) && !hideXLabels ? 40 : hideXLabels ? 0 : 5,
         }}
       >
@@ -151,6 +158,7 @@ const AppDynamicChart = ({
             <text
               x={x}
               y={y + 8}
+              style={{ textAnchor: (chartType === 'area') ? 'start' : 'middle' }}
               dominantBaseline="hanging"
               fontFamily={SANS_SERIF_FONT}
             >
@@ -237,7 +245,8 @@ const AppDynamicChart = ({
             <Area
               {...defaultProps}
               type="monotone"
-              fillOpacity={0.05}
+              connectNulls={false}
+              fillOpacity={chartLinesFillOpacity ? 0.05 : 0}
               strokeWidth={2}
               activeDot={(
                 <CustomDot

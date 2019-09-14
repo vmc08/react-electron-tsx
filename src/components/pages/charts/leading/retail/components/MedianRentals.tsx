@@ -10,7 +10,7 @@ import { useMarketsContextValue } from '../../../../../../contexts/MarketsContex
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_MEDIAN_RENTALS } from '../../../../../../apollo/queries/chart';
+import { LEADING_RETAIL_MEDIAN_RENTALS } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
@@ -24,7 +24,7 @@ const MedianRentals = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_MEDIAN_RENTALS}
+      query={LEADING_RETAIL_MEDIAN_RENTALS}
       variables={{
         token,
         exchange: marketCode,
@@ -34,26 +34,36 @@ const MedianRentals = () => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
             const {
-              medianRentalsCategory1ContractDate,
-              medianRentalsCategory1LeaseCommencement,
-              medianRentalsCategory2ContractDate,
-              medianRentalsCategory2LeaseCommencement,
+              medianRentalsOrchardAreaLeaseCommencement,
+              medianRentalsOrchardAreaContractDate,
+              medianRentalsOutsideOrchardAreaLeaseCommencement,
+              medianRentalsOutsideOrchardAreaContractDate,
+              medianRentalsOutsideCentralAreaLeaseCommencement,
+              medianRentalsOutsideCentralAreaContractDate,
             } = item;
             mergedTicks.push(
-              medianRentalsCategory1ContractDate,
-              medianRentalsCategory1LeaseCommencement,
-              medianRentalsCategory2ContractDate,
-              medianRentalsCategory2LeaseCommencement,
+              medianRentalsOrchardAreaLeaseCommencement,
+              medianRentalsOrchardAreaContractDate,
+              medianRentalsOutsideOrchardAreaLeaseCommencement,
+              medianRentalsOutsideOrchardAreaContractDate,
+              medianRentalsOutsideCentralAreaLeaseCommencement,
+              medianRentalsOutsideCentralAreaContractDate,
             );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipMedianRentalsCategory1ContractDate: medianRentalsCategory1ContractDate,
-              tooltipMedianRentalsCategory1LeaseCommencement:
-                medianRentalsCategory1LeaseCommencement,
-              tooltipMedianRentalsCategory2ContractDate: medianRentalsCategory2ContractDate,
-              tooltipMedianRentalsCategory2LeaseCommencement:
-                medianRentalsCategory2LeaseCommencement,
+              tooltipMedianRentalsOrchardAreaLeaseCommencement:
+                medianRentalsOrchardAreaLeaseCommencement,
+              tooltipMedianRentalsOrchardAreaContractDate:
+              medianRentalsOrchardAreaContractDate,
+              tooltipMedianRentalsOutsideOrchardAreaLeaseCommencement:
+                medianRentalsOutsideOrchardAreaLeaseCommencement,
+              tooltipMedianRentalsOutsideOrchardAreaContractDate:
+                medianRentalsOutsideOrchardAreaContractDate,
+              tooltipMedianRentalsOutsideCentralAreaLeaseCommencement:
+                medianRentalsOutsideCentralAreaLeaseCommencement,
+              tooltipMedianRentalsOutsideCentralAreaContractDate:
+                medianRentalsOutsideCentralAreaContractDate,
             };
           }).reverse();
         }
@@ -62,7 +72,7 @@ const MedianRentals = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Median Rentals - Office Space by Location</Title>
+            <Title level={4}>Median Rentals - Retail Space by Location</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -79,46 +89,66 @@ const MedianRentals = () => {
                   }}
                   chartLines={[
                     {
-                      key: 'medianRentalsCategory1ContractDate',
+                      key: 'medianRentalsOrchardAreaLeaseCommencement',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      key: 'medianRentalsCategory1LeaseCommencement',
+                      key: 'medianRentalsOrchardAreaContractDate',
                       color: CHART_COLORS.BLUE,
                     },
                     {
-                      key: 'medianRentalsCategory2LeaseCommencement',
+                      key: 'medianRentalsOutsideOrchardAreaLeaseCommencement',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
-                      key: 'medianRentalsCategory2ContractDate',
+                      key: 'medianRentalsOutsideOrchardAreaContractDate',
                       color: CHART_COLORS.RED,
+                    },
+                    {
+                      key: 'medianRentalsOutsideCentralAreaLeaseCommencement',
+                      color: CHART_COLORS.YELLOW,
+                    },
+                    {
+                      key: 'medianRentalsOutsideCentralAreaContractDate',
+                      color: CHART_COLORS.CYAN,
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Category 1-Median Rentals (Lease Commencement)',
+                      value: 'Orchard Area-Median Rentals (Lease Commencement)',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
                       id: 2,
-                      value: 'Category 1-Median Rentals (Contract Date)',
+                      value: 'Orchard Area-Median Rentals (Contract Date)',
                       type: 'line',
                       color: CHART_COLORS.BLUE,
                     },
                     {
                       id: 3,
-                      value: 'Category 2-Median Rentals (Lease Commencement)',
+                      value: 'Outside Orchard Area-Median Rentals (Lease Commencement)',
                       type: 'line',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
                       id: 4,
-                      value: 'Category 2-Median Rentals (Contract Date)',
+                      value: 'Outside Orchard Area-Median Rentals (Contract Date)',
                       type: 'line',
                       color: CHART_COLORS.RED,
+                    },
+                    {
+                      id: 5,
+                      value: 'Outside Central Area-Median Rentals (Lease Commencement)',
+                      type: 'line',
+                      color: CHART_COLORS.YELLOW,
+                    },
+                    {
+                      id: 6,
+                      value: 'Outside Central Area-Median Rentals (Contract Date)',
+                      type: 'line',
+                      color: CHART_COLORS.CYAN,
                     },
                   ]}
                 />

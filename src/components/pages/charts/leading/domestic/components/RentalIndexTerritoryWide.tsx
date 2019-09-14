@@ -7,14 +7,16 @@ import AppDynamicChart from '../../../../../AppDynamicChart';
 
 import { useUserContextValue } from '../../../../../../contexts/UserContext';
 import { useMarketsContextValue } from '../../../../../../contexts/MarketsContext';
-import { truncateDecimals } from '../../../../../../utils/numberUtils';
+import { formatCurrency } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_MEDIAN_RENTALS } from '../../../../../../apollo/queries/chart';
+import {
+  LEADING_DOMESTIC_RENTAL_INDEX_TERRITORY_WIDE_BY_CLASSES,
+} from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const MedianRentals = () => {
+const RentalIndexTerritoryWide = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
@@ -24,7 +26,7 @@ const MedianRentals = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_MEDIAN_RENTALS}
+      query={LEADING_DOMESTIC_RENTAL_INDEX_TERRITORY_WIDE_BY_CLASSES}
       variables={{
         token,
         exchange: marketCode,
@@ -34,26 +36,30 @@ const MedianRentals = () => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
             const {
-              medianRentalsCategory1ContractDate,
-              medianRentalsCategory1LeaseCommencement,
-              medianRentalsCategory2ContractDate,
-              medianRentalsCategory2LeaseCommencement,
+              rentalIndexClassA,
+              rentalIndexClassB,
+              rentalIndexClassC,
+              rentalIndexClassD,
+              rentalIndexClassE,
+              rentalIndex,
             } = item;
             mergedTicks.push(
-              medianRentalsCategory1ContractDate,
-              medianRentalsCategory1LeaseCommencement,
-              medianRentalsCategory2ContractDate,
-              medianRentalsCategory2LeaseCommencement,
+              rentalIndexClassA,
+              rentalIndexClassB,
+              rentalIndexClassC,
+              rentalIndexClassD,
+              rentalIndexClassE,
+              rentalIndex,
             );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipMedianRentalsCategory1ContractDate: medianRentalsCategory1ContractDate,
-              tooltipMedianRentalsCategory1LeaseCommencement:
-                medianRentalsCategory1LeaseCommencement,
-              tooltipMedianRentalsCategory2ContractDate: medianRentalsCategory2ContractDate,
-              tooltipMedianRentalsCategory2LeaseCommencement:
-                medianRentalsCategory2LeaseCommencement,
+              tooltipRentalIndexClassA: formatCurrency(rentalIndexClassA),
+              tooltipRentalIndexClassB: formatCurrency(rentalIndexClassB),
+              tooltipRentalIndexClassC: formatCurrency(rentalIndexClassC),
+              tooltipRentalIndexClassD: formatCurrency(rentalIndexClassD),
+              tooltipRentalIndexClassE: formatCurrency(rentalIndexClassE),
+              tooltipRentalIndex: formatCurrency(rentalIndex),
             };
           }).reverse();
         }
@@ -62,7 +68,7 @@ const MedianRentals = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Median Rentals - Office Space by Location</Title>
+            <Title level={4}>Rental Index Territory-wide by Classes</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -71,54 +77,74 @@ const MedianRentals = () => {
                 <AppDynamicChart
                   height={570}
                   dataSource={dataSource}
-                  xTickInterval={4}
-                  yTickLabelFormatter={(value) => truncateDecimals(value)}
+                  xTickInterval={40}
+                  yTickLabelFormatter={(value) => formatCurrency(value)}
                   leftYAxis={{
-                    label: 'Median Rentals ($ psf pm)',
+                    label: 'Rental Index',
                     ticks: mergedTicks.filter((v) => v),
                   }}
                   chartLines={[
                     {
-                      key: 'medianRentalsCategory1ContractDate',
+                      key: 'rentalIndexClassA',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      key: 'medianRentalsCategory1LeaseCommencement',
+                      key: 'rentalIndexClassB',
                       color: CHART_COLORS.BLUE,
                     },
                     {
-                      key: 'medianRentalsCategory2LeaseCommencement',
+                      key: 'rentalIndexClassC',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
-                      key: 'medianRentalsCategory2ContractDate',
+                      key: 'rentalIndexClassD',
                       color: CHART_COLORS.RED,
+                    },
+                    {
+                      key: 'rentalIndexClassE',
+                      color: CHART_COLORS.YELLOW,
+                    },
+                    {
+                      key: 'rentalIndex',
+                      color: CHART_COLORS.CYAN,
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Category 1-Median Rentals (Lease Commencement)',
+                      value: 'Class A',
                       type: 'line',
                       color: CHART_COLORS.GREEN,
                     },
                     {
                       id: 2,
-                      value: 'Category 1-Median Rentals (Contract Date)',
+                      value: 'Class B',
                       type: 'line',
                       color: CHART_COLORS.BLUE,
                     },
                     {
                       id: 3,
-                      value: 'Category 2-Median Rentals (Lease Commencement)',
+                      value: 'Class C',
                       type: 'line',
                       color: CHART_COLORS.ORANGE,
                     },
                     {
                       id: 4,
-                      value: 'Category 2-Median Rentals (Contract Date)',
+                      value: 'Class D',
                       type: 'line',
                       color: CHART_COLORS.RED,
+                    },
+                    {
+                      id: 5,
+                      value: 'Class E',
+                      type: 'line',
+                      color: CHART_COLORS.YELLOW,
+                    },
+                    {
+                      id: 6,
+                      value: 'Rental Index (All Classes)',
+                      type: 'line',
+                      color: CHART_COLORS.CYAN,
                     },
                   ]}
                 />
@@ -131,4 +157,4 @@ const MedianRentals = () => {
   );
 };
 
-export default MedianRentals;
+export default RentalIndexTerritoryWide;

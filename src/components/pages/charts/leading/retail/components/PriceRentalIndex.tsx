@@ -10,7 +10,7 @@ import { useMarketsContextValue } from '../../../../../../contexts/MarketsContex
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_PRICE_VS_RENTAL } from '../../../../../../apollo/queries/chart';
+import { LEADING_RETAIL_PRICE_VS_RENTAL } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
@@ -24,7 +24,7 @@ const PriceRentalIndex = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_PRICE_VS_RENTAL}
+      query={LEADING_RETAIL_PRICE_VS_RENTAL}
       variables={{
         token,
         exchange: marketCode,
@@ -47,7 +47,7 @@ const PriceRentalIndex = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Price vs Rental Index - Office Space</Title>
+            <Title level={4}>Price vs Rental Index - Retail Space</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />

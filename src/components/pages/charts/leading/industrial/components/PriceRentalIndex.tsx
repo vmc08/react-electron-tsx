@@ -10,7 +10,7 @@ import { useMarketsContextValue } from '../../../../../../contexts/MarketsContex
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
 import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_PRICE_VS_RENTAL } from '../../../../../../apollo/queries/chart';
+import { LEADING_INDUSTRIAL_PRICE_INDEX } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
@@ -24,7 +24,7 @@ const PriceRentalIndex = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_PRICE_VS_RENTAL}
+      query={LEADING_INDUSTRIAL_PRICE_INDEX}
       variables={{
         token,
         exchange: marketCode,
@@ -47,7 +47,7 @@ const PriceRentalIndex = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Price vs Rental Index - Office Space</Title>
+            <Title level={4}>Price vs Rental Index - All Industrial Properties</Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -69,11 +69,11 @@ const PriceRentalIndex = () => {
                   chartLines={[
                     {
                       key: 'priceIndex',
-                      color: CHART_COLORS.GREEN,
+                      color: CHART_COLORS.BLUE,
                     },
                     {
                       key: 'rentalIndex',
-                      color: CHART_COLORS.BLUE,
+                      color: CHART_COLORS.ORANGE,
                       yAxisId: 'right',
                     },
                   ]}
@@ -82,13 +82,13 @@ const PriceRentalIndex = () => {
                       id: 1,
                       value: 'Price Index',
                       type: 'line',
-                      color: CHART_COLORS.GREEN,
+                      color: CHART_COLORS.BLUE,
                     },
                     {
                       id: 2,
                       value: 'Rental Index',
                       type: 'line',
-                      color: CHART_COLORS.BLUE,
+                      color: CHART_COLORS.ORANGE,
                     },
                   ]}
                 />

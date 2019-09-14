@@ -1,4 +1,4 @@
-export const generateTicks = (values: number[], defaultSize = 8, minZero = false) => {
+export const generateTicks = (values: number[], minZero = false, defaultSize = 8) => {
   if (!values.length) {
     return [];
   }
@@ -12,7 +12,7 @@ export const generateTicks = (values: number[], defaultSize = 8, minZero = false
     ticks.push(parseFloat(tickValue.toFixed(4)));
   }
   ticks = [
-    minZero ? 0 : min - minRangeValue,
+    minZero ? 0 : min - minRangeValue, // applicable for bar chart types
     ...ticks, max + minRangeValue,
   ];
   return ticks;

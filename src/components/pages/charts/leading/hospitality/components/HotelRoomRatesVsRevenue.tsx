@@ -8,13 +8,13 @@ import AppDynamicChart from '../../../../../AppDynamicChart';
 import { useUserContextValue } from '../../../../../../contexts/UserContext';
 import { useMarketsContextValue } from '../../../../../../contexts/MarketsContext';
 import { truncateDecimals } from '../../../../../../utils/numberUtils';
-import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
 import { CHART_COLORS } from '../../../../../../utils/data/chartDataUtils';
-import { LEADING_COMMERCIAL_PRICE_VS_RENTAL } from '../../../../../../apollo/queries/chart';
+import { mergeObjectArrayValues } from '../../../../../../utils/arrayUtils';
+import { LEADING_HOSPITALITY_ROOM_RATE_VS_REVENUE } from '../../../../../../apollo/queries/chart';
 
 const { Title } = Typography;
 
-const PriceRentalIndex = () => {
+const HotelRoomRatesVsRevenue = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { token } = useUserContextValue();
 
@@ -24,7 +24,7 @@ const PriceRentalIndex = () => {
 
   return (
     <Query<any>
-      query={LEADING_COMMERCIAL_PRICE_VS_RENTAL}
+      query={LEADING_HOSPITALITY_ROOM_RATE_VS_REVENUE}
       variables={{
         token,
         exchange: marketCode,
@@ -33,12 +33,19 @@ const PriceRentalIndex = () => {
       {({ data: { leadingCharts }, loading, error }) => {
         if (!loading) {
           dataSource = mergeObjectArrayValues(leadingCharts).map((item: any) => {
-            mergedTicks.push(item.priceIndex, item.rentalIndex);
+            const {
+              revenuePerAvailableRoom,
+              standardAverageRoomRates,
+            } = item;
+            mergedTicks.push(
+              revenuePerAvailableRoom,
+              standardAverageRoomRates,
+            );
             return {
               ...item,
               tooltipLabel: item.label,
-              tooltipPriceIndex: truncateDecimals(item.priceIndex),
-              tooltipRentalIndex: truncateDecimals(item.rentalIndex),
+              tooltipRevenuePerAvailableRoom: truncateDecimals(revenuePerAvailableRoom),
+              tooltipStandardAverageRoomRates: truncateDecimals(standardAverageRoomRates),
             };
           }).reverse();
         }
@@ -47,7 +54,9 @@ const PriceRentalIndex = () => {
         }
         return (
           <Card className="p-3" style={{ height: '100%' }} bodyStyle={{ padding: 0 }}>
-            <Title level={4}>Price vs Rental Index - Office Space</Title>
+            <Title level={4}>
+              Singapore Hotel Standard Average Room Rates vs Revenue per Available Room
+            </Title>
             <Divider className="my-3" />
             {serverError ? (
               <Alert message={serverError} type="error" />
@@ -59,36 +68,31 @@ const PriceRentalIndex = () => {
                   xTickInterval={4}
                   yTickLabelFormatter={(value) => truncateDecimals(value)}
                   leftYAxis={{
-                    label: 'Prince Index',
-                    ticks: mergedTicks.filter((v) => v),
-                  }}
-                  rightYAxis={{
-                    label: 'Rental Index',
+                    label: 'Dollars ($)',
                     ticks: mergedTicks.filter((v) => v),
                   }}
                   chartLines={[
                     {
-                      key: 'priceIndex',
+                      key: 'revenuePerAvailableRoom',
                       color: CHART_COLORS.GREEN,
                     },
                     {
-                      key: 'rentalIndex',
-                      color: CHART_COLORS.BLUE,
-                      yAxisId: 'right',
+                      key: 'standardAverageRoomRates',
+                      color: CHART_COLORS.RED,
                     },
                   ]}
                   legendPayload={[
                     {
                       id: 1,
-                      value: 'Price Index',
+                      value: 'Standard Average Room Rate (ARR) ($)',
                       type: 'line',
-                      color: CHART_COLORS.GREEN,
+                      color: CHART_COLORS.RED,
                     },
                     {
                       id: 2,
-                      value: 'Rental Index',
+                      value: 'Revenue per Available Room (RevPar) ($)',
                       type: 'line',
-                      color: CHART_COLORS.BLUE,
+                      color: CHART_COLORS.GREEN,
                     },
                   ]}
                 />
@@ -101,4 +105,4 @@ const PriceRentalIndex = () => {
   );
 };
 
-export default PriceRentalIndex;
+export default HotelRoomRatesVsRevenue;

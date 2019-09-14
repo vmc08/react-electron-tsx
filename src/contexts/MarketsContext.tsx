@@ -25,14 +25,14 @@ class MarketsProvider extends React.Component<{}, { market: string }> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      market: sessionStorage.getItem('market') || 'SGX',
+      market: localStorage.getItem('market') || 'SGX',
     };
     this.setMarket = this.setMarket.bind(this);
   }
 
   setMarket(market: string) {
     this.setState({ market }, () => {
-      sessionStorage.setItem('market', market);
+      localStorage.setItem('market', market);
     });
   }
 

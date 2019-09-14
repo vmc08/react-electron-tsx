@@ -3,6 +3,7 @@ import { Row, Col } from 'antd';
 
 import { useMarketsContextValue } from '../../../../contexts/MarketsContext';
 import LoadableComponent from '../../../../config/LoadableComponent';
+import { UserConsumer } from '../../../../contexts/UserContext';
 
 const PriceIndex = LoadableComponent({
   componentPathName: 'components/pages/charts/lagging/components/PriceIndex',
@@ -23,30 +24,40 @@ const MarketCapNPI = LoadableComponent({
 const Lagging = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   return (
-    <>
-      <Row type="flex" gutter={16}>
-        <Col className="pb-2 pb-sm-3" xs={24}>
-          <PriceIndex />
-        </Col>
-      </Row>
-      {(marketCode !== 'MYX') && (
-        <Row type="flex" gutter={16}>
-          <Col className="pb-2 pb-sm-3" xs={24}>
-            <FTSE />
-          </Col>
-        </Row>
+    <UserConsumer>
+      {({ token }) => (
+        <>
+          {token && (
+            <Row type="flex" gutter={16}>
+              <Col className="pb-2 pb-sm-3" xs={24}>
+                <PriceIndex />
+              </Col>
+            </Row>
+          )}
+          {(marketCode !== 'MYX') && (
+            <Row type="flex" gutter={16}>
+              <Col className="pb-2 pb-sm-3" xs={24}>
+                <FTSE />
+              </Col>
+            </Row>
+          )}
+          {token && (
+            <Row type="flex" gutter={16}>
+              <Col className="pb-2 pb-sm-3" xs={24}>
+                <YieldSpread />
+              </Col>
+            </Row>
+          )}
+          {token && (
+            <Row gutter={16}>
+              <Col className="mb-2 mb-lg-0" xs={24}>
+                <MarketCapNPI />
+              </Col>
+            </Row>
+          )}
+        </>
       )}
-      <Row type="flex" gutter={16}>
-        <Col className="pb-2 pb-sm-3" xs={24}>
-          <YieldSpread />
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col className="mb-2 mb-lg-0" xs={24}>
-          <MarketCapNPI />
-        </Col>
-      </Row>
-    </>
+    </UserConsumer>
   );
 };
 
