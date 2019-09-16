@@ -77,7 +77,7 @@ const Retail = () => {
     SGX: <SGRetail />,
     HKEX: <HKEXRetail />,
   };
-  return RetailComponent[marketCode];
+  return RetailComponent[marketCode] || <div />;
 };
 
 export default Retail;

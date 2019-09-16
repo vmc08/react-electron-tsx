@@ -141,6 +141,7 @@ class Insights extends React.PureComponent<WithApolloClient<IInsightProps>, IIns
     if (marketCodeState !== marketCode) {
       this.resetListView({ marketCode, searchString: undefined });
     }
+    CELL_MEASURER_CACHE.clearAll();
   }
 
   setSelectedCategory(selectedCategory: string) {

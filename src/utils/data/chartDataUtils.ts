@@ -1,3 +1,5 @@
+import { MARKETS } from './appDataUtils';
+
 interface IChartLabels {
   [key: string]: {
     label: string,
@@ -63,9 +65,13 @@ export const CHART_LABELS: IChartLabels = {
 export const CHART_INDICATORS = [{
   value: 'lagging',
   label: 'Lagging',
+  activeOnMarkets: MARKETS.filter(({ disabled }) => !disabled).map(({ marketCode}) => marketCode),
 }, {
   value: 'leading',
   label: 'Leading',
+  activeOnMarkets: MARKETS.filter(({ marketCode , disabled }) => {
+    return marketCode !== 'MYX' && !disabled;
+  }).map((m) => m.marketCode),
 }];
 
 export const CHART_SECTORS: IChartSector = {

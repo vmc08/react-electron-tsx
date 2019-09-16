@@ -15,6 +15,10 @@ const ChartFilters = () => {
   const { market: { marketCode } } = useMarketsContextValue();
   const { setChartIndicator, setChartSector, indicator, sector } = useChartFilterContext();
   const showSectorSelection = (marketCode !== 'MYX') && (indicator.value === 'leading');
+  // filter out chart indicators available for current market
+  const activeChartIndicators = CHART_INDICATORS.filter(({ activeOnMarkets }) => {
+    return activeOnMarkets.includes(marketCode);
+  });
   return (
     <Row type="flex" gutter={{ sm: 16, xs: 8 }}>
       <Col
@@ -41,11 +45,11 @@ const ChartFilters = () => {
               value={indicator.value}
               disabled={!token}
               onChange={(_: string, option: any) => {
-                setChartIndicator(CHART_INDICATORS[+option.key]);
+                setChartIndicator(activeChartIndicators[+option.key]);
               }}
             >
               <Option value="disabled" disabled>Chart Indicators</Option>
-              {CHART_INDICATORS.map(({ value: indicatorValue, label }, idx) => (
+              {activeChartIndicators.map(({ value: indicatorValue, label }, idx) => (
                 <Option key={idx} value={indicatorValue}>{label}</Option>
               ))}
             </Select>
