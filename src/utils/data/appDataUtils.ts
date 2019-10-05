@@ -10,7 +10,7 @@ export const MARKETS = [
   { label: 'Singapore', marketCode: 'SGX', countryCode: 'SG', currency: 'S$', disabled: false },
   { label: 'Hongkong', marketCode: 'HKEX', countryCode: 'HK', currency: 'HK$', disabled: false },
   { label: 'Malaysia', marketCode: 'MYX', countryCode: 'MY', currency: 'RM', disabled: false },
-  { label: 'Australia', marketCode: 'ASX', countryCode: 'AU', currency: 'A$', disabled: true },
+  { label: 'Australia', marketCode: 'ASX', countryCode: 'AU', currency: 'A$', disabled: false },
 ];
 
 export const SECTORS = [

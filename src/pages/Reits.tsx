@@ -94,7 +94,7 @@ const ChartFilters = () => {
 const Reits = ({ requireAuth }: { requireAuth: boolean }) => {
   return (
     <AppLayout requireAuth={requireAuth}>
-      <ChartFilters />
+      {/* <ChartFilters /> */}
       <ReitsIndex />
     </AppLayout>
   );
