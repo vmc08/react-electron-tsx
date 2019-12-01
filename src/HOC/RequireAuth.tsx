@@ -1,12 +1,12 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import { RouteComponentProps } from 'react-router-dom';
-import { isLoggedIn, getAuthToken } from '../utils/userUtils';
-import { ACCOUNT } from '../apollo/queries/user';
-import { IAccount } from '../apollo/types/graphql-types';
+import { isLoggedIn, getAuthToken } from 'utils/userUtils';
+import { ACCOUNT } from 'apollo/queries/user';
+import { IAccount } from 'apollo/types/graphql-types';
 
-import { UserProvider } from '../contexts/UserContext';
-import PageSpinner from '../components/spinners/PageSpinner';
+import { UserProvider } from 'contexts/UserContext';
+import PageSpinner from 'components/PageSpinner';
 
 const redirectToDashboardPaths = [
   '/login',

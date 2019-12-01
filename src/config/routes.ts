@@ -14,7 +14,6 @@ const Insights = LoadableComponent({ componentPathName: 'pages/Insights' });
 const Transactions = LoadableComponent({ componentPathName: 'pages/Transactions' });
 const MarketBriefs = LoadableComponent({ componentPathName: 'pages/MarketBriefs' });
 const Training = LoadableComponent({ componentPathName: 'pages/Training' });
-const Documentation = LoadableComponent({ componentPathName: 'pages/Documentation' });
 const Settings = LoadableComponent({ componentPathName: 'pages/Settings' });
 
 Register.preload();
@@ -30,7 +29,6 @@ Insights.preload();
 Transactions.preload();
 MarketBriefs.preload();
 Training.preload();
-Documentation.preload();
 Settings.preload();
 
 const routes = [
@@ -85,10 +83,6 @@ const routes = [
   {
     component: RequireAuth(Training),
     path: '/training',
-  },
-  {
-    component: RequireAuth(Documentation),
-    path: '/documentation/:group/:api',
   },
   {
     component: RequireAuth(Settings),
