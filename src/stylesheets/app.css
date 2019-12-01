@@ -36,3 +36,16 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+.drag-line {
+  border-left: 2px dashed #1890ff !important;
+}
+
+.ant-dropdown {
+  z-index: 1;
+}
+
+.custom-set-form {
+  z-index: 2;
+  max-width: 250px;
+}

@@ -1,20 +1,74 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Card, Alert } from 'antd';
 import { useQuery } from 'react-apollo';
+import { gql } from 'apollo-boost';
 
 import ReitsTable from './ReitsTable';
 import DashboardSpinner from '../../spinners/DashboardSpinner';
 
+import { IChartFilters } from './components/types';
+import { getTableColumns } from './ReitsTableColumns';
 import { useMarketsContextValue } from '../../../contexts/MarketsContext';
 import { useUserContextValue } from '../../../contexts/UserContext';
-import { REIT_INDEX } from '../../../apollo/queries/reits';
 
-const ReitsIndex = () => {
-  const { market: { marketCode } } = useMarketsContextValue();
-  const { token } = useUserContextValue();
-  const { loading, error: serverError, data } = useQuery(REIT_INDEX, {
-    variables: { exchange: marketCode, token },
+const generateDynamicQuery = (planLevel = 1, currency: string) => {
+  const QUERY_TYPE_OBJECTS: { [key: string]: string } = {
+    quality: '{ value quality }',
+    valuation: '{ lower higher mean valuation }',
+    percentile: '{ value percentile }',
+  };
+  const rowStrings: string[] = [];
+  getTableColumns(currency).filter(({ plan = 0 }) => {
+    return plan <= planLevel;
+  }).forEach(({ dataIndex, queryType }) => {
+    if (dataIndex) {
+      const rowString = queryType ? `${dataIndex} ${QUERY_TYPE_OBJECTS[queryType]}` : dataIndex;
+      rowStrings.push(rowString);
+    }
   });
+  const queryBody = `
+    query ReitIndex(
+      $sector: [ReitSector],
+      $token: String,
+      $search: String,
+      $offset: Float, $limit: Float,
+      $exchange: REITExchange!
+    ) {
+      reitIndex(sector: $sector, token: $token, search: $search, exchange: $exchange) {
+        count
+        rows(offset: $offset, limit: $limit) {
+          ${rowStrings.join('\n')}
+        }
+      }
+    }
+  `;
+  return gql(queryBody);
+};
+
+const ReitsIndex = ({ filters, setFilters }: IChartFilters) => {
+  const { market: { marketCode, currency } } = useMarketsContextValue();
+  const { token, account } = useUserContextValue();
+  const planLevel = account ? account.level : 0;
+
+  const { loading, error: serverError, data, refetch } = useQuery(
+    generateDynamicQuery(planLevel, currency), {
+      notifyOnNetworkStatusChange: true,
+      variables: {
+        exchange: marketCode,
+        token,
+        ...(filters.sectors.length && { sector: filters.sectors }),
+      },
+    },
+  );
+
+  useEffect(() => {
+    refetch({
+      exchange: marketCode,
+      token,
+      ...(filters.sectors.length && { sector: filters.sectors }),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.sectors.length]);
 
   return (
     <Row gutter={16}>
@@ -24,7 +78,11 @@ const ReitsIndex = () => {
             <Alert message={serverError} type="error" />
           ) : (
             <DashboardSpinner isLoading={loading}>
-              <ReitsTable reitsData={data.reitIndex || { rows: [] }} />
+              <ReitsTable
+                reitsData={data.reitIndex || { rows: [] }}
+                filters={filters}
+                setFilters={setFilters}
+              />
             </DashboardSpinner>
           )}
         </Card>

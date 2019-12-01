@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'antd';
 
+import { MARKETS_WITHOUT_INDICATORS } from '../../../../utils/data/appDataUtils';
 import { useMarketsContextValue } from '../../../../contexts/MarketsContext';
 import LoadableComponent from '../../../../config/LoadableComponent';
 import { UserConsumer } from '../../../../contexts/UserContext';
@@ -34,7 +35,7 @@ const Lagging = () => {
               </Col>
             </Row>
           )}
-          {(marketCode !== 'MYX') && (
+          {(!MARKETS_WITHOUT_INDICATORS.includes(marketCode)) && (
             <Row type="flex" gutter={16}>
               <Col className="pb-2 pb-sm-3" xs={24}>
                 <FTSE />

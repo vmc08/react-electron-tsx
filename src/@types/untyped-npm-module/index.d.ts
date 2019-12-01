@@ -21,6 +21,7 @@ declare module 'react-drag-listview' {
   interface IOptions {
     onDragEnd: (fromIndex: number, toIndex: number) => void,
     nodeSelector: string,
+    lineClassName: string,
   }
 
   export default class ReactDragListView extends React.Component {

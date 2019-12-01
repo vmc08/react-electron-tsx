@@ -6,12 +6,39 @@ export const CUSTOMER_PLANS = [
   'PROFESSIONAL',
 ];
 
-export const MARKETS = [
-  { label: 'Singapore', marketCode: 'SGX', countryCode: 'SG', currency: 'S$', disabled: false },
-  { label: 'Hongkong', marketCode: 'HKEX', countryCode: 'HK', currency: 'HK$', disabled: false },
-  { label: 'Malaysia', marketCode: 'MYX', countryCode: 'MY', currency: 'RM', disabled: false },
-  { label: 'Australia', marketCode: 'ASX', countryCode: 'AU', currency: 'A$', disabled: false },
-];
+export const MARKETS = [{
+  label: 'Singapore',
+  marketCode: 'SGX',
+  countryCode: 'SG',
+  currency: 'S$',
+  disabled: false,
+  chartIndicators: true,
+}, {
+  label: 'Hongkong',
+  marketCode: 'HKEX',
+  countryCode: 'HK',
+  currency: 'HK$',
+  disabled: false,
+  chartIndicators: true,
+}, {
+  label: 'Malaysia',
+  marketCode: 'MYX',
+  countryCode: 'MY',
+  currency: 'RM',
+  disabled: false,
+  chartIndicators: false,
+}, {
+  label: 'Australia',
+  marketCode: 'ASX',
+  countryCode: 'AU',
+  currency: 'A$',
+  disabled: false,
+  chartIndicators: false,
+}];
+
+export const MARKETS_WITHOUT_INDICATORS = MARKETS
+  .filter(({ chartIndicators }) => !chartIndicators)
+  .map((market) => market.marketCode);
 
 export const SECTORS = [
   { label: 'HEALTHCARE', disabled: false },

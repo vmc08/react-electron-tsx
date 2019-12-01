@@ -1,4 +1,4 @@
-import { MARKETS } from './appDataUtils';
+import { MARKETS, MARKETS_WITHOUT_INDICATORS } from './appDataUtils';
 
 interface IChartLabels {
   [key: string]: {
@@ -70,7 +70,7 @@ export const CHART_INDICATORS = [{
   value: 'leading',
   label: 'Leading',
   activeOnMarkets: MARKETS.filter(({ marketCode , disabled }) => {
-    return marketCode !== 'MYX' && !disabled;
+    return !MARKETS_WITHOUT_INDICATORS.includes(marketCode) && !disabled;
   }).map((m) => m.marketCode),
 }];
 

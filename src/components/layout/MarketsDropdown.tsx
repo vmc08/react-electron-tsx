@@ -3,7 +3,7 @@ import { Dropdown, Menu, Icon, Tooltip } from 'antd';
 
 import FlagIcon from '../FlagIcon';
 
-import { MARKETS } from '../../utils/data/appDataUtils';
+import { MARKETS, MARKETS_WITHOUT_INDICATORS } from '../../utils/data/appDataUtils';
 import { CHART_INDICATORS, CHART_SECTORS } from '../../utils/data/chartDataUtils';
 
 import { UserConsumer } from '../../contexts/UserContext';
@@ -78,7 +78,7 @@ const MarketsDropdown = () => {
   useEffect(() => {
     if (market.marketCode !==  marketCode) {
       setMarketCode(market.marketCode);
-      if (market.marketCode === 'MYX') {
+      if (MARKETS_WITHOUT_INDICATORS.includes(market.marketCode)) {
         setChartIndicator(CHART_INDICATORS[0]);
       } else {
         setChartSector(CHART_SECTORS[market.marketCode][0]);

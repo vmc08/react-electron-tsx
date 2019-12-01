@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from 'react';
+import { IAccount } from '../apollo/types/graphql-types';
 
 interface IUserContext {
-  account: object | null,
+  account: IAccount | null,
   token: string | null,
   authenticated: boolean,
 }

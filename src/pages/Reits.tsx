@@ -1,67 +1,32 @@
-import React from 'react';
-import { Row, Col, Select } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Row, Col } from 'antd';
 
 import AppLayout from '../components/layout/AppLayout';
 import ReitsIndex from '../components/pages/reits';
+import { IChartFilters } from '../components/pages/reits/components/types';
+import CustomSets from '../components/pages/reits/components/CustomSets';
+import ColumnControl from '../components/pages/reits/components/ColumnControl';
+import SectorFilters from '../components/pages/reits/components/SectorFilters';
+import { getTableColumns } from '../components/pages/reits/ReitsTableColumns';
 
-import { useChartFilterContext } from '../contexts/ChartFilterContext';
 import { useMarketsContextValue } from '../contexts/MarketsContext';
-import { CHART_INDICATORS, CHART_SECTORS } from '../utils/data/chartDataUtils';
+import { useUserContextValue } from '../contexts/UserContext';
 
-const { Option } = Select;
-
-const ChartFilters = () => {
-  const { market: { marketCode } } = useMarketsContextValue();
-  const { setChartIndicator, setChartSector, indicator, sector } = useChartFilterContext();
+const ChartFilters = ({ filters, setFilters }: IChartFilters) => {
+  const { token } = useUserContextValue();
   return (
     <Row type="flex" gutter={{ sm: 16, xs: 8 }}>
       <Col
         className="pb-2 pb-sm-3"
         xs={12} md={6} lg={4}
       >
-        <Select
-          showSearch
-          size="large"
-          style={{
-            width: '100%',
-          }}
-          defaultValue={indicator.value}
-          value={indicator.value}
-          onChange={(_: string, option: any) => {
-            setChartIndicator(CHART_INDICATORS[+option.key]);
-          }}
-        >
-          <Option value="disabled" disabled>Chart Indicators</Option>
-          {CHART_INDICATORS.filter(({ activeOnMarkets }) => {
-            return activeOnMarkets.includes(marketCode);
-          }).map(({ value: indicatorValue, label }, idx) => (
-            <Option key={idx} value={indicatorValue}>{label}</Option>
-          ))}
-        </Select>
+        {token && <CustomSets filters={filters} setFilters={setFilters} />}
       </Col>
       <Col
         className="pb-2 pb-sm-3"
         xs={12} md={6} lg={4}
       >
-        <Select
-          showSearch
-          size="large"
-          style={{
-            width: '100%',
-          }}
-          defaultValue={indicator.value}
-          value={indicator.value}
-          onChange={(_: string, option: any) => {
-            setChartIndicator(CHART_INDICATORS[+option.key]);
-          }}
-        >
-          <Option value="disabled" disabled>Chart Indicators</Option>
-          {CHART_INDICATORS.filter(({ activeOnMarkets }) => {
-            return activeOnMarkets.includes(marketCode);
-          }).map(({ value: indicatorValue, label }, idx) => (
-            <Option key={idx} value={indicatorValue}>{label}</Option>
-          ))}
-        </Select>
+        {token && <ColumnControl filters={filters} setFilters={setFilters} />}
       </Col>
       <Col
         className="pb-2 pb-sm-3"
@@ -69,33 +34,43 @@ const ChartFilters = () => {
         md={{ span: 6, offset: 6 }}
         lg={{ span: 4, offset: 12 }}
       >
-        <Select
-          showSearch
-          size="large"
-          style={{
-            width: '100%',
-          }}
-          defaultValue={sector.value}
-          value={sector.value}
-          onChange={(_: string, option: any) => {
-            setChartSector(CHART_SECTORS[marketCode][+option.key]);
-          }}
-        >
-          <Option value="disabled" disabled>Chart Sectors</Option>
-          {CHART_SECTORS[marketCode].map(({ value: sectorValue, label }, idx) => (
-            <Option key={idx} value={sectorValue}>{label}</Option>
-          ))}
-        </Select>
+        <SectorFilters filters={filters} setFilters={setFilters} />
       </Col>
     </Row>
   );
 };
 
 const Reits = ({ requireAuth }: { requireAuth: boolean }) => {
+  const { market: { currency } } = useMarketsContextValue();
+
+  const [filters, setFilters] = useState({
+    sectors: [],
+    columns: getTableColumns(currency),
+  });
+
+  useEffect(() => {
+    setFilters((prevFilters) => {
+      const newColumns = getTableColumns(currency);
+      const derivedColumns = prevFilters.columns.map((oldColumn) => {
+        const newColumn = newColumns.find(({ dataIndex }) => {
+          return dataIndex === oldColumn.dataIndex;
+        });
+        return {
+          ...newColumn,
+          selected: oldColumn.selected,
+        };
+      });
+      return {
+        ...prevFilters,
+        columns: derivedColumns,
+      };
+    });
+  }, [currency]);
+
   return (
     <AppLayout requireAuth={requireAuth}>
-      {/* <ChartFilters /> */}
-      <ReitsIndex />
+      <ChartFilters filters={filters} setFilters={setFilters} />
+      <ReitsIndex filters={filters} setFilters={setFilters} />
     </AppLayout>
   );
 };

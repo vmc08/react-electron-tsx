@@ -1,33 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Table } from 'antd';
 import ReactDragListView from 'react-drag-listview';
-import { getTableColumns } from './ReitsTableColumns';
-import { useMarketsContextValue } from '../../../contexts/MarketsContext';
 import { ReitsProvider } from '../../../contexts/ReitsContext';
+import { IChartFilters } from './components/types';
 
-const ReitsTable = ({ reitsData }: { reitsData: { rows: any }}) => {
+interface IReitsTable extends IChartFilters {
+  reitsData: { rows: any }
+}
+
+const ReitsTable = ({ reitsData, filters, setFilters }: IReitsTable) => {
   const { rows } = reitsData;
-  const { market: { currency } } = useMarketsContextValue();
-  const [state, setState] = useState({ columns: getTableColumns(currency) });
-
-  useEffect(() => {
-    setState({ columns: getTableColumns(currency) });
-  }, [currency]);
-
   return (
     <ReitsProvider dataSource={rows}>
       <ReactDragListView.DragColumn
         nodeSelector="th"
+        lineClassName="drag-line"
         onDragEnd={(fromIndex: number, toIndex: number) => {
-          const columns = state.columns;
+          const columns = [...filters.columns];
           const item = columns.splice(fromIndex, 1)[0];
           columns.splice(toIndex, 0, item);
-          setState({ columns });
+          setFilters({ ...filters, columns });
         }}
       >
         <Table
           rowKey="stockCode"
-          columns={state.columns}
+          columns={filters.columns.filter((column) => column.selected)}
           dataSource={rows}
           scroll={{ x: 'max-content' }}
         />
