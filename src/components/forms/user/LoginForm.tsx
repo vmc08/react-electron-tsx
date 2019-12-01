@@ -7,7 +7,7 @@ import { Form as AntdForm, Icon, Button, Alert, message } from 'antd';
 
 import { LoginSchema } from './validations';
 import { AntInput } from '../../AntDesignFields';
-import { setAuthToken } from '../../../utils/userUtils';
+import { setAuthToken, setRefreshToken } from '../../../utils/userUtils';
 import { hasValidObjectValues } from '../../../utils/objectUtils';
 import { CREATE_ACCESS_TOKEN } from '../../../apollo/mutations/user';
 
@@ -26,7 +26,10 @@ interface ILoginFormState {
 
 interface ILoginMutationResponse {
   data: {
-    createAccessToken: { token: string },
+    createToken: {
+      accessToken: string,
+      refreshToken: string,
+    },
   }
 }
 
@@ -74,8 +77,9 @@ class LoginForm extends React.Component<RouteComponentProps, ILoginFormState> {
       },
     })
     .then(({ data }: ILoginMutationResponse) => {
-      const { token } = data.createAccessToken;
-      setAuthToken(token);
+      const { accessToken, refreshToken } = data.createToken;
+      setAuthToken(accessToken);
+      setRefreshToken(refreshToken);
       this.setState({ isLoading: false });
       message.success('Login success', 1);
       history.replace('/');

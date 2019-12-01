@@ -8,7 +8,7 @@ import { Form as AntdForm, Icon, Button, Alert, Row, Col } from 'antd';
 import { SignupSchema } from './validations';
 import { AntInput } from '../../AntDesignFields';
 import { hasValidObjectValues } from '../../../utils/objectUtils';
-import { setAuthToken } from '../../../utils/userUtils';
+import { setAuthToken, setRefreshToken } from '../../../utils/userUtils';
 import { CREATE_ACCOUNT, SEND_ONBOARDING_CODE } from '../../../apollo/mutations/user';
 
 interface IRegistrationFormProps extends RouteComponentProps {
@@ -30,7 +30,10 @@ interface IRegistrationFormState {
 
 interface ICreateAccountResult {
   data: {
-    createAccount: { token: string },
+    createAccount: {
+      accessToken: string,
+      refreshToken: string,
+    },
   }
 }
 
@@ -68,11 +71,12 @@ class RegistrationForm extends React.Component<
     })
     .then(async ({ data }: ICreateAccountResult) => {
       const { createAccount } = data;
-      const { token: userToken } = createAccount;
-      setAuthToken(userToken);
+      const { accessToken, refreshToken } = createAccount;
+      setAuthToken(accessToken);
+      setRefreshToken(refreshToken);
       await client.mutate({
         mutation: SEND_ONBOARDING_CODE,
-        variables: { token: userToken },
+        variables: { token: accessToken },
       });
       this.setState({ isLoading: false });
       history.replace('/register/verify-email');

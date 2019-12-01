@@ -1,9 +1,19 @@
 import { gql } from 'apollo-boost';
 
 export const CREATE_ACCESS_TOKEN = gql`
-  mutation CreateAccessToken ($input: CreateAccessTokenInput!) {
-    createAccessToken (input: $input) {
-      token
+  mutation ($input: CreateTokenInput!) {
+    createToken(input: $input) {
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
+export const REFRESH_ACCESS_TOKEN = gql`
+  mutation ($refreshToken: String!) {
+    refreshToken(refreshToken: $refreshToken) {
+      accessToken
+      refreshToken
     }
   }
 `;
@@ -21,9 +31,10 @@ export const RESET_PASSWORD = gql`
 `;
 
 export const CREATE_ACCOUNT = gql`
-  mutation CreateAccount ($input: CreateAccountInput!, $affiliateId: String) {
-    createAccount (input: $input, affiliateId: $affiliateId) {
-      token
+  mutation ($input: CreateAccountInput!, $affiliateId: String, $code: String) {
+    createAccount (input: $input, affiliateId: $affiliateId, code: $code) {
+      refreshToken
+      accessToken
     }
   }
 `;

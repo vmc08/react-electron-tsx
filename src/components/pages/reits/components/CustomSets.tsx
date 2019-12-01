@@ -136,7 +136,7 @@ const CustomSets = ({ filters, setFilters }: IChartFilters) => {
     customSetName: undefined,
   });
 
-  const { loading, error: serverError, data } = useQuery(CUSTOM_SETS, {
+  const { loading, data } = useQuery(CUSTOM_SETS, {
     variables: { token },
   });
 

@@ -1,8 +1,12 @@
-export const setAuthToken = (token: string): void => localStorage.setItem('auth_token', token);
+export const setAuthToken = (token: string): void => localStorage.setItem('access_token', token);
 
-export const getAuthToken = (): string => localStorage.getItem('auth_token') || '';
+export const setRefreshToken = (refreshToken: string): void => {
+  return localStorage.setItem('refresh_token', refreshToken);
+};
 
-export const deleteAuthToken = (): void => localStorage.removeItem('auth_token');
+export const getAuthToken = (): string => localStorage.getItem('access_token') || '';
+
+export const deleteAuthToken = (): void => localStorage.removeItem('access_token');
 
 export const isLoggedIn = (): boolean => getAuthToken().length > 0;
 

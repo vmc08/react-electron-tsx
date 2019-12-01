@@ -42,7 +42,7 @@ export const reitsNameColumnFilter = (): Partial<ColumnProps<any>> => ({
         </Col>
         <Col span={12}>
           <Button
-            onClick={() => clearFilters && clearFilters([])}
+            onClick={() => clearFilters && clearFilters()}
             size="small"
             block
           >
@@ -134,7 +134,7 @@ export const rangeColumnFilter = (
                 </Col>
                 <Col span={12}>
                   <Button
-                    onClick={() => clearFilters && clearFilters([])}
+                    onClick={() => clearFilters && clearFilters()}
                     size="small"
                     block
                   >
