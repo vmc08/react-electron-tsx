@@ -22,12 +22,9 @@
     "@types/recharts": "^1.1.20",
     "@types/styled-components": "^4.1.18",
     "@types/yup": "^0.26.22",
-    "antd": "^3.25.3",
+    "antd": "^3.26.6",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
-    "concurrently": "^4.1.1",
-    "electron": "^6.0.1",
-    "electron-builder": "^21.2.0",
     "electron-is-dev": "^1.1.0",
     "formik": "^1.5.8",
     "graphql": "^14.4.2",
@@ -36,7 +33,6 @@
     "react": "^16.8.6",
     "react-apollo": "^3.0.0",
     "react-async-script": "^1.1.1",
-    "react-clear-cache": "^1.0.26",
     "react-dom": "^16.8.6",
     "react-drag-listview": "^0.1.6",
     "react-flag-icon-css": "^1.0.25",
@@ -47,7 +43,6 @@
     "recharts": "^1.6.2",
     "styled-components": "^4.3.2",
     "typescript": "^3.4.5",
-    "wait-on": "^3.3.0",
     "yup": "^0.27.0"
   },
   "scripts": {
@@ -55,9 +50,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "postbuild": "npm run generate-build-meta && react-snap",
-    "generate-build-meta": "cross-env ./node_modules/react-clear-cache/bin/cli.js",
-    "electron-dev": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3000 && electron .\""
+    "prebuild": "cross-env NODE_OPTIONS=--max_old_space_size=4096",
+    "postbuild": "npm run react-snap",
+    "electron-dev": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-build": "electron-packager ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -69,7 +65,12 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "concurrently": "^4.1.2",
     "cross-env": "^5.2.0",
-    "tslint": "^5.18.0"
+    "electron": "^6.1.5",
+    "electron-builder": "^21.2.0",
+    "electron-packager": "^14.1.1",
+    "tslint": "^5.18.0",
+    "wait-on": "^3.3.0"
   }
 }
